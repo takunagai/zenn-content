@@ -157,3 +157,5 @@ Sass なら、`$prefix: hoge;` `--#{$prefix}-primary-color: red;` みたいに�
 * [Patterns for Practical CSS Custom Properties Use - CSS-Tricks](https://css-tricks.com/patterns-for-practical-css-custom-properties-use/) Grit など
 * [A Guide To Modern CSS Colors With RGB, HSL, HWB, LAB And LCH — Smashing Magazine](https://www.smashingmagazine.com/2021/11/guide-modern-css-colors/) HSLカラー
 * [How to create better themes with CSS variables - LogRocket Blog](https://blog.logrocket.com/how-to-create-better-themes-with-css-variables-5a3744105c74/) サンプルいっぱい
+* [A Complete Guide to Custom Properties - CSS-Tricks](https://css-tricks.com/a-complete-guide-to-custom-properties/) サンプル、リンクいっぱい
+  - [Exploring @property and its Animating Powers - CSS-Tricks](https://css-tricks.com/exploring-property-and-its-animating-powers/) まだ対応ブラウザ限られる
