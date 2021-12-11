@@ -6,6 +6,7 @@ topics: ["CSS"]
 published: true
 ---
 
+
 ## CSS カスタムプロパティ(CSS変数) とは
 
 [デモ1](https://jsfiddle.net/takna/c32uhkrg/)
@@ -153,4 +154,5 @@ Sass なら、`$prefix: hoge;` `--#{$prefix}-primary-color: red;` みたいに�
 
 * [CSSの変数（カスタムプロパティ）便利な使い方を詳しく解説 | コリス](https://coliss.com/articles/build-websites/operation/css/css-variables.html)
     - [CSSの変数（カスタムプロパティ）が期待通りに動作しないときの解決方法 | コリス](https://coliss.com/articles/build-websites/operation/css/solution-when-custom-properties-do-not-work.html)
-* [Patterns for Practical CSS Custom Properties Use - CSS-Tricks](https://css-tricks.com/patterns-for-practical-css-custom-properties-use/)
+* [Patterns for Practical CSS Custom Properties Use - CSS-Tricks](https://css-tricks.com/patterns-for-practical-css-custom-properties-use/) Grit など
+* [A Guide To Modern CSS Colors With RGB, HSL, HWB, LAB And LCH — Smashing Magazine](https://www.smashingmagazine.com/2021/11/guide-modern-css-colors/) HSLカラー
