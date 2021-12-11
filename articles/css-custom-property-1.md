@@ -2,7 +2,7 @@
 title: "CSS カスタムプロパティ 1 基礎"
 emoji: "🐸"
 type: "tech"
-topics: [CSS]
+topics: ["CSS"]
 published: true
 ---
 
@@ -22,6 +22,9 @@ published: true
 * ブラウザ上で変数のままで動的に処理される。JavaScript から参照、変更できる
 * Sass (scss) の場合、トランスパイルが必要で、変換後は固定値となる
 
+### Sass 中でも使える
+
+* カスタムプロパティを Sass 変数に格納するのは無理。エラーに
 
 :::details CSS カスタムプロパティに対応してないブラウザでフォールバック
 ### Polyfill
@@ -115,7 +118,7 @@ published: true
 
 ---
 
-### calc() 関数と併せて使う 
+### CSS関数と併せて使う 
 
 [デモ3](https://jsfiddle.net/takna/tj74suzd/)
 
@@ -124,13 +127,30 @@ published: true
     - [hsl() - MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/hsl())
     - 各指定値をカスタムプロパティ化すると、コントラスト色、明度・彩度スケールなど色々できるが、見通しは悪くなるので使用は絞った方が良さげ
     - 参考：[Creating Color Themes With Custom Properties - CSS-Tricks](https://css-tricks.com/creating-color-themes-with-custom-properties-hsl-and-a-little-calc/)
+* [max()](https://developer.mozilla.org/ja/docs/Web/CSS/max()) [clamp()](https://developer.mozilla.org/ja/docs/Web/CSS/clamp()) [min()](https://developer.mozilla.org/ja/docs/Web/CSS/min()) 関数で最小値、推奨値、最大値を設定できる
+
+clamp()
 
 ### CSS アニメーションで
 
 今回は割愛
 
 
+### プレフィックスを付ける
+
+もし読み込んでいる他のCSSのカスタムプロパティ名と重複すると、不具合が起きるので、このプロジェクトで統一したプレフィックスを付けとく方が無難な場合がある。
+`--primary` → `--XX-primary`
+(WordPress は "--wp--preset--"、Bootstrap は "--bs-" と付いてる)
+
+Sass なら、`$prefix: hoge;` `--#{$prefix}-primary-color: red;` みたいにすれば後から容易に変更できる
+
 ## まとめ
 
-* 素のCSSの全てのプロパティで使えるので、アイデア次第で色々できる
-    - 色・透明度、サイズ、余白、レイアウト(グリッド他)、表示/非表示、アニメーション
+* 素のCSSの全てのプロパティで使えるので、また、Vannila JavaScript から操作できるので、アイデア次第で色々できる
+    - 色・透明度、フォント、サイズ、余白、レイアウト(グリッド他)、表示/非表示、アニメーション
+
+## 参考記事
+
+* [CSSの変数（カスタムプロパティ）便利な使い方を詳しく解説 | コリス](https://coliss.com/articles/build-websites/operation/css/css-variables.html)
+    - [CSSの変数（カスタムプロパティ）が期待通りに動作しないときの解決方法 | コリス](https://coliss.com/articles/build-websites/operation/css/solution-when-custom-properties-do-not-work.html)
+* [Patterns for Practical CSS Custom Properties Use - CSS-Tricks](https://css-tricks.com/patterns-for-practical-css-custom-properties-use/)
