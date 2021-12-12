@@ -27,7 +27,9 @@ published: false
 
 * カスタムプロパティを Sass 変数に格納するのは無理。エラーに
 
-:::details CSS カスタムプロパティに対応してないブラウザでフォールバック
+### details CSS カスタムプロパティに対応してないブラウザでフォールバックする方法
+
+:::details Polyfill, @supports
 ### Polyfill
 
 [IE11 Polyfill](https://github.com/nuxodin/ie11CustomProperties) サポート終了
@@ -36,9 +38,9 @@ published: false
 <script>window.MSInputMethodContext && document.documentMode && document.write('<script src="https://cdn.jsdelivr.net/gh/nuxodin/ie11CustomProperties@4.1.0/ie11CustomProperties.min.js"><\/script>');</script>
 ```
 
-### CSS カスタムプロパティに対応してないブラウザでフォールバックする方法
+### @supports
 
-でも、[@supports -MDN](https://developer.mozilla.org/ja/docs/Web/CSS/@supports) が IE11 に対応していないので、この場合での使いどころはなさそう
+[@supports -MDN](https://developer.mozilla.org/ja/docs/Web/CSS/@supports) で以下のようにできるが、肝心の IE11 に対応していないので、このケースでの使いどころはなさそう
 
 ```scss
 .my-component {
@@ -58,17 +60,14 @@ published: false
 * 最初のカンマから関数の終わりまでが代替値とみなされる
 * `var(--my-var, var(--my-background, pink));` のようにネストできるが、パフォーマンスが落ちるので避ける
 
-:::details env() 関数でのフォールバック
-### フォールバック
+#### env() で文書でグローバルなスコープのデフォルト値を設定できる
 
-[env() - MDN](https://developer.mozilla.org/ja/docs/Web/CSS/env()) 文書でグローバルなデフォルト値を設定し、その値をフォールバックとして使える。\
+[env() - MDN](https://developer.mozilla.org/ja/docs/Web/CSS/env()) 文書でグローバルなデフォルト値を設定できる。\
 例：`env(safe-area-inset-top, 20px);`\
-しかし、パフォーマンスが落ちるとなにかで読んだ気が。。。(探したが見つからず)
-:::
 
 ### 無効な変数の場合
 
-* プロパティの初期値または継承値が使用される
+* 継承値、なければプロパティの初期値が適用される
 
 ### インラインCSSで上書きできる
 
@@ -76,23 +75,26 @@ published: false
 
 ### JavaScript で取得、値をセット
 
+* 従来のCSSプロパティの扱いと同じ
 * `:root` 疑似クラスで設定した値は、`document.documentElement` でアクセスできる
-    - 指定カスタムプロパティの値を取得
-        * `document.documentElement.style.getPropertyValue('--primary');` ダメ
-            - TODO: 確認：インラインCSSなら、getPropertyValue だけで取得できる?  
-             [Access CSS variable from javascript - Stack Overflow](https://stackoverflow.com/questions/41725725/access-css-variable-from-javascript)
-        * `window.getComputedStyle(document.documentElement).getPropertyValue('--primary');` OK
-    - 指定カスタムプロパティに値をセット
-        * `document.documentElement.style.setProperty('--primary', "pink");` 元々ないものも追加可能
+- 指定カスタムプロパティの値を取得
+    * `window.getComputedStyle(document.documentElement).getPropertyValue('--primary');`
+        - メモ：`document.documentElement.style.getPropertyValue('--primary');` では取得できなかった [Access CSS variable from javascript - Stack Overflow](https://stackoverflow.com/questions/41725725/access-css-variable-from-javascript), [Window.getComputedStyle() - MDN](https://developer.mozilla.org/ja/docs/Web/API/Window/getComputedStyle) 違いを解説
+- 任意のカスタムプロパティに値をセット
+    * `document.documentElement.style.setProperty('--color-pink', "pink");` 元々ないものも追加可能
+      - この場合は、html 要素にインラインで埋め込まれる  
+        `<html style="--color-pink: pink;">`
+* メモ：JavaScript で操作したものは、ブラウザ開発ツールでHTML要素を選択、"Dom プロパティを表示" > "Style: CSS2Properties" で、カスタムプロパティを確認できる
 
-* ブラウザ開発ツールで要素を選択し、"Dom プロパティを表示" で確認できる
-  → Style: CSS2Properties
+### その他メモ
 
-### デメリットを感じる点
+* `var(--)` と打つのがめんどい (→ コードスニペットで展開)
+* 複雑になると見通しが悪い (特に calc() 関数などを使った場合)  
+* エディタの補完や表示のサポートはまちまち
 
-* `var(--)` って打つのがめんどい
-* エディタのコード横カラー表示がない
-* 複雑になると見通しが悪い (特に calc() 関数などを使うと)
+[//]: # (* phpstorm &#40;intellij 系&#41; なら、var&#40;--primary&#41; で色チップが表示)
+
+[//]: # (* VSCode [CSS Custom Properties - Visual Studio Marketplace]&#40;https://marketplace.visualstudio.com/items?itemName=Tock.vscode-css-custom-properties&#41;)
 
 ---
 
@@ -146,7 +148,7 @@ Sass なら、`$prefix: hoge;` `--#{$prefix}-primary-color: red;` みたいに�
 
 ## まとめ
 
-* 素のCSSの全てのプロパティで使えるので、また、Vannila JavaScript から操作できるので、アイデア次第で色々できる
+* 素のCSSの全てのプロパティで使える、また、JavaScript で操作できるので、アイデア次第で色々できる
     - 色・透明度、フォント、サイズ、余白、レイアウト(グリッド他)、表示/非表示、アニメーション
 
 ## 参考記事
