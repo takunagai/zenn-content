@@ -30,6 +30,7 @@ published: true
 ### details CSS カスタムプロパティに対応してないブラウザでフォールバックする方法
 
 :::details Polyfill, @supports
+
 ### Polyfill
 
 [IE11 Polyfill](https://github.com/nuxodin/ie11CustomProperties) サポート終了
@@ -53,6 +54,11 @@ published: true
   }
 }
 ```
+
+### PostCSS プラグイン
+
+[postcss/postcss-custom-properties - Github](https://github.com/postcss/postcss-custom-properties)
+最終的な CSS が肥大化しそう 
 :::
 
 ### デフォルト値
@@ -102,8 +108,8 @@ published: true
 
 [デモ2](https://jsfiddle.net/takna/yq9hwz30/)
 
-* メディアクエリ規則の中では使えない。    
-  `@media (max-width: var(--mobile-breakpoint)) {}` は効かない。
+* メディアクエリ規則の中では使えない    
+  `@media (max-width: var(--mobile-breakpoint)) {}` は効かない
 * メディアクエリ分岐で全体に影響するカスタムプロパティの値を変えたい場合は、:root をメディアクエリでスコープ分岐させる。
     - [CSS Variables - Google Developers](https://developers.google.com/web/updates/2016/02/css-variables-why-should-you-care)
 * レスポンシブデザインで、サイズや余白調整に便利
@@ -142,12 +148,11 @@ published: true
 
 #### 最適化する
 
-フレームワーク、CMS、ライブラリ等が使用している CSS カスタムプロパティを把握した上で実装する。
-例えば WordPress なら theme.json での設定力生成される CSS カスタムプロパティを把握し、同じ値は自分のCSSで値を直接定義せず、それらの CSS カスタムプロパティを適用する。
+フレームワーク、CMS、ライブラリ等が使用している CSS カスタムプロパティを把握した上で実装すること。例えば WordPress なら theme.json での設定で head タグ内にインラインで埋め込まれる CSS カスタムプロパティを把握、同じ値は自分のCSSで値を直接定義せず、それらの CSS カスタムプロパティを適用する。
 
 #### プレフィックスを付ける
 
-カスタムプロパティ名の重複はトラブルを招く可能性があるので、このプロジェクトで統一したプレフィックスを付けとく方が無難。
+カスタムプロパティ名の重複はトラブルを招く可能性があるので、このプロジェクトで統一したプレフィックスを付けとくと無難。
 `--primary` → `--XXX-primary`
 (例えば、WordPress は "--wp--preset--"、Bootstrap は "--bs-" (変更可) と付いてる)
 
