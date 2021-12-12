@@ -140,29 +140,35 @@ published: true
 
 ### フレームワーク、CSS、ライブラリ等を使う場合
 
-#### 冗長にならないよう注意
+#### 最適化する
 
-それらが指定する CSS カスタムプロパティを把握した上で実装すること。
+フレームワーク、CMS、ライブラリ等が使用している CSS カスタムプロパティを把握した上で実装する。
+例えば WordPress なら theme.json での設定力生成される CSS カスタムプロパティを把握し、同じ値は自分のCSSで値を直接定義せず、それらの CSS カスタムプロパティを適用する。
 
 #### プレフィックスを付ける
 
-もし読み込んでいる他のCSSのカスタムプロパティ名と重複すると、不具合が起きるので、このプロジェクトで統一したプレフィックスを付けとく方が無難な場合がある。
-`--primary` → `--XX-primary`
-(WordPress は "--wp--preset--"、Bootstrap は "--bs-" と付いてる)
+カスタムプロパティ名の重複はトラブルを招く可能性があるので、このプロジェクトで統一したプレフィックスを付けとく方が無難。
+`--primary` → `--XXX-primary`
+(例えば、WordPress は "--wp--preset--"、Bootstrap は "--bs-" (変更可) と付いてる)
 
-Sass なら、`$prefix: hoge;` `--#{$prefix}-primary-color: red;` みたいにすれば後から容易に変更できる
+Sass なら、`$prefix: hoge;` `--#{$prefix}-primary-color: red;` のようにすれば後から容易に変更できる
 
 ## まとめ
 
-* 素のCSSの全てのプロパティで使える、また、JavaScript で操作できるので、アイデア次第で色々できる
+* アイデア次第で色々できる
     - 色・透明度、フォント、サイズ、余白、レイアウト(グリッド他)、表示/非表示、アニメーション
 
 ## 参考記事
 
+### わかりやすい解説
+
 * [CSSの変数（カスタムプロパティ）便利な使い方を詳しく解説 | コリス](https://coliss.com/articles/build-websites/operation/css/css-variables.html)
     - [CSSの変数（カスタムプロパティ）が期待通りに動作しないときの解決方法 | コリス](https://coliss.com/articles/build-websites/operation/css/solution-when-custom-properties-do-not-work.html)
 * [CSSで変数（カスタムプロパティ）を使ってみよう - Webクリエイターボックス](https://www.webcreatorbox.com/tech/css-variables)
-* [Patterns for Practical CSS Custom Properties Use - CSS-Tricks](https://css-tricks.com/patterns-for-practical-css-custom-properties-use/) Grit など
+
+### 応用例
+
+* [Patterns for Practical CSS Custom Properties Use - CSS-Tricks](https://css-tricks.com/patterns-for-practical-css-custom-properties-use/) Grid など
 * [A Guide To Modern CSS Colors With RGB, HSL, HWB, LAB And LCH — Smashing Magazine](https://www.smashingmagazine.com/2021/11/guide-modern-css-colors/) HSLカラー
 * [How to create better themes with CSS variables - LogRocket Blog](https://blog.logrocket.com/how-to-create-better-themes-with-css-variables-5a3744105c74/) サンプルいっぱい
 * [A Complete Guide to Custom Properties - CSS-Tricks](https://css-tricks.com/a-complete-guide-to-custom-properties/) サンプル、リンクいっぱい
