@@ -184,6 +184,7 @@ Sass なら、`$prefix: hoge;` `--#{$prefix}-primary-color: red;` のように�
 
 ### 応用例
 
+* [Open Props: sub-atomic styles](https://open-props.style/) 汎用的に使えそうな CSS カスタムプロパティ 351個をセットしたライブラリ。参考用にも
 * [Patterns for Practical CSS Custom Properties Use - CSS-Tricks](https://css-tricks.com/patterns-for-practical-css-custom-properties-use/) Grid など
 * [A Guide To Modern CSS Colors With RGB, HSL, HWB, LAB And LCH — Smashing Magazine](https://www.smashingmagazine.com/2021/11/guide-modern-css-colors/) HSLカラー
 * [How to create better themes with CSS variables - LogRocket Blog](https://blog.logrocket.com/how-to-create-better-themes-with-css-variables-5a3744105c74/) サンプルいっぱい
