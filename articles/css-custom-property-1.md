@@ -9,12 +9,18 @@ published: true
 
 ## CSS カスタムプロパティ (CSS 変数) とは
 
-素の CSS で、変数の感覚でプロパティを扱えるもの。複数箇所のスタイルを一元管理するのに便利。また、Dom にセットされるプロパティなので、値を変更すれば動的にブラウザ表示に反映されるためJavaScript から値をコントロールすることで、工夫次第でかなり様々なことができる。
-
-"CSS 変数" とも呼ばれ、var() という関数を使用するが、値を格納する変数ではなくプロパティなので、"CSS カスタムプロパティ" と呼ぶ方が妥当。
+素の CSS で、変数感覚で扱えるプロパティ。複数箇所のスタイルを一元管理するのに便利。また、Dom のプロパティなので、値が動的にブラウザ表示に反映されるため JavaScript から値をコントロールすることで、様々な有用な処理ができる。
 
 [» 対応ブラウザ](https://caniuse.com/css-variables)  
 ※ IE 11 は非対応 (サポート終了の Polyfill はある)
+
+:::message
+"CSS 変数" とも呼ばれ、var() という関数を使用するが、値を格納する変数ではなくプロパティなので、"CSS カスタムプロパティ" と呼ぶ方が妥当。
+:::
+
+:::details 習得すべき？
+すでに様々な CMS、フレームワーク、ライブラリ等で使われており、自分のプロジェクトの CSS を最適化するためにはそれらを考慮した実装が必要となる。素の CSS なので廃れて無くなることもない。使いこなすと便利なはずなので習得しておいて損はない。
+:::
 
 ## 基本の基本
 
@@ -96,20 +102,24 @@ published: true
 
 * `<p class="primary" style="--primary-color: gold;"></p>`
 
-### JavaScript で取得、値をセット
+### JavaScript で値の取得/セット
 
-* 従来のCSSプロパティの扱いと同じ
+* 従来の CSS プロパティの扱いと同じ
 * `:root` 疑似クラスで設定した値は、`document.documentElement` でアクセスできる
-- 任意のカスタムプロパティの値を取得
-    * `window.getComputedStyle(document.documentElement).getPropertyValue('--primary');`
-        - メモ：`document.documentElement.style.getPropertyValue('--primary');` では取得できなかった [Access CSS variable from javascript - Stack Overflow](https://stackoverflow.com/questions/41725725/access-css-variable-from-javascript), [Window.getComputedStyle() - MDN](https://developer.mozilla.org/ja/docs/Web/API/Window/getComputedStyle) 違いを解説
-- 任意のカスタムプロパティに値をセット
-    * `document.documentElement.style.setProperty('--color-pink', "pink");` 元々ないものも追加可能
-      - この場合は、html 要素にインラインで埋め込まれる  
-        `<html style="--color-pink: pink;">`
-* メモ：JavaScript で操作したものは、ブラウザ開発ツールでHTML要素を選択、"Dom プロパティを表示" > "Style: CSS2Properties" で、カスタムプロパティを確認できる
+* 実装
+    - 任意のカスタムプロパティの値を取得
+        * `window.getComputedStyle(document.documentElement).getPropertyValue('--primary');`
+          - メモ：`document.documentElement.style.getPropertyValue('--primary');` では取得できなかった [Access CSS variable from javascript - Stack Overflow](https://stackoverflow.com/questions/41725725/access-css-variable-from-javascript), [Window.getComputedStyle() - MDN](https://developer.mozilla.org/ja/docs/Web/API/Window/getComputedStyle) 違いを解説
+    - 任意のカスタムプロパティに値をセット
+        * `document.documentElement.style.setProperty('--color-pink', "pink");` 元々ないものも追加可能
+            - この場合は、html 要素にインラインで埋め込まれる  
+            `<html style="--color-pink: pink;">`
 
-### その他メモ
+:::message
+メモ：JavaScript で操作したものは、ブラウザ開発ツールでHTML要素を選択、"Dom プロパティを表示" > "Style: CSS2Properties" で、カスタムプロパティを確認できる
+:::
+
+### その他 メモ
 
 * エディタの補完や表示のサポートはまちまち
 * `var(--)` と打つのがめんどい (→ コードスニペットで展開)
@@ -137,7 +147,7 @@ published: true
 [デモ3](https://jsfiddle.net/takna/40yngfkb/)
 
 * `:root` 疑似クラスで文書全体がスコープに (≒グローバル変数)
-* プログラム言語の関数みたいな感じ
+* プログラム言語の関数のスコープと同じ
   - 内側スコープ内を検索しあれば適用。無ければ一つ親の要素を探す。無ければそのさらに親の… :root まで探して無ければ無効値 (ブラウザ初期値) に
 * 従来のCSSの継承 (カスケード) そのまま
 
@@ -148,11 +158,12 @@ published: true
 [デモ3](https://jsfiddle.net/takna/tj74suzd/)
 
 * [calc() - MDN](https://developer.mozilla.org/ja/docs/Web/CSS/calc())
-* カラーを HLS で指定すれば、カスタムプロパティで色を自在にコントロールできる
+* カラーを HLS で指定すれば、数値をセットした CSS カスタムプロパティで色を自在にコントロールできる
     - [hsl() - MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/hsl())
-    - 各指定値をカスタムプロパティ化すると、コントラスト色、明度・彩度スケールなど色々できるが、見通しは悪くなるので使用は絞った方が良さげ
+    - 各値をカスタムプロパティ化することで色々できるが、見通しは悪くなるので使用は絞った方が良さげ
     - 参考：[Creating Color Themes With Custom Properties - CSS-Tricks](https://css-tricks.com/creating-color-themes-with-custom-properties-hsl-and-a-little-calc/)
-* [max()](https://developer.mozilla.org/ja/docs/Web/CSS/max()) [clamp()](https://developer.mozilla.org/ja/docs/Web/CSS/clamp()) [min()](https://developer.mozilla.org/ja/docs/Web/CSS/min()) 関数で最小値、推奨値、最大値を設定できる
+* [max()](https://developer.mozilla.org/ja/docs/Web/CSS/max()), [clamp()](https://developer.mozilla.org/ja/docs/Web/CSS/clamp()), [min()](https://developer.mozilla.org/ja/docs/Web/CSS/min()) 関数で最小値、推奨値、最大値を設定できる
+    - [Fluid Type Scale in WordPress - Rich Tabor](https://richtabor.com/fluid-type-scale-theme-json/) レスポンシブ・フォントサイズでの使用例
 
 
 ### CSS アニメーションで、レイアウトで
@@ -161,15 +172,15 @@ published: true
 
 ## 気をつけたいこと
 
-### 複雑になると見通しが悪くなりそう
+### 複雑にし過ぎると見通しが悪くなる
 
-特に calc() 関数などを使った場合、最終的にどのような値になるのかを理解するのに労力を使うことになる。計算でいい感じにできることは多々あると思うが、あまり複雑にならないよう気をつけたい。
+特に calc() 関数などを使った場合、複雑になりやすい。未来の自分や他人が見た時、最終的にどのような値になるのかを理解するのに労力を使うことになる。計算でいい感じにできることは多々あると思うが、あまり複雑になり過ぎないよう気をつけたい。
 
 ### フレームワーク、CSS、ライブラリ等を使う場合
 
 #### 最適化する
 
-フレームワーク、CMS、ライブラリ等が使用している CSS カスタムプロパティを把握した上で実装すること。例えば WordPress なら theme.json での設定で head タグ内にインラインで埋め込まれる CSS カスタムプロパティを把握、同じ値は自分のCSSで値を直接定義せず、それらの CSS カスタムプロパティを適用する。
+フレームワーク、CMS、ライブラリ等が使用している CSS カスタムプロパティを把握した上で実装すること。例えば WordPress なら theme.json での設定で head タグ内にインラインで埋め込まれる CSS カスタムプロパティを把握し、同じ値は自分のCSSで値を直接定義せず、それらの CSS カスタムプロパティを使う。
 
 #### プレフィックスを付ける
 
