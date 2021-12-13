@@ -125,7 +125,6 @@ published: true
 * `var(--)` と打つのがめんどい (→ コードスニペットで展開)
 
 [//]: # (* phpstorm &#40;intellij 系&#41; なら、var&#40;--primary&#41; で色チップが表示)
-
 [//]: # (* VSCode [CSS Custom Properties - Visual Studio Marketplace]&#40;https://marketplace.visualstudio.com/items?itemName=Tock.vscode-css-custom-properties&#41;)
 
 ---
@@ -151,6 +150,10 @@ published: true
 * プログラム言語の関数のスコープと同じ
   - 内側スコープ内を検索しあれば適用。無ければ一つ親の要素を探す。無ければそのさらに親の… :root まで探して無ければ無効値 (ブラウザ初期値) に
 * 従来のCSSの継承 (カスケード) そのまま
+
+#### 注意：値が継承される前に解決される
+
+https://twitter.com/takamosoo/status/1380044593480134662
 
 ---
 
