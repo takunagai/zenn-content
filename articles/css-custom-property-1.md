@@ -7,20 +7,22 @@ published: true
 ---
 
 
-## CSS カスタムプロパティ(CSS変数) とは
+## CSS カスタムプロパティ (CSS 変数) とは
 
+素の CSS で、変数の感覚でプロパティを扱えるもの。複数箇所のスタイルを一元管理するのに便利。また、Dom にセットされるプロパティなので、値を変更すれば動的にブラウザ表示に反映される。JavaScript から値をコントロールすることで、工夫次第でかなり様々なことができる。
 
+"CSS 変数" とも呼ばれ、var() という関数を使用するが、値を格納する変数ではなくプロパティなので、"CSS カスタムプロパティ" と呼ぶ方が妥当。
+
+[» 対応ブラウザ](https://caniuse.com/css-variables)  
+※ IE 11 は非対応 (サポート終了の Polyfill はある)
 
 ## 基本の基本
 
 [デモ1](https://jsfiddle.net/takna/c32uhkrg/)
 
-* `:root` 擬似クラスは、html 要素に適用される
-* 使用したい箇所に `var()` 関数で指定
+* `:root` 擬似クラスは、ドキュメント全体 (html 要素) に適用される
+* 使用したい箇所で `var(--任意の名前)`
 * 大文字と小文字を区別するので注意
-* 変数のように扱えるので、複数箇所のスタイルを一元管理するのに便利
-* "CSS変数" とも呼ばれるが、"CSSカスタムプロパティ" と呼ぶ方が妥当。値を格納する変数ではなく動的に反映されるプロパティなので。var()関数の名前もいかにも変数だが…。
-* [対応ブラウザ](https://caniuse.com/css-variables) IE 切るなら使える
 
 ### Sass(SCSS)等の CSSプリプロセッサーとの違い
 
@@ -35,10 +37,10 @@ published: true
 
 ### Sass は不要となるか？
 
-ならない。ネスト、ミックスイン、継承、ファイルの統合などはやはり必要なので、Sass との併用が現実的。Sass の代わりに PostCSS、CSSinJS 等を採用する選択肢もある。
+ならない。ネスト、ミックスイン、継承、ファイルの統合などはやはり必要なので、Sass との併用が現実的。状況により、Sass の代わりに PostCSS、CSSinJS、Tailwind CSS 等を採用する選択肢もある。
 
 
-### CSS カスタムプロパティに対応してないブラウザでフォールバックする方法
+### CSS カスタムプロパティに対応してないブラウザへの対応
 
 :::details Polyfill, @supports, PostCSS プラグイン
 
@@ -52,7 +54,7 @@ published: true
 
 ### @supports
 
-[@supports -MDN](https://developer.mozilla.org/ja/docs/Web/CSS/@supports) で以下のようにできるが、肝心の IE11 に対応していないので、このケースでの使いどころはなさそう
+[@supports -MDN](https://developer.mozilla.org/ja/docs/Web/CSS/@supports) で以下のようにできるが、肝心の IE11 に対応していないので、CSS カスタムプロパティのフォールバックとして使うことはないだろう
 
 ```scss
 .my-component {
@@ -69,15 +71,19 @@ published: true
 ### PostCSS プラグイン
 
 [postcss/postcss-custom-properties - Github](https://github.com/postcss/postcss-custom-properties)
-最終的な CSS が肥大化しそう 
+変数を固定値として書き出し、サポートしているブラウザ向けに CSS カスタムプロパティを使った記述を書き出す。最終的な CSS が肥大化しそう
 :::
 
 ### デフォルト値
 
-* 最初のカンマから関数の終わりまでが代替値とみなされる
+#### var() 関数で
+
+* `var(--primary, yellow);` --primary が無ければ yellow を指定
+* 最初のカンマから関数の終わりまでが代替値とみなされる  
+  `var(--hoge, aaa, bbb, ccc);` "aaa, bbb, ccc" が代替値
 * `var(--my-var, var(--my-background, pink));` のようにネストできるが、パフォーマンスが落ちるので避ける
 
-#### env() で文書でグローバルなスコープのデフォルト値を設定できる
+#### env() でグローバルなスコープのデフォルト値を設定
 
 [env() - MDN](https://developer.mozilla.org/ja/docs/Web/CSS/env()) 文書でグローバルなデフォルト値を設定できる。\
 例：`env(safe-area-inset-top, 20px);`\
@@ -94,7 +100,7 @@ published: true
 
 * 従来のCSSプロパティの扱いと同じ
 * `:root` 疑似クラスで設定した値は、`document.documentElement` でアクセスできる
-- 指定カスタムプロパティの値を取得
+- 任意のカスタムプロパティの値を取得
     * `window.getComputedStyle(document.documentElement).getPropertyValue('--primary');`
         - メモ：`document.documentElement.style.getPropertyValue('--primary');` では取得できなかった [Access CSS variable from javascript - Stack Overflow](https://stackoverflow.com/questions/41725725/access-css-variable-from-javascript), [Window.getComputedStyle() - MDN](https://developer.mozilla.org/ja/docs/Web/API/Window/getComputedStyle) 違いを解説
 - 任意のカスタムプロパティに値をセット
@@ -105,9 +111,8 @@ published: true
 
 ### その他メモ
 
-* `var(--)` と打つのがめんどい (→ コードスニペットで展開)
-* 複雑になると見通しが悪い (特に calc() 関数などを使った場合)  
 * エディタの補完や表示のサポートはまちまち
+* `var(--)` と打つのがめんどい (→ コードスニペットで展開)
 
 [//]: # (* phpstorm &#40;intellij 系&#41; なら、var&#40;--primary&#41; で色チップが表示)
 
@@ -154,6 +159,11 @@ published: true
 
 今回は割愛
 
+## 気をつけたいこと
+
+### 複雑になると見通しが悪くなりそう
+
+特に calc() 関数などを使った場合、最終的にどのような値になるのかを理解するのに労力を使うことになる。計算でいい感じにできることは多々あると思うが、あまり複雑にならないよう気をつけたい。
 
 ### フレームワーク、CSS、ライブラリ等を使う場合
 
@@ -167,11 +177,11 @@ published: true
 `--primary` → `--XXX-primary`
 (例えば、WordPress は "--wp--preset--"、Bootstrap は "--bs-" (変更可) と付いてる)
 
-Sass なら、`$prefix: hoge;` `--#{$prefix}-primary-color: red;` のようにすれば後から容易に変更できる
+メモ：Sass なら、`$prefix: hoge;` `--#{$prefix}-primary-color: red;` のようにすれば後から容易に変更できる
 
 ## まとめ
 
-* アイデア次第で色々できる (下の応用例を参照)
+* アイデア次第で色々できる (下の参考記事の応用例を参照)
     - 色・透明度、フォント、サイズ、余白、レイアウト(グリッド他)、表示/非表示、アニメーション
 
 ## 参考記事
@@ -189,4 +199,4 @@ Sass なら、`$prefix: hoge;` `--#{$prefix}-primary-color: red;` のように�
 * [A Guide To Modern CSS Colors With RGB, HSL, HWB, LAB And LCH — Smashing Magazine](https://www.smashingmagazine.com/2021/11/guide-modern-css-colors/) HSLカラー
 * [How to create better themes with CSS variables - LogRocket Blog](https://blog.logrocket.com/how-to-create-better-themes-with-css-variables-5a3744105c74/) サンプルいっぱい
 * [A Complete Guide to Custom Properties - CSS-Tricks](https://css-tricks.com/a-complete-guide-to-custom-properties/) サンプル、リンクいっぱい
-  - [Exploring @property and its Animating Powers - CSS-Tricks](https://css-tricks.com/exploring-property-and-its-animating-powers/) まだ対応ブラウザ限られる
+  - [Exploring @property and its Animating Powers - CSS-Tricks](https://css-tricks.com/exploring-property-and-its-animating-powers/) @property は、まだ対応ブラウザ限られる
