@@ -187,7 +187,7 @@ published: true
 
 カスタムプロパティ名の重複はトラブルを招く可能性があるので、このプロジェクトで統一したプレフィックスを付けとくと無難。
 `--primary` → `--XXX-primary`
-(例えば、WordPress は "--wp--preset--"、Bootstrap は "--bs-" (変更可) と付いてる)
+(例えば、WordPress は "--wp-"、Bootstrap は "--bs-" (変更可) と付いてる)
 
 メモ：Sass なら、`$prefix: hoge;` `--#{$prefix}-primary-color: red;` のようにすれば後から容易に変更できる
 
