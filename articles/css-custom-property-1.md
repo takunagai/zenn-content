@@ -45,7 +45,7 @@ published: true
 
 #### Sass は不要となるか？
 
-ならない。変数や計算は代替できるが、ネスト、ミックスイン、継承、ファイルの統合などはやはり必要なので、Sass との併用が現実的。状況により、Sass の代わりに PostCSS、CSSinJS、Tailwind CSS 等を採用する選択肢もある。
+ならない。変数や計算は代替できるが、ネスト、ミックスイン、継承、ファイルの統合などはやはり必要なので、Sass との併用が現実的。状況により、Sass の代わりに PostCSS、CSSinJS (内部では CSS プリプロフェッサーを使用)、Tailwind CSS 等を採用する選択肢もある。
 
 ### CSS カスタムプロパティに対応してないブラウザへの対応
 
@@ -136,7 +136,8 @@ published: true
 [デモ2](https://jsfiddle.net/takna/yq9hwz30/)
 
 * メディアクエリ規則の中では使えない    
-  `@media (max-width: var(--mobile-breakpoint)) {}` は効かない
+    - `@media (max-width: var(--mobile-breakpoint)) {}` は効かない
+    - * [postcss-preset-env](https://github.com/csstools/postcss-preset-env) (策定中の機能の Polyfill 集) の custom media queries、media query range を使えば使える
 * メディアクエリ分岐で全体に影響するカスタムプロパティの値を変えたい場合は、:root をメディアクエリでスコープ分岐させる。
     - [CSS Variables - Google Developers](https://developers.google.com/web/updates/2016/02/css-variables-why-should-you-care)
 * レスポンシブデザインで、サイズや余白調整に便利
