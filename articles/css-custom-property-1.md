@@ -135,7 +135,7 @@ published: true
 
 * メディアクエリ規則の中では使えない    
     - `@media (max-width: var(--mobile-breakpoint)) {}` は効かない
-    - * [postcss-preset-env](https://github.com/csstools/postcss-preset-env) (策定中の機能の Polyfill 集) の custom media queries、media query range を使えば使える
+    - * [~~postcss-preset-env~~](https://github.com/csstools/postcss-preset-env) → [postcss-env-function - csstools/postcss-plugins](https://github.com/csstools/postcss-plugins/tree/main/plugins/postcss-env-function) (策定中の機能の Polyfill 集) の custom media queries、media query range を使えば使える
 * メディアクエリ分岐で全体に影響するカスタムプロパティの値を変えたい場合は、:root をメディアクエリでスコープ分岐させる。
     - [CSS Variables - Google Developers](https://developers.google.com/web/updates/2016/02/css-variables-why-should-you-care)
 * レスポンシブデザインで、サイズや余白調整に便利
