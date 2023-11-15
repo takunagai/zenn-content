@@ -16,7 +16,7 @@ published: false
 編集するのは layout.tsx、tailwind.config.ts の２ファイル。  
 `font-sans` クラスで Noto Sans JP が適用されるようにする。  
 
-※ この記事後半の "出力された HTML" の項を先に見た方がわかりやすいかも。
+**※ 当記事後半の "出力された HTML" の項を先に見とくとわかりやすいと思う**
 
 ### 1. layout.tsx
 
@@ -26,7 +26,8 @@ published: false
 :::message
 Noto フォントは "バリアブルフォント" なので、ウェイト指定は不要。むしろ、"weight" を指定すると、[CSS サイズが増える](https://zenn.dev/k_kind/articles/next-font-weight)らしい。  
 
-当該フォントがバリアブルフォントかどうかを知るには、[Variable fonts 一覧](https://fonts.google.com/variablefonts) にそのフォント名があるか確認するか、そのフォントの個別ページ)の "Type tester" (例: [Noto Sans JP]([Noto Sans Japanese - Google Fonts](https://fonts.google.com/noto/specimen/Noto+Sans+JP/tester)) の Weight スライダー でウェイトが 1 ずつ変更できるかを確認すれば良い。
+当該フォントがバリアブルフォントかどうかを知るには、[Variable fonts 一覧](https://fonts.google.com/variablefonts) にそのフォント名があるか確認。もしくは、そのフォントの個別ページの "Type tester" (例: [Noto Sans JP](https://fonts.google.com/noto/specimen/Noto+Sans+JP/tester)) の Weight スライダー でウェイトが 1 ずつ変更できるかを確認すれば良い。
+
 :::
 
 以下のサンプルは、全体 (html 要素) に Noto Sans JP を適用するもの。
