@@ -19,8 +19,7 @@ TailwindCSS なら [tailwind-merge](https://www.npmjs.com/package/tailwind-merge
 
 単純な Card コンポーネントを例とする。
 
-```txt
-// 構成
+```txt:構成
 プロジェクトルート
   ├ app
   │ ├ pagename
@@ -37,8 +36,7 @@ TailwindCSS なら [tailwind-merge](https://www.npmjs.com/package/tailwind-merge
 
 ```
 
-```components/ui/Card/Card.tsx
-// components/ui/Card/Card.tsx
+```tsx:components/ui/Card/Card.tsx
 import { cn } from '@/utils'
 import React from 'react'
 import styles from './Card.module.css'
@@ -61,8 +59,7 @@ function Card({
 export default Card
 ```
 
-```components/ui/Card/Card.module.css
-// components/ui/Card/Card.module.css
+```css:components/ui/Card/Card.module.css
 /* Card の基本スタイル */
 ```
 
@@ -77,8 +74,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 ```
 
-```app/pagename/page.tsx
-// app/pagename/page.tsx
+```tsx:app/pagename/page.tsx
 import Card from '@/components/ui/Card'
 
 export default function Page() {
