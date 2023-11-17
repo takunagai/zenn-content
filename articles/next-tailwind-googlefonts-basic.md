@@ -3,7 +3,7 @@ title: "Next.js x TailwindCSS: Google Fonts (Noto Sans JP) の使い方"
 emoji: "🐸"
 type: "tech"
 topics: ["nextjs", "tailwindcss", "frontend"]
-published: false
+published: true
 ---
 
 ややこしかったし、ググっても明快な情報を探せなかったのでメモしとく。  
