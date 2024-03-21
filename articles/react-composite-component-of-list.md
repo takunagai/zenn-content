@@ -1,5 +1,5 @@
 ---
-title: "React: リスト要素と複合コンポーネント"
+title: "React 基本: リスト要素と複合コンポーネント"
 emoji: "🐸"
 type: "tech"
 topics: ["react", "frontend"]
