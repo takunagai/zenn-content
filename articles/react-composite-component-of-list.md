@@ -10,7 +10,7 @@ published: true
 
 複合コンポーネントは、小さい単純なコンポーネントを組み合わせ、ひとつのコンポーネントを作る技術。例えば、ボタン/入力フォーム/コンポーネントを組み合わせて商品の注文フォームを作ったり、タイトル/本文/フッターコンポーネントを組み合わせてカードコンポーネントを作ったり。
 
-今回は、ページ内アンカーリンクのリストコンポーネントを単純化したものをサンプルとして説明する。
+今回は、単純化したページ内アンカーリンクのリストコンポーネントををサンプルとして説明する。
 
 ## 単一コンポーネントの場合
 
@@ -64,8 +64,8 @@ export default function Page() {
 </ul>
 ```
 
-データと使用箇所を別の場所で管理するので、コード量が増えるとわかりづらくなる。
-データを外部から読み込む際はこの方法がシンプルに実装できる。
+* データと使用箇所を別の場所で管理するので、コード量が増えるとわかりづらくなる。
+* 同じデータを複数箇所で使う場合や外部データを読み込む場合はシンプルに実装できる。
 
 
 
@@ -84,11 +84,17 @@ function TocLink({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function TocLinkItem({ id, title }: { id: string; title?: string }) {
+export function TocLinkItem({
+  id,
+  children,
+}: {
+  id: string
+  children: string
+}) {
   return (
     <li key={id}>
-      <a className="YYY" href={`#${id}`}>
-        {title ? title : id}
+      <a className='YYY' href={`#${id}`}>
+        {children}
       </a>
     </li>
   )
@@ -98,6 +104,7 @@ export default TocLink
 ```
 
 使用ページでは、各リンクのデータを子要素の props として渡す。
+リスト項目は children としてタグ内に書くようにすると直感的。
 使用箇所に直接データを書くので見通しが良い。
 
 ```tsx:access/page.tsx
@@ -106,12 +113,15 @@ import TocLink, { TocLinkItem } from '@/components/TocLink'
 export default function Page() {
   return (
       <TocLink>
-        <TocLinkItem id='google-map' title='Google マップ' />
-        <TocLinkItem id='access-by-train' title='電車でのアクセス' />
-        <TocLinkItem id='access-by-car' title='車でのアクセス' />
+        <TocLinkItem id='google-map'>Google マップ</TocLinkItem>
+        <TocLinkItem id='access-by-train'>電車でのアクセス</TocLinkItem>
+        <TocLinkItem id='access-by-car'>車でのアクセス</TocLinkItem>
       </TocLink>
   )
 }
 ```
 
-このように、親子で構成されたタグで子要素をループ処理をするリスト要素は複合コンポーネントとすると扱いやすい。
+## まとめ
+
+* リスト要素のように親子で構成されたタグで子要素をループ処理をする場合、複合コンポーネントとすると見通しがよく扱いやすい。
+* 同じデータを複数箇所で使う場合や外部データを読み込む場合は、単一コンポーネントの方がシンプルに実装できる。
