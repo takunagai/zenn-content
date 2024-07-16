@@ -14,6 +14,18 @@ published: true
 * MicroCMS で記事の追加/更新/削除 → Netlify が自動再ビルド
 * 独自ドメインの設定 (今回は Cloudfrare Domains との接続)
 
+## Netlify についてのメモ
+
+* 無料 Starter プラン
+  * 月100GBの帯域、300分のビルド時間
+  * １ユーザーのみ、同時ビルドは１つのみ
+  * Functions region が "US East (Ohio) - us-east-2" 固定
+  * [料金とプラン | Netlify](https://www.netlify.com/pricing/)
+* [Netlify の CDN のリスト - Netlify Support Forums](https://answers.netlify.com/t/is-there-a-list-of-where-netlifys-cdn-pops-are-located/855/2)
+  * 東京リージョンはあるが、有料プランでないと選べない
+* [Netlify が遅いので Vercel に移行した | Lambdar](https://www.lambdar.me/archives/migrating-to-vercel-from-netlify-due-to-performance-issues/)
+  * 遅い原因が書かれている
+
 ## 手順
 
 ドメイン名を hoge.com としているので、適宜自分のものに変換してください。
@@ -70,6 +82,7 @@ Netlify CLI のインストール (プロジェクトルートで)
 　→ "Use current git remote origin /" を選択し、リポジトリ選択
 
  "Directory Linked" と表示され、リンクされたらOK！
+ プロジェクトを確認すると .netlify/state.json が生成され、`siteId` が設定されている。
 
 ステータスの確認
 `netlify status`
@@ -162,6 +175,7 @@ Netlify の Domains の Name servers で４つの アドレスが確認できる
 ### HTTPS 化
 
 Netlify 管理画面 Domain management > HTTPS で、"Verify DNS configuration" ボタンを押すだけ。設※※伝播に時間がかかる(24時間以内)ので、設定後すぐには反映されない。少し待つ必要がある。
+"https://" からの URL でアクセスし、サイトにアクセスできたら OK。
 
 ### おわりに
 
