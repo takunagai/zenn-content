@@ -6,7 +6,8 @@ topics: ["git","github"]
 published: true
 ---
 
-Git で既存プロジェクトにある任意のブランチを、別の新しいプロジェクトとして独立させる手順のメモです。
+Git で既存プロジェクトにある任意のブランチを、履歴を保持させつつ別の新しいプロジェクトとして独立させる手順のメモです。
+（履歴が不要なら、ローカルPCでプロジェクトフォルダを丸ごとコピーして、Git を初期化すれば OK。）
 
 ## 手順
 
@@ -34,6 +35,21 @@ git checkout new-project
 
 ```bash
 git remote add new-origin https://github.com/username/new-project-repo.git
+```
+
+現在のリポジトリに設定されているリモートリポジトリの一覧を確認しておきましょう。
+
+```bash
+git remote -v
+```
+
+↓ 応答
+
+```bash
+new-origin    https://github.com/username/new-project-repo.git (fetch)
+new-origin    https://github.com/username/new-project-repo.git (push)
+origin        https://github.com/username/old-project-repo.git (fetch)
+origin        https://github.com/username/old-project-repo.git (push)
 ```
 
 ### 5. 新しいリポジトリにプッシュ
