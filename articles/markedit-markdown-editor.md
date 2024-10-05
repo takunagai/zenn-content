@@ -23,13 +23,13 @@ MarkEdit は驚くほど軽快です。テキストエディットよりも軽�
 
 また、行ナンバー横の三角マークをクリックすることでコード中のタグや関数などを折りたためます。今は不要な箇所を一時非表示にすることで、見通しよく編集できます。
 
-![](/images/markedit-markdown-editor/theme.png)
+![シンタックスハイライト](/images/markedit-markdown-editor/theme.png)
 
 ### コードブロックの入力補助
 
 コードブロックを簡単に挿入できるショートカット機能も充実しています。`コマンド + シフト + C` で選択したコードを一発でコードブロックに変換できるので、作業が捗ります。
 
-![](/images/markedit-markdown-editor/code-block.png)
+![コードブロックのショートカットキー](/images/markedit-markdown-editor/code-block.png)
 
 ### 入力補助とショートカットキー
 
@@ -39,26 +39,26 @@ MarkEdit は驚くほど軽快です。テキストエディットよりも軽�
 
 複数の箇所を同時に編集できる「マルチキャレット機能」が便利です。コマンドキーを押しながらクリックすることで、複数の編集ポイントを同時に選択して作業できます。プログラミング用エディタでは当たり前の機能ですが、Markdown エディタでは珍しいのではないでしょうか。
 
-![](/images/markedit-markdown-editor/multi-carret.png)
+![マルチキャレット編集](/images/markedit-markdown-editor/multi-carret.png)
 
 ### プレビューがなくても読みやすい
 
 MarkEdit にはプレビュー表示機能がありませんが、テーマがスタイル付け(見出しを太字で大きくして色付けなど)してくれるので、十分に可読性を確保できます。Markdown ではどうしても見づらいテーブルに限り、プレビューボタンでプレビューができると気が利いています。
 
-![](/images/markedit-markdown-editor/table-preview.png)
+![テーブルのプレビュー](/images/markedit-markdown-editor/table-preview.png)
 
 ### Pandoc を使った書き出し機能
 
 MarkEdit 自体には PDF や HTML、Word文書への書き出し機能はありませんが、メニューから Pandoc 経由で簡単に変換できます。「文書変換は Pandoc 以上のものがないから」という潔い理由でそうなっているそうです。  
 (メモ: 設定ファイルは、ユーザー/Library/Containers/app.cyan.markedit/Data/Documents/pandoc.yaml)
 
-![](/images/markedit-markdown-editor/pandoc.png)
+![Pandoc](/images/markedit-markdown-editor/pandoc.png)
 
 ### バージョン管理機能
 
 macOS の Time Machine に対応しており、今開いているファイルを過去のバージョンに戻すことができます。うっかりミスは起こるもの。安心です。
 
-![](/images/markedit-markdown-editor/time-machine.png)
+![Mac TimeMachine](/images/markedit-markdown-editor/time-machine.png)
 
 ### Macネイティブな設計
 
@@ -77,6 +77,8 @@ macOS Sonoma で追加された「インライン予測」や macOS Sequoia で�
 私は今まで、階層管理が可能なノートアプリとして「Evernote」「Simple Note」「メモ.app」「Notion」などを使用してきました。しかし今はデータとして Markdown を素で扱い、階層を OS のフォルダ構造で実装している「iA Writer」をメインに使っています。そして、編集をこの軽快な「MarkEdit」で行います。
 
 この記事も MarkEdit で執筆し、iA Writer で管理しています。そして、Zenn 記事投稿用として作成したフォルダを VSCode のプロジェクトとしています。記事の仕上げは VSCode で Zenn 拡張機能のサポートを受けながら仕上げました。
+
+![文書管理と執筆のフロー](/images/markedit-markdown-editor/writing-flow.svg)
 
 Markdown なので、今後自分が蓄積した文書群を AI の学習データとしたいとなった時も、親和性がバッチリでしょう。
 
