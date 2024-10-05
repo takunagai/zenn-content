@@ -8,7 +8,7 @@ published: true
 
 ## やりたいこと
 
-* Netlify でデプロイ
+* Netlify でデプロイ。無料プランを使用
 * app router や next/images が動く
 * Github にプッシュ → Netlify が自動再ビルド
 * MicroCMS で記事の追加/更新/削除 → Netlify が自動再ビルド
@@ -16,57 +16,59 @@ published: true
 
 ## Netlify についてのメモ
 
-無料版はリージョン制限のため、速さを求めるなら有料プランにする必要がある
+無料版はリージョン制限があるため、速さを求めるなら有料プランにする必要がある
 
 * 無料 Starter プラン
-    * 月100GBの帯域、300分のビルド時間
-    * １ユーザーのみ、同時ビルドは１つのみ
-    * Functions region が "US East (Ohio) - us-east-2" 固定
-    * 東京リージョンの CDNはあるが、有料プランでないと選べない
+  * 月100GBの帯域、300分のビルド時間
+  * １ユーザーのみ、同時ビルドは１つのみ
+  * Functions region が "US East (Ohio) - us-east-2" 固定
+  * 東京リージョンの CDNはあるが、有料プランでないと選べない
 * 参考
-    * [料金とプラン | Netlify](https://www.netlify.com/pricing/)
-    * [Netlify の CDN のリスト | Netlify Support Forums](https://answers.netlify.com/t/is-there-a-list-of-where-netlifys-cdn-pops-are-located/855/2)
-    * [Netlify が遅いので Vercel に移行した | Lambdar](https://www.lambdar.me/archives/migrating-to-vercel-from-netlify-due-to-performance-issues/)
+  * [料金とプラン | Netlify](https://www.netlify.com/pricing/)
+  * [Netlify の CDN のリスト | Netlify Support Forums](https://answers.netlify.com/t/is-there-a-list-of-where-netlifys-cdn-pops-are-located/855/2)
+  * [Netlify が遅いので Vercel に移行した | Lambdar](https://www.lambdar.me/archives/migrating-to-vercel-from-netlify-due-to-performance-issues/)
 
 ## 手順
 
-以下、ドメイン名を hoge.com としているので、適宜自分のものに変換してください。
-ローカルの開発環境で Next.js で構築したウェブサイトが動いてる状態からの解説となります。
+以下、ドメイン名を hoge.com として進めるので、適宜自分のものに変換してください。  
+ローカルの開発環境で Next.js サイトが正常に動いてる状態からの解説となります。
 
 ### 1. ローカル環境で正常にビルドできることを確認
 
-開発環境 (`npm run dev`) で動いていても、ビルドするとエラーが出る場合があるので、事前チェックしておく。
+開発環境 (`npm run dev`) で動いていても、ビルドするとエラーが出る場合があるので、事前にチェックしておく。
 
 * `npm run build`
 * `npm run start` → ブラウザで動作確認
 
 ### 2. プロジェクトを Github にプッシュ
 
-今後、共同開発や引き継ぎがあった場合に備え、今回は Organization 下で管理する。共同開発や引き継ぎを想定していないなら個人のリポジトリでOK。\
+今後、共同開発や引き継ぎがあった場合に備え、今回は Organization 下で管理する。共同開発や引き継ぎを想定していないなら個人のリポジトリでOK。
 
 * Github で Organization を作成
-* Public でプロジェクト用のリポジトリを新規作成し、ローカルの該当プロジェクトとの関連付け＆アップロード (手順は割愛)
+* Public でプロジェクト用のリポジトリを新規作成し、ローカルのプロジェクトとの関連付け＆アップロード (手順は割愛)
 
 ### Github と Netlify の接続
 
-Netlify の管理画面でそのリポジトリとの関連付けを行う
+Netlify の管理画面で Netlify とリポジトリの関連付けを行う
 
 * 環境変数をセット
-    - Site configuration > Environment variablesで
-    - .env.local に書いてる設定 (MicroCMS API Key など) をセット
+  * Site configuration > Environment variablesで
+  * .env.local に書いてる設定 (MicroCMS API Key など) をセット
 * 管理画面でデプロイを行う
-    - → 成功するが、next/images で設定した画像が表示されない。これは Netlify CLI (V5) を適用することで解決できる。→ 次項を参照
+  * → デプロイは成功するが、next/images で設定した画像が表示されない。これは Netlify CLI (V5) を適用することで解決できる。→ 次項を参照
 
 ### Netlify CLI (v5) のセットアップ
 
-Netlify CLI (v5)のセットアップで、app router や next/image が動くようになります。サポートされているのは Next.js 13.5 以降、Node 18+。未満なら v4 を使うしかないので、これ以降の内容は役に立ちません。
+Netlify CLI (v5)のセットアップで、app router や next/image が動くようになります。サポートされているのは Next.js 13.5 以降、Node 18+。  
+※ 未満なら v4 を使うしかないので、これ以降の内容は役に立ちません。
 
 [Get started with Netlify CLI - Netlify Docs](https://docs.netlify.com/cli/get-started/)
 
-Netlyfy CLI とは
-> Netlify のコマンドライン インターフェース (CLI)を使用すると、コマンドラインから直接継続的デプロイメントを構成できます。Netlify CLI を使用すると、他のユーザーと共有できるローカル開発サーバーを実行したり、ローカル ビルドとプラグインを実行したり、サイトをデプロイしたりできます。
+:::details Netlyfy CLI とは
+Netlify のコマンドラインインターフェース (CLI) を使うと、コマンドラインから直接継続的デプロイメントを構成できます。Netlify CLI を使用すると、他のユーザーと共有できるローカル開発サーバーを実行したり、ローカル ビルドとプラグインを実行したり、サイトをデプロイしたりできます。
+:::
 
-Netlyfy CLI は、グローバルとローカル、いずれにもインストールできます。今回はローカル (プロジェクトルート) にインストールします。
+Netlyfy CLI は、グローバルとローカル(= プロジェクト)、いずれにもインストールできます。今回はローカルにインストールします。
 
 Netlify CLI のインストール (プロジェクトルートで)
 `npm install netlify-cli --save-dev`
@@ -83,13 +85,13 @@ Netlify CLI のインストール (プロジェクトルートで)
 → 以下のプロントが出るので答えていきます。
 
 プロンプト："What would you like to do?"
-　→ "Connect this directory to an existing Netlify site" を選択
+→ "Connect this directory to an existing Netlify site" を選択
 
 プロンプト："How do you want to link this folder to a site?"
-　→ "Use current git remote origin /" を選択し、リポジトリ選択
+→ "Use current git remote origin /" を選択し、リポジトリ選択
 
- "Directory Linked" と表示され、リンクされたらOK！
- プロジェクトを確認すると .netlify/state.json が生成され、`siteId` が設定されています。
+"Directory Linked" と表示され、リンクされたらOK！
+プロジェクトを確認すると .netlify/state.json が生成され、`siteId` が設定されているのが確認できます。
 
 ステータスの確認
 `netlify status`
@@ -109,6 +111,8 @@ Admin URL:    https://app.netlify.com/sites/****
 Site URL:     https://****.netlify.app
 Site Id:      ****-****-****
 ```
+
+### 再びデプロイ
 
 再度、Netlify でデプロイを行います。next/images の Image コンポーネントで設定した画像が表示されているのが確認できたらOKです。
 
@@ -186,4 +190,4 @@ Netlify 管理画面 Domain management > HTTPS で、"Verify DNS configuration" 
 
 ### おわりに
 
-Netlify でも app router や next/images が手間なく普通に使えるようになったのは大変ありがたいです。Vercel は Next.js を使う上では最高のサーバーですが、無料枠の制限が厳しめだったり、有料にしたときの料金体系が直感的にわかりづらいので、無料枠に優しく料金もわかりやすい Netlify は良い選択肢かも知れませんね。
+Vercel は Next.js を使う上ではこの上ないサーバーですが、無料枠の制限が厳しめだったり、有料にしたときの料金体系が直感的にわかりづらいです。無料枠に優しく料金もわかりやすい Netlify で、今は app router や next/images が手間なく普通に使えるようになったのは大変ありがたいです。
