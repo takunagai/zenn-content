@@ -20,6 +20,8 @@ YouTube MCPサーバーの導入方法と活用テクニックを紹介します
 6. [Figma MCP：デザインとコードを効率的に連携](./mcp-server-tutorial-06-figma)
 7. [Slack MCPサーバー：チームコミュニケーションを強化](./mcp-server-tutorial-07-slack)
 8. [Firecrawl MCP：スクレイピングでウェブ情報を取得・分析](./mcp-server-tutorial-08-firecrawl)
+9. [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
+10. [Raindrop.io MCP Server: 便利なブックマークサービスをAIから使う](./mcp-server-tutorial-10-raindropio)
 
 ---
 
