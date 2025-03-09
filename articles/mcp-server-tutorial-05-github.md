@@ -346,4 +346,4 @@ GitHub MCPサーバーを導入することで、AIとGitHubの連携が劇的�
 - [GitHub 個人アクセストークンの管理](https://github.com/settings/tokens)
 - [MCP初心者ガイド動画](https://www.youtube.com/watch?v=Y_kaQmhGmZk)
 
-次回の記事では、デザインとコードを効率的に連携させる「Figma MCP」について解説します。お楽しみに！
+次回の記事では、デザインとコードを効率的に連携させる「[Figma MCP](./mcp-server-tutorial-06-figma)」について解説します。お楽しみに！

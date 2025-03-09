@@ -216,4 +216,4 @@ Figma MCPを導入することで、デザインとコーディングの橋渡�
 - [AIエディタ：Windsurf公式ドキュメント](https://codeium.com/windsurf)
 - [AIエディタ：Cursor公式サイト](https://cursor.sh/)
 
-次回の記事では、チームコミュニケーションを強化する「Slack MCPサーバー」について解説します。お楽しみに！
+次回の記事では、Slackでの投稿や情報の取得ができる「[Slack MCPサーバー](./mcp-server-tutorial-07-slack)」について解説します。お楽しみに！

@@ -209,4 +209,4 @@ Filesystem MCP Serverの導入により、Claude や AIエディタなどの AI�
 - [Claude Desktop アプリ](https://claude.ai/desktop)
 - [@modelcontextprotocol/server-filesystem パッケージ](https://www.npmjs.com/package/@modelcontextprotocol/server-filesystem)
 
-次回の記事では、YouTubeの動画コンテンツをAIが理解できるようにする「YouTube MCPサーバー」について解説します。
+次回の記事では、YouTubeの動画字幕をAIとの会話で取得などできるようにする「[YouTube MCPサーバー](./mcp-server-tutorial-03-youtube)」について解説します。

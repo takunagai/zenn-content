@@ -253,7 +253,7 @@ Firecrawl MCPサーバーは、AIによるウェブ情報の取得・分析を�
 - [firecrawl-mcp GitHub リポジトリ](https://github.com/mendableai/firecrawl-mcp-server)
 - [Firecrawl API ドキュメント](https://docs.firecrawl.dev/)
 
-次回以降の記事でも、便利なMCPサーバーを紹介していきます。お楽しみに！
+次回の記事では、様々なファイルをMarkdown化できる「[Markdownify MCP Server](./mcp-server-tutorial-09-markdownfy)」について解説します。お楽しみに！
 
 ## 🙏 さいごにおねだり
 

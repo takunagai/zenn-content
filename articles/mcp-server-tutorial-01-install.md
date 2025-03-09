@@ -189,3 +189,5 @@ mcp-installer は、MCPサーバーの導入を劇的に簡単にするメタツ
 - [Anthropic MCP公式ドキュメント](https://docs.anthropic.com/ja/docs/agents-and-tools/mcp)
 - [anaisbetts/mcp-installer - GitHub](https://github.com/anaisbetts/mcp-installer)
 - [uv - GitHub](https://github.com/astral-sh/uv)
+
+次回の記事では、ローカルファイルをAIから扱えるようにできる超絶便利な「[Filesystem MCP Server](./mcp-server-tutorial-02-filesystem)」について解説します。お楽しみに！

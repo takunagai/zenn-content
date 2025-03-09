@@ -170,4 +170,4 @@ Filesystem MCP、YouTube MCPなど他のサーバーと組み合わせること�
 - [Pandoc 公式サイト](https://pandoc.org/)
 - [TeX Live 公式サイト](https://tug.org/texlive/)
 
-次回の記事では、GitHub MCPサーバーについて解説します。
+次回の記事では、GithubリポジトリをAIとの会話で操作できる「[GitHub MCPサーバー](./mcp-server-tutorial-05-github)について解説します。

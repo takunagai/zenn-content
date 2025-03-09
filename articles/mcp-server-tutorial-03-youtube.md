@@ -296,4 +296,4 @@ YouTube MCPサーバーを導入することで、膨大な動画コンテンツ
 - [MCP YouTube サーバー](https://github.com/anaisbetts/mcp-youtube)
 - [MCP初心者ガイド動画](https://www.youtube.com/watch?v=Y_kaQmhGmZk)
 
-次回の記事では、ドキュメント形式を変換する「mcp-pandoc」について解説します。お楽しみに！
+次回の記事では、MarkdownやWordなど様々な形式のドキュメント形式を変換できる「[mcp-pandoc](./mcp-server-tutorial-04-pandoc)」について解説します。お楽しみに！

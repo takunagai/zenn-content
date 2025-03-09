@@ -224,4 +224,4 @@ Slack MCPサーバーを導入することで、AIはチームのコミュニケ
 - [@modelcontextprotocol/server-slack](https://github.com/modelcontextprotocol/servers/tree/main/src/slack)
 - [Windsurf MCP入門ガイド動画](https://www.youtube.com/watch?v=Y_kaQmhGmZk)
 
-次回の記事では、ウェブ情報を効率的に取得・分析できる「Firecrawl MCP」について解説します。お楽しみに！
+次回の記事では、ウェブ情報をスクレイピングして分析できる「[Firecrawl MCP](./mcp-server-tutorial-08-firecrawl)」について解説します。お楽しみに！
