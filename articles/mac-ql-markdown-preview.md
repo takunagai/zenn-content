@@ -8,9 +8,11 @@ published: true
 
 ## 概要
 
+[sbarex/QLMarkdown - Github](https://github.com/sbarex/QLMarkdown)
+
 Mac の「プレビュー」機能（スペースキーでファイルを素早くプレビューする機能）で Markdown ファイルをパッとプレビュー表示できるようにする方法を紹介します。ドキュメント管理が快適になる小技です！
 
-![快適なプレビュー表示](/images/mac-ql-markdown-preview/01.png)
+![快適なMarkdownプレビュー表示](/images/mac-ql-markdown-preview/01.png)
 
 ## インストールと設定
 
