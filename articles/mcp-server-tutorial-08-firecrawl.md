@@ -19,9 +19,10 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
 5. [GitHub MCPサーバー： AIでリポジトリを管理](./mcp-server-tutorial-05-github)
 6. [Figma MCP：デザインとコードを効率的に連携](./mcp-server-tutorial-06-figma)
 7. [Slack MCPサーバー：チームコミュニケーションを強化](./mcp-server-tutorial-07-slack)
-8. 👉 [Firecrawl MCP：スクレイピングでウェブ情報を取得・分析](./mcp-server-tutorial-08-firecrawl)
-9. [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
+8. [Firecrawl MCP：スクレイピングでウェブ情報を取得・分析](./mcp-server-tutorial-08-firecrawl)
+9. 👉 [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
 10. [Raindrop.io MCP Server: 便利なブックマークサービスをAIから使う](./mcp-server-tutorial-10-raindropio)
+11. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
 
 ---
 
@@ -38,7 +39,9 @@ Firecrawl MCPサーバーを使えば、AIがウェブサイトの内容を詳�
 - **検索**: ウェブ上の情報をキーワードで検索
 - **情報抽出**: 特定の要素やパターンに基づく構造化データの抽出
 - **バッチ処理**: 複数URLの同時処理
-- **ディープリサーチ**: 複数の情報源を組み合わせた詳細な調査
+- **ディープリサーチ**: 複数の情報源からトピックに関する詳細な調査を実行
+
+> 📝 **ノート**: Fetch MCP、Firecrawl MCP、Markdownify MCPの比較と使い分けについては、[ウェブの情報を取得するMCPの使い分け](./mcp-server-tutorial-reference-web-mcp)を参照してください。
 
 さらに、以下のような高度な機能も備えています：
 

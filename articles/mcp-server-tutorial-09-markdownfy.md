@@ -22,6 +22,7 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
 8. [Firecrawl MCP：スクレイピングでウェブ情報を取得・分析](./mcp-server-tutorial-08-firecrawl)
 9. 👉 [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
 10. [Raindrop.io MCP Server: 便利なブックマークサービスをAIから使う](./mcp-server-tutorial-10-raindropio)
+11. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
 
 ---
 
@@ -36,6 +37,8 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
   - Bing 検索結果
   - 一般的な Webページ
 - 既存の Markdownファイルを取得
+
+> 📝 **ノート**: Fetch MCP、Firecrawl MCP、Markdownify MCPの比較と使い分けについては、[ウェブの情報を取得するMCPの使い分け](./mcp-server-tutorial-reference-web-mcp)を参照してください。
 
 ## 👨‍💻 Markdownify MCP Server プロンプトのサンプル
 
