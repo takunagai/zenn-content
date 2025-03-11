@@ -40,6 +40,8 @@ Firecrawl MCPサーバーを使えば、AIがウェブサイトの内容を詳�
 - **情報抽出**: 特定の要素やパターンに基づく構造化データの抽出
 - **バッチ処理**: 複数URLの同時処理
 - **ディープリサーチ**: 複数の情報源からトピックに関する詳細な調査を実行
+  ※ 真の Deep Research はまだ正式リリースはされていない (2025-03-11 現在)  
+  [Deep Research - Firecrawl](https://www.firecrawl.dev/deep-research)
 
 > 📝 **ノート**: Fetch MCP、Firecrawl MCP、Markdownify MCPの比較と使い分けについては、[ウェブの情報を取得するMCPの使い分け](./mcp-server-tutorial-reference-web-mcp)を参照してください。
 
