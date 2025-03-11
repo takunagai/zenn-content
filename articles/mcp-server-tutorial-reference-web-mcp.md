@@ -6,9 +6,9 @@ topics: ["mcp", "windsurf", "ai", "生成ai", "ai駆動開発"]
 published: true
 ---
 
-## 💡 MCPリファレンスシリーズについて
+## 💡 MCPの始め方シリーズについて
 
-このシリーズでは、MCP（Model Context Protocol）の各種サーバーの比較や使い分けについて解説します。本記事では、ウェブコンテンツの取得や処理に関連する3つのMCPサーバー（Fetch、Firecrawl、Markdownify）の特徴と使い分けについて詳しく解説します。
+Claude などの AI を強化する「MCP（Model Context Protocol）」の導入方法と活用テクニックのシリーズ。本記事では、ウェブコンテンツの取得や処理に関連する3つのMCPサーバー（Fetch、Firecrawl、Markdownify）の特徴と使い分けについて詳しく解説します。
 
 ### シリーズ目次
 
