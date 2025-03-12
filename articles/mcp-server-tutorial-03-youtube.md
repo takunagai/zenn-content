@@ -22,7 +22,9 @@ YouTube MCPサーバーの導入方法と活用テクニックを紹介します
 8. [Firecrawl MCP：スクレイピングでウェブ情報を取得・分析](./mcp-server-tutorial-08-firecrawl)
 9. [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
 10. [Raindrop.io MCP Server: 便利なブックマークサービスをAIから使う](./mcp-server-tutorial-10-raindropio)
-11. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
+11. [Fetch MCP Server: ウェブコンテンツを取得・処理](./mcp-server-tutorial-11-fetch)
+12. [Blender MCP Server: 会話で Blender を操作し3Dモデルを作成](./mcp-server-tutorial-12-blender)
+13. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
 
 ---
 
@@ -55,28 +57,28 @@ YouTube MCP を使うのは超カンタン。以下のようなプロンプト�
 
 #### 📌 シンプルな動画要約
 
-```
+```text
 要約して
 https://www.youtube.com/watch?v=oXq7trXF4aI
 ```
 
 #### 📌 翻訳付き要約
 
-```
+```text
 要約して。もし英語なら要約する前に日本語に翻訳して
 https://www.youtube.com/watch?v=oXq7trXF4aI
 ```
 
 #### 📌 主要ポイントの抽出
 
-```
+```text
 この動画の主要なポイントを5つにまとめて
 https://www.youtube.com/watch?v=oXq7trXF4aI
 ```
 
 #### 📌 情報の階層化
 
-```
+```text
 この動画について、以下の形式で情報を整理して
 1. 3行の概要
 2. 主要なポイント（箇条書き）
@@ -86,14 +88,14 @@ https://www.youtube.com/watch?v=xxxxx
 
 #### 📌 特定トピックの情報抽出
 
-```
+```text
 「Windsurf」のトピックに関する情報だけを抽出して
 https://www.youtube.com/watch?v=xxxxx
 ```
 
 #### 📌 複数動画の比較分析
 
-```
+```text
 以下の動画を比較して、共通点と相違点を教えて
 https://www.youtube.com/watch?v=oXq7trXF4aI
 https://www.youtube.com/watch?v=yyyyy
@@ -103,14 +105,14 @@ https://www.youtube.com/watch?v=yyyyy
 
 #### 📌 学習ノート作成
 
-```
+```text
 この講義動画の内容を学習ノートの形式でまとめて。重要な概念には太字を使い、例や応用方法も含めて
 https://www.youtube.com/watch?v=xxxxx
 ```
 
 #### 📌 練習問題生成
 
-```
+```text
 この動画の内容を基に、5つの練習問題と解答を作成して
 https://www.youtube.com/watch?v=xxxxx
 ```
@@ -119,14 +121,14 @@ https://www.youtube.com/watch?v=xxxxx
 
 #### 📌 会議内容の構造化
 
-```
+```text
 この会議動画から、決定事項、アクションアイテム、締め切り日をリストアップして
 https://www.youtube.com/watch?v=xxxxx
 ```
 
 #### 📌 製品情報の整理
 
-```
+```text
 この製品発表の動画から、新機能、価格、発売日、競合製品との比較点を表形式でまとめて
 https://www.youtube.com/watch?v=xxxxx
 ```
@@ -135,14 +137,14 @@ https://www.youtube.com/watch?v=xxxxx
 
 #### 📌 スクリプトから記事作成
 
-```
+```text
 この動画のスクリプトを抽出し、話し言葉を書き言葉に変換して読みやすい記事形式にして
 https://www.youtube.com/watch?v=xxxxx
 ```
 
 #### 📌 視聴者関心分析
 
-```
+```text
 この動画の内容を分析して、視聴者が最も関心を持ちそうな3つのトピックと、それぞれについての詳細な解説を提供して
 https://www.youtube.com/watch?v=xxxxx
 ```
@@ -151,14 +153,14 @@ https://www.youtube.com/watch?v=xxxxx
 
 #### 📌 専門用語付き翻訳要約
 
-```
+```text
 この英語の講演動画を、重要ポイントを逃さずに日本語で要約し、専門用語には英語の原語も括弧内に記載して
 https://www.youtube.com/watch?v=xxxxx
 ```
 
 #### 📌 初心者向け解説
 
-```
+```text
 この動画の内容を初心者にもわかりやすく説明して。専門用語があれば、簡単な言葉で解説も加えて
 https://www.youtube.com/watch?v=xxxxx
 ```
@@ -167,13 +169,13 @@ https://www.youtube.com/watch?v=xxxxx
 
 #### 📌 複数動画の比較レポート
 
-```
+```text
 以下の2つの動画を比較して、共通点と相違点を教えて
 https://www.youtube.com/watch?v=xxxxx
 https://www.youtube.com/watch?v=yyyyy
 ```
 
-```
+```text
 これら3つの動画から、共通するテーマと各動画独自の視点を比較した分析レポートを作成して
 https://www.youtube.com/watch?v=xxxxx
 https://www.youtube.com/watch?v=yyyyy
@@ -182,7 +184,7 @@ https://www.youtube.com/watch?v=zzzzz
 
 #### 📌 対立意見の客観分析
 
-```
+```text
 この2つの対立する意見の動画を分析し、両者の主張、根拠、論理的な強み・弱みを客観的に評価して
 https://www.youtube.com/watch?v=xxxxx
 https://www.youtube.com/watch?v=yyyyy
@@ -192,14 +194,14 @@ https://www.youtube.com/watch?v=yyyyy
 
 #### 📌 レシピ抽出
 
-```
+```text
 この料理レシピ動画から、材料リスト、調理手順、調理時間、難易度を抽出して整理して
 https://www.youtube.com/watch?v=xxxxx
 ```
 
 #### 📌 技術チュートリアルの手順書作成
 
-```
+```text
 この技術チュートリアル動画から、ステップバイステップの手順書を作成して。各ステップにはコマンドやコードも含めて
 https://www.youtube.com/watch?v=xxxxx
 ```
@@ -270,7 +272,7 @@ Claude Desktop の設定ファイル（`~/Library/Application Support/Claude/cla
 
 [Filesystem MCP](./mcp-server-tutorial-02-filesystem.md)と組み合わせると、動画の内容をローカルファイルに直接保存できます。
 
-```
+```text
 この動画を要約し、ドキュメントフォルダ/video-summary.md に保存してください：
 https://www.youtube.com/watch?v=xxxxx
 ```

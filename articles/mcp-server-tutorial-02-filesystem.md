@@ -20,7 +20,9 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
 8. [Firecrawl MCP：スクレイピングでウェブ情報を取得・分析](./mcp-server-tutorial-08-firecrawl)
 9. [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
 10. [Raindrop.io MCP Server: 便利なブックマークサービスをAIから使う](./mcp-server-tutorial-10-raindropio)
-11. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
+11. [Fetch MCP Server: ウェブコンテンツを取得・処理](./mcp-server-tutorial-11-fetch)
+12. [Blender MCP Server: 会話で Blender を操作し3Dモデルを作成](./mcp-server-tutorial-12-blender)
+13. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
 
 ---
 
@@ -113,7 +115,7 @@ Claude Desktop（または設定したエディタ）を終了し、再起動し
 やり方は、カスタムインストラクションに対応表を追加するだけ。
 Claude Desktop なら、右下のアカウントメニューから、Settings > Profile に移動し、"What personal preferences should Claude consider in responses?" に以下を追加します(※設定前に、下の"気をつけること"を必ず参照してください)。
 
-```
+```text
 ローカルのフォルダは以下とします。
 - 指定がない場合:  '~/AI-Workspace'
 - プロジェクトフォルダ: '~/Projects'
@@ -125,7 +127,7 @@ Claude Desktop なら、右下のアカウントメニューから、Settings > 
 
 デフォルトの作業用フォルダ(上の設定例では `AI-Workspace`)を指定しておくことで、AIで生成した情報をとりあえずローカルに保存したい場合に、簡単な指示で作業用フォルダに保存でき便利です。
 
-```
+```text
 AIで生成した情報をローカルに保存して
 ```
 
@@ -142,11 +144,11 @@ AIで生成した情報をローカルに保存して
 
 ブログ記事の作成支援(今回のシリーズはこれを使用):
 
-```
+```text
 ドキュメントフォルダ/AI/MCP にある "MCPサーバー 01" 〜 "MCPサーバー 07" の記事の内容や構成を確認して把握して
 ```
 
-```
+```text
 ここからあなたは技術ブログが得意なコピーライターです。
 "MCPサーバー 01" 〜 "MCPサーバー 07" の全記事を以下の条件に従って統一感のあるものにリライトして。別の場所にバックアップは取ってあるので、編集内容を上書きしてください。
 
@@ -158,7 +160,7 @@ AIで生成した情報をローカルに保存して
 
 データ分析レポート自動作成:
 
-```
+```text
 /Users/yourname/Projects/sales-data/ フォルダのCSVファイルを分析して、
 売上傾向を調査し、グラフ入りのレポートを作成して
 /Users/yourname/Documents/reports/sales-report.md に保存してください。
@@ -170,7 +172,7 @@ AIで生成した情報をローカルに保存して
 
 コードリファクタリング支援:
 
-```
+```text
 /Users/yourname/Projects/my-app/src/ のJavaScriptファイルを解析して、
 重複コードやパフォーマンス問題を見つけ、修正案を示してください。
 修正後のコードは optimized/ フォルダに保存してください。
@@ -178,7 +180,7 @@ AIで生成した情報をローカルに保存して
 
 プロジェクト初期化の自動化:
 
-```
+```text
 新しいReactプロジェクトのセットアップを手伝ってください：
 1. /Users/yourname/Projects/new-react-app/ ディレクトリを作成
 2. package.jsonを作成し、必要な依存関係を定義

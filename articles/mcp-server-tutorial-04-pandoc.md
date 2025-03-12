@@ -22,7 +22,9 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
 8. [Firecrawl MCP：スクレイピングでウェブ情報を取得・分析](./mcp-server-tutorial-08-firecrawl)
 9. [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
 10. [Raindrop.io MCP Server: 便利なブックマークサービスをAIから使う](./mcp-server-tutorial-10-raindropio)
-11. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
+11. [Fetch MCP Server: ウェブコンテンツを取得・処理](./mcp-server-tutorial-11-fetch)
+12. [Blender MCP Server: 会話で Blender を操作し3Dモデルを作成](./mcp-server-tutorial-12-blender)
+13. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
 
 ---
 
@@ -49,47 +51,47 @@ mcp-pandoc は直感的に使えます。以下のようなプロンプトで文
 
 ### 1. マークダウンからWord文書を作成しデスクトップに保存
 
-```
+```text
 これを docx に変換して、デスクトップフォルダにファイル名 "SampleDoc" で保存して。
 ```
 
 ### 2. マークダウンからHTMLを作成しデスクトップに保存
 
-```
+```text
 html 形式に変換し、見やすいレイアウトとデザインにして、デスクトップフォルダに sample.html として保存して
 ```
 
-```
+```text
 この Markdown形式の技術解説を、シンタックスハイライトとレスポンシブデザインを適用したHTMLに変換して、~/Projects/docs/technical-guide.html として保存して
 ```
 
 ### 3. マークダウンからPDFを作成し、元ファイルと同じ場所に保存
 
-```
+```text
 PDF に変換して、元ファイルと同じ場所に保存して
 ```
 
 ### 4. マークダウンからビジネス文書を作成
 
-```
+```text
 この会議メモをプロフェッショナルなWord文書に変換して、目次と見出しを適切に設定し、~/Documents/Business/meeting-report.docx として保存してください。
 ```
 
 ### 5. 電子書籍の作成
 
-```
+```text
 この小説をePub形式に変換し、表紙画像を追加して、章ごとに適切に区切ってください。~/Documents/Books/my-novel.epub に保存してください。
 ```
 
 ### 6. 既存文書ファイルの変換
 
-```
+```text
 /Users/yourname/Documents/report.md ファイルを読み込んで、Word形式に変換し、同じフォルダに report.docx として保存してください。
 ```
 
 ### 7. YouTube MCPサーバーとの組み合わせ
 
-```
+```text
 1. このYouTube講義の内容を要約してください：https://www.youtube.com/watch?v=xxxxx
 2. 要約をマークダウン形式でまとめてください
 3. それをHTML形式に変換して、目次とセクション分けを追加し、~/Documents/lectures/summary.html として保存してください
@@ -131,7 +133,7 @@ brew install texlive
 
 前回または[シリーズ記事#0](./MCPサーバー%2000%20簡単に導入する手順%20\(mcp-installer\).md)で mcp-installer をセットアップ済みであれば、Claude に以下のように指示するだけでインストールできます。
 
-```
+```text
 MCPサーバー mcp-pandoc をインストールして
 ```
 

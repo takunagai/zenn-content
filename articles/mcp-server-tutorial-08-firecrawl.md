@@ -19,10 +19,12 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
 5. [GitHub MCPサーバー： AIでリポジトリを管理](./mcp-server-tutorial-05-github)
 6. [Figma MCP：デザインとコードを効率的に連携](./mcp-server-tutorial-06-figma)
 7. [Slack MCPサーバー：チームコミュニケーションを強化](./mcp-server-tutorial-07-slack)
-8. [Firecrawl MCP：スクレイピングでウェブ情報を取得・分析](./mcp-server-tutorial-08-firecrawl)
-9. 👉 [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
+8. 👉 [Firecrawl MCP：スクレイピングでウェブ情報を取得・分析](./mcp-server-tutorial-08-firecrawl)
+9. [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
 10. [Raindrop.io MCP Server: 便利なブックマークサービスをAIから使う](./mcp-server-tutorial-10-raindropio)
-11. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
+11. [Fetch MCP Server: ウェブコンテンツを取得・処理](./mcp-server-tutorial-11-fetch)
+12. [Blender MCP Server: 会話で Blender を操作し3Dモデルを作成](./mcp-server-tutorial-12-blender)
+13. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
 
 ---
 
@@ -137,27 +139,27 @@ Firecrawl MCPサーバーの導入は以下のステップで行います。
 
 ### 指定したURLのウェブサイトをスクレイピングし内容を分析
 
-```
+```text
 このウェブサイトの情報を取得して分析して
 https://example.com
 ```
 
 ### 複数ページのクロール
 
-```
+```text
 https://example.com
 このウェブサイトを深さ2レベルまでクロールして、主要なコンテンツと構造を分析して
 ```
 
 ### キーワード検索 (関連情報を収集して要約)
 
-```
+```text
 「クラウドネイティブアプリケーション開発」について最新の情報を検索して、主要なトレンドと技術をまとめて
 ```
 
 ### 構造化データの抽出し表形式でまとめる
 
-```
+```text
 このECサイトから、製品名、価格、説明を抽出して表形式でまとめて
 https://example-shop.com/products
 ```
@@ -166,7 +168,7 @@ https://example-shop.com/products
 
 ### 1. 競合サイトを分析し、比較レポートを作成
 
-```
+```text
 https://competitor1.com
 https://competitor2.com
 https://competitor3.com
@@ -180,7 +182,7 @@ https://competitor3.com
 
 ### 2. クロールし、指定した要素を抽出 (スクレイピング)
 
-```
+```text
 ウェブサイト https://example.com をクロールして、以下の情報を収集して：
 - クロール深度: 2レベル
 - サブドメインは含めない
@@ -195,14 +197,14 @@ https://competitor3.com
 
 ### 3. ディープリサーチ (複数の情報源を組み合わせての詳細な調査)
 
-```
+```text
 「量子コンピューティングの最新応用例」についてディープリサーチを実行してください。
 科学論文のプレプリントサーバー、研究機関のウェブサイト、技術ブログなど幅広い情報源から情報を集めてください。
 ```
 
 ### 4. 特定のタグやセクションを抽出し整理
 
-```
+```text
 https://example.com/blog のすべての記事から、<code>タグで囲まれたコード例だけを抽出し、言語別に分類してください
 ```
 
@@ -210,7 +212,7 @@ https://example.com/blog のすべての記事から、<code>タグで囲まれ�
 
 ### コンテンツを取得し、ローカルファイルとして保存 (Firecrawl MCP + Filesystem MCP)
 
-```
+```text
 1. https://documentation.example.com サイトから全てのチュートリアルページを取得して
 2. 各チュートリアルの内容をMarkdown形式に変換して
 3. /Users/username/Documents/tutorials/ フォルダに保存して
@@ -218,7 +220,7 @@ https://example.com/blog のすべての記事から、<code>タグで囲まれ�
 
 ### ウェブ上の情報を分析し、結果をGitHubリポジトリに保存 (Firecrawl MCP + GitHub MCP)
 
-```
+```text
 1. 「Rust WebAssembly チュートリアル」をテーマにウェブ検索を実行し、最も良質な情報を集めて
 2. 集めた情報を元に、初心者向けのチュートリアルMarkdownファイルを作成して
 3. GitHub上の「my-tutorials」リポジトリに「rust-wasm-guide.md」として保存して
@@ -226,7 +228,7 @@ https://example.com/blog のすべての記事から、<code>タグで囲まれ�
 
 ### 検索した YouTube動画の内容を分析し加工 (Firecrawl MCP + YouTube MCP)
 
-```
+```text
 1. 「機械学習 初心者」をテーマにした最新のYouTubeチュートリアルを探して
 2. 各動画の内容を要約して
 3. 最も分かりやすいチュートリアルランキングを作成して
@@ -263,3 +265,22 @@ Firecrawl MCPサーバーは、AIによるウェブ情報の取得・分析を�
 ## 🙏 さいごにおねだり
 
 この記事が役に立ったと思ったら、🔥 [このリンク](https://www.firecrawl.dev/referral?rid=W385F95R)から Firecrawl に登録してください。登録する方にも10万トークン + 1,000クレジットが無料で付与されます。
+
+```json
+{
+  "mcpServers": {
+    "firecrawl-mcp": {
+      "command": "npx",
+      "args": ["-y", "firecrawl-mcp"],
+      "env": {
+        "FIRECRAWL_API_KEY": "YOUR_API_KEY_HERE",
+        "FIRECRAWL_RETRY_MAX_ATTEMPTS": "5",
+        "FIRECRAWL_RETRY_INITIAL_DELAY": "2000",
+        "FIRECRAWL_RETRY_MAX_DELAY": "30000",
+        "FIRECRAWL_RETRY_BACKOFF_FACTOR": "3",
+        "FIRECRAWL_CREDIT_WARNING_THRESHOLD": "2000",
+        "FIRECRAWL_CREDIT_CRITICAL_THRESHOLD": "500"
+      }
+    }
+  }
+}

@@ -20,7 +20,9 @@ published: true
 8. [Firecrawl MCP：スクレイピングでウェブ情報を取得・分析](./mcp-server-tutorial-08-firecrawl)
 9. [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
 10. [Raindrop.io MCP Server: 便利なブックマークサービスをAIから使う](./mcp-server-tutorial-10-raindropio)
-11. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
+11. [Fetch MCP Server: ウェブコンテンツを取得・処理](./mcp-server-tutorial-11-fetch)
+12. [Blender MCP Server: 会話で Blender を操作し3Dモデルを作成](./mcp-server-tutorial-12-blender)
+13. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
 
 ---
 
@@ -78,29 +80,29 @@ Claude Desktop など MCP が使えるサービスのチャットで `○○を�
 
 mcp-installer をセットアップすると、以下のようなプロンプトでMCPサーバーをインストールできます
 
-```
+```bash
 MCPサーバー mcp-pandoc をインストールして
 ```
 
 引数が必要な場合：
 
-```
+```bash
 MCPサーバー @modelcontextprotocol/server-filesystem をインストールして。引数には['/users/username/desktop']を使用します
 ```
 
-```
+```bash
 MCPサーバー @modelcontextprotocol/server-filesystem をインストールして。引数には['/Users/username/Documents', '/Users/username/Projects', '--read-only', '/Users/username/Reference']を使用します
 ```
 
 APIキーやアクセストークンが必要な場合：
 
-```
+```bash
 MCPサーバー @modelcontextprotocol/server-github をインストールして。環境変数 GITHUB_PERSONAL_ACCESS_TOKEN は後で手動で設定するのでダミー値を入力して
 ```
 
 ローカルのものをインストールする場合：
 
-```
+```bash
 MCPサーバーで /users/username/code/mcp-youtube をインストールして
 ```
 

@@ -22,7 +22,9 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
 8. [Firecrawl MCP：スクレイピングでウェブ情報を取得・分析](./mcp-server-tutorial-08-firecrawl)
 9. [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
 10. [Raindrop.io MCP Server: 便利なブックマークサービスをAIから使う](./mcp-server-tutorial-10-raindropio)
-11. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
+11. [Fetch MCP Server: ウェブコンテンツを取得・処理](./mcp-server-tutorial-11-fetch)
+12. [Blender MCP Server: 会話で Blender を操作し3Dモデルを作成](./mcp-server-tutorial-12-blender)
+13. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
 
 ---
 
@@ -100,7 +102,7 @@ Figma MCPサーバーの基本的な使い方を紹介します。
 
 ### Figma ファイルの接続
 
-```
+```text
 Figma MCPサーバーに繋いで https://www.figma.com/file/xxxxXXXXxxxxXXXX/ProjectName
 ```
 
@@ -108,7 +110,7 @@ AIがFigmaファイルに接続し、デザインデータにアクセスでき�
 
 ### デザイン要素の取得
 
-```
+```text
 このFigmaファイルのメインボタンのスタイル情報を教えて
 ```
 
@@ -116,7 +118,7 @@ AIはボタンの色、サイズ、フォント、角丸などの正確な情報
 
 ### コード生成
 
-```
+```text
 このボタンをReactコンポーネントとして実装して
 ```
 
@@ -124,7 +126,7 @@ AIは取得したデザイン情報を元に、対応するReactコンポーネ�
 
 ### レスポンシブ対応
 
-```
+```text
 このコンポーネントをモバイル対応にするには？
 ```
 
@@ -144,13 +146,13 @@ AIはデザインのブレークポイントを分析し、レスポンシブ対
 
 ### AIエディタでの活用例
 
-```
+```text
 Figma MCPでファイルの node-id=123-456 のコンポーネント情報を取得して
 ```
 
 または
 
-```
+```text
 Figma MCPでこのURL（https://www.figma.com/file/...?node-id=789-012）の「Hero」セクションの実装コードを生成して
 ```
 
@@ -160,42 +162,42 @@ Figma MCPをより実践的に活用する方法をいくつか紹介します�
 
 ### 1. デザインシステムを分析し、変数として整理
 
-```
+```text
 Figmaコンポーネントライブラリからカラー、タイポグラフィ、スペーシングなどのデザイントークンを抽出し、CSS変数として出力して
 ```
 
 ### 2. デザイン仕様をローカルファイルとして保存 (Figma MCP + Filesystem MCP)
 
-```
+```text
 1. Figmaファイル（https://www.figma.com/file/xxxxx）のデザイントークンを分析して
 2. カラー、タイポグラフィ、スペーシングの情報をCSS変数として /Users/yourname/Projects/design-system/tokens.css ファイルに保存して
 ```
 
 ### 3. バリエーションやバリアントを含むコンポーネントを生成
 
-```
+```text
 このボタンの4つの状態（通常、ホバー、アクティブ、無効）を含む Reactコンポーネントセットを生成して
 ```
 
-```
+```text
 このボタンコンポーネントを分析して、class-variance-authority（CVA）を使用したバリアント（サイズ: sm, md, lg、バリエーション: primary, secondary, outline, ghost）を持つ Tailwind CSS のボタンコンポーネントを実装して
 ```
 
 ### 4. Figmaのプロトタイプ情報を元に、アニメーションの実装コードを提案
 
-```
+```text
 このモーダルのトランジションアニメーションを Framer Motion で実装するには？
 ```
 
 ### 5. デザイン仕様書の自動生成
 
-```
+```text
 このヘッダーコンポーネントの詳細な仕様書（サイズ、色、間隔、フォントなど）をMarkdownで作成して
 ```
 
 ### 6. デザインの一貫性チェック
 
-```
+```text
 このデザインのカラーパレットとタイポグラフィの使用を分析し、デザインシステムから外れている部分があれば指摘して
 ```
 

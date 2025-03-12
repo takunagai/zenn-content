@@ -22,7 +22,9 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
 8. [Firecrawl MCP：スクレイピングでウェブ情報を取得・分析](./mcp-server-tutorial-08-firecrawl)
 9. [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
 10. [Raindrop.io MCP Server: 便利なブックマークサービスをAIから使う](./mcp-server-tutorial-10-raindropio)
-11. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
+11. [Fetch MCP Server: ウェブコンテンツを取得・処理](./mcp-server-tutorial-11-fetch)
+12. [Blender MCP Server: 会話で Blender を操作し3Dモデルを作成](./mcp-server-tutorial-12-blender)
+13. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
 
 ---
 
@@ -89,7 +91,7 @@ SlackチームのチームID（Team ID）も必要です：
 
 [シリーズ記事#0](./MCPサーバー%2000%20簡単に導入する手順%20\(mcp-installer\).md)でmcp-installerをセットアップ済みであれば、Claude に以下のように指示できます。※セキュリティ的に、チャットでのAPIキーなどの直接入力は絶対に避けてください。
 
-```
+```bash
 MCPサーバー @modelcontextprotocol/server-slack をインストールして。環境変数 SLACK_BOT_TOKEN は 'your-bot-token-here' で、SLACK_TEAM_ID は 'T0XXXXXXX' で設定します
 ```
 
@@ -127,25 +129,25 @@ Claude Desktopの設定ファイル（`~/Library/Application Support/Claude/clau
 
 ### 指定したチャンネルの最新メッセージを読み取り、要約
 
-```
+```bash
 #general チャンネルの最近の会話を要約して
 ```
 
 ### 該当するキーワードを含むメッセージスレッドを見つけ、内容を要約
 
-```
+```bash
 #project-alpha チャンネルで「リリース計画」に関する議論を見つけて要約して
 ```
 
 ### メッセージを作成して、指定したチャンネルに投稿
 
-```
+```bash
 #announcements チャンネルに、明日の全体ミーティングの案内を丁寧な口調で投稿して
 ```
 
 ### 新しいチャンネルを作成し、初期メッセージを投稿
 
-```
+```bash
 新しいプロジェクト「Beta」用のチャンネル #project-beta を作成し、初回メッセージとしてプロジェクト概要を投稿してください
 ```
 
@@ -153,31 +155,31 @@ Claude Desktopの設定ファイル（`~/Library/Application Support/Claude/clau
 
 ### 1. 会議の内容を要約して、重要ポイントをまとめて別チャンネルに共有
 
-```
+```bash
 昨日の #team-meetings チャンネルでの製品企画会議の内容を要約し、決定事項と次のアクションアイテムをリスト化して #product-dev チャンネルに共有して
 ```
 
 ### 2. チャンネル履歴から特定トピックに関する重要情報を抽出
 
-```
+```bash
 過去6ヶ月間の #engineering チャンネルから、システムアーキテクチャに関する重要な議論と決定事項を抽出して
 ```
 
 ### 3. 新入社員のオンボーディング支援
 
-```
+```bash
 新入社員向けに、#general チャンネルと #random チャンネルの雰囲気やよく話題になるトピック、チームカルチャーについて分析して
 ```
 
 ### 4. コミュニケーションパターンを分析し、改善点を提案
 
-```
+```bash
 #project-gamma チャンネルでの議論の傾向を分析し、意思決定プロセスを効率化するための提案をして
 ```
 
 ### 5. 異なるチーム間での情報共有の補助
 
-```
+```bash
 #marketing チャンネルで議論されている新機能のプロモーション計画を要約し、#development チャンネルにわかりやすく共有して
 ```
 
@@ -187,19 +189,19 @@ Slack MCPサーバーは他のMCPサーバーと組み合わせることでさ�
 
 ### チャンネルの内容を分析してファイルに保存 (Slack MCP + Filesystem MCP)
 
-```
+```bash
 #project-docs チャンネルで共有された最新の仕様書の内容を分析し、その要点を ~/Documents/Projects/summary.md ファイルに保存してください
 ```
 
 ### チャンネルの議論内容を元に GitHubイシューを立てる (Slack MCP + GitHub MCP)
 
-```
+```bash
 #dev-team チャンネルで議論されたバグ修正の内容をもとに、GitHubリポジトリ「our-app」にIssueを作成してください
 ```
 
 ### チャンネルで共有されたYouTube動画の要約 (Slack MCP + YouTube MCP)
 
-```
+```bash
 #learning-resources チャンネルで共有されたYouTubeチュートリアルのリンクを見つけて、その内容を要約してください
 ```
 

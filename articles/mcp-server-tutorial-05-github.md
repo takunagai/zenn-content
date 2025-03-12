@@ -22,7 +22,9 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
 8. [Firecrawl MCP：スクレイピングでウェブ情報を取得・分析](./mcp-server-tutorial-08-firecrawl)
 9. [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
 10. [Raindrop.io MCP Server: 便利なブックマークサービスをAIから使う](./mcp-server-tutorial-10-raindropio)
-11. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
+11. [Fetch MCP Server: ウェブコンテンツを取得・処理](./mcp-server-tutorial-11-fetch)
+12. [Blender MCP Server: 会話で Blender を操作し3Dモデルを作成](./mcp-server-tutorial-12-blender)
+13. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
 
 ---
 
@@ -95,7 +97,7 @@ GitHub MCPサーバーをセットアップするには、以下の2つのステ
 
 前回または[シリーズ記事#0](./MCPサーバー%2000%20簡単に導入する手順%20\(mcp-installer\).md)でmcp-installerをセットアップ済みであれば、Claudeに以下のように指示できます：
 
-```
+```bash
 MCPサーバー @modelcontextprotocol/server-github をインストールして。環境変数 GITHUB_PERSONAL_ACCESS_TOKEN は 'your_token_here' で設定します
 ```
 
@@ -121,51 +123,51 @@ GitHub MCPサーバーの使い方を紹介します。
 
 #### 1-1. リポジトリの作成 (名前や説明、公開設定なども指定可)
 
-```
+```text
 Github でリポジトリ "test-repo" を新規作成して
 ```
 
-```
+```text
 「my-portfolio」という名前の新しいリポジトリを作成して。説明は「個人ポートフォリオサイト」、プライベートリポジトリで、READMEファイルも初期化してください
 ```
 
 #### 1-2. README.md ファイルの作成・編集
 
-```
+```text
 そのリポジトリに README.md を新規作成して。内容は、Webアプリケーションのテンプレートを説明する基本的な内容でOKです。
 ```
 
-```
+```text
 README.mdに、プロジェクトの特徴、インストール手順、使用例のセクションを追加してください
 ```
 
 #### 1-3. ブランチの作成と管理
 
-```
+```text
 dev ブランチを作成して
 ```
 
-```
+```text
 「feature/user-authentication」というブランチを main から作成して
 ```
 
 #### 1-4. ファイルの追加とコミット
 
-```
+```text
 index.html を作成し、シンプルなHTMLテンプレートを記述して。その後、コミットして
 ```
 
-```
+```text
 src/components/Login.js ファイルを作成し、Reactのログインコンポーネントを実装して。コミットメッセージは「ログインフォームコンポーネントの追加」としてください
 ```
 
 #### 1-5. プルリクエストの作成と管理
 
-```
+```text
 「feature/user-authentication」ブランチから「main」ブランチへのプルリクエストを作成してください。タイトルは「ユーザー認証機能の実装」、説明には実装した機能の概要とテスト方法を含めてください
 ```
 
-```
+```text
 プルリクエスト #5 にコメントを追加して：「CIテストが通過したので、レビューをお願いします」
 ```
 
@@ -173,31 +175,31 @@ src/components/Login.js ファイルを作成し、Reactのログインコンポ
 
 #### 2-1. リポジトリの検索と取得
 
-```
+```text
 キーワード "javascript tutorial" で、スターが5000以上のリポジトリを検索して
 ```
 
-```
+```text
 「react state management」に関する、最近更新された人気のリポジトリを5つ探して、それぞれの特徴を簡潔に説明してください
 ```
 
 #### 2-2. コードの検索と分析
 
-```
+```text
 GitHubで「react custom hooks」というキーワードで検索し、よく使われているカスタムフックの実装パターンを3つ見つけて説明してください
 ```
 
-```
+```text
 リポジトリ「myusername/my-project」内で、セキュリティの脆弱性が疑われるコードパターンを検索して報告してください
 ```
 
 #### 2-3. イシューの検索と分析
 
-```
+```text
 「react performance」に関するイシューを人気のリポジトリから検索し、よく議論されている最適化テクニックをまとめてください
 ```
 
-```
+```text
 リポジトリ「facebook/react」で、最近クローズされた重要なバグ修正のイシューを5つ見つけて、それぞれどのような問題が解決されたのか説明してください
 ```
 
@@ -205,51 +207,51 @@ GitHubで「react custom hooks」というキーワードで検索し、よく�
 
 #### 3-1. リポジトリを分析しコードレビュー
 
-```
+```text
 私のリポジトリ「myusername/my-project」のコードをレビューして、改善点を指摘してください。特にパフォーマンスとセキュリティの観点から見てください。
 ```
 
-```
+```text
 リポジトリ「myusername/e-commerce-app」のフロントエンドコードを分析し、アクセシビリティの観点から改善すべき点を具体的に指摘してください
 ```
 
 #### 3-2. ブランチの差分を分析し、プルリクエストを作成
 
-```
+```text
 「feature-login」ブランチの変更内容を分析して、mainブランチへのマージのためのPull Requestを作成してください。PR内容には実装した機能の概要と、テスト方法を含めてください。
 ```
 
-```
+```text
 「bugfix/payment-processing」ブランチと「main」ブランチの差分を分析し、どのような問題が修正されたのか詳細に説明してください
 ```
 
 #### 3-3. イシュー管理の効率化
 
-```
+```text
 リポジトリ「myusername/my-project」の未解決Issueをリストアップして、優先度ごとに分類してください。また、比較的簡単に解決できそうなIssueを3つピックアップしてください。
 ```
 
-```
+```text
 このバグについて新しいイシューを作成してください：「ログイン後にユーザープロフィールが正しく表示されない。特にFirefoxブラウザで再現する問題です。」タグには「bug」「frontend」「priority-high」を付けてください
 ```
 
 #### 3-4. プロジェクト初期化の自動化
 
-```
+```text
 React+TypeScriptのプロジェクトテンプレートを新しいリポジトリ「my-new-app」に作成してください。ESLint、Prettier、Jestのセットアップも含めてください。
 ```
 
-```
+```text
 「next-blog-starter」という名前の新しいリポジトリを作成し、Next.js、Tailwind CSS、Contentfulを使ったブログサイトの基本構造をセットアップしてください
 ```
 
 #### 3-5. ドキュメント生成と管理
 
-```
+```text
 リポジトリ「myusername/my-library」のコードから、APIドキュメントを生成して、docs/フォルダに保存してください。各関数の使用例も追加してください。
 ```
 
-```
+```text
 リポジトリ「myusername/cli-tool」のコマンドラインインターフェースの使い方を説明するマークダウン形式のドキュメントを作成し、examples.mdとして保存してください。主要なコマンドとオプションの使用例を含めてください
 ```
 
@@ -257,19 +259,19 @@ React+TypeScriptのプロジェクトテンプレートを新しいリポジト�
 
 #### 4-1. コントリビューターガイドラインの作成
 
-```
+```text
 オープンソースプロジェクト「myusername/community-app」用のCONTRIBUTING.mdファイルを作成してください。コードスタイル、プルリクエストのプロセス、イシューの報告方法を詳しく説明してください
 ```
 
 #### 4-2. リリースノートの生成
 
-```
+```text
 リポジトリ「myusername/my-app」の最新バージョンv2.0.0のリリースノートを作成してください。前回のリリースv1.5.0からの主要な変更点、新機能、バグ修正を含めてください
 ```
 
 #### 4-3. プロジェクト管理の効率化
 
-```
+```text
 リポジトリ「myusername/team-project」のマイルストーンを作成してください。「Q2 Release」という名前で、説明には「第2四半期のリリース目標機能」とし、期限は2025年6月30日に設定してください
 ```
 
@@ -277,25 +279,25 @@ React+TypeScriptのプロジェクトテンプレートを新しいリポジト�
 
 #### 5-1. コードの移行と変換
 
-```
+```text
 リポジトリ「myusername/javascript-app」のコードをTypeScriptに移行するための計画を立ててください。移行の手順、必要な変更点、推奨ツールを詳細に説明してください
 ```
 
 #### 5-2. セキュリティ監査
 
-```
+```text
 リポジトリ「myusername/e-commerce-api」のセキュリティ監査を行い、潜在的な脆弱性、ベストプラクティスからの逸脱、改善すべき点を詳細にレポートしてください
 ```
 
 #### 5-3. パフォーマンス最適化
 
-```
+```text
 リポジトリ「myusername/web-app」のフロントエンドコードを分析し、パフォーマンスを最適化するための具体的な提案をしてください。特にレンダリングパフォーマンスとバンドルサイズに注目してください
 ```
 
 #### 5-4. 複数リポジトリの統合分析
 
-```
+```text
 私の「myusername/backend-api」と「myusername/frontend-client」リポジトリを分析し、APIインターフェースの一貫性と統合ポイントをチェックしてください。不整合がある場合は指摘してください
 ```
 
@@ -318,7 +320,7 @@ React+TypeScriptのプロジェクトテンプレートを新しいリポジト�
 
 ローカルのコードを分析し、GitHubにプッシュするといった連携が可能です：
 
-```
+```text
 1. /Users/yourname/Projects/my-app/ のコードを分析して、改善点を提案してください。
 2. 改善したコードをGitHubリポジトリ「myusername/my-app」にプッシュしてください。
 ```
@@ -327,7 +329,7 @@ React+TypeScriptのプロジェクトテンプレートを新しいリポジト�
 
 YouTube チュートリアル動画の内容を GitHubリポジトリに実装。
 
-```
+```text
 1. このYouTubeチュートリアル（https://www.youtube.com/watch?v=xxxxx）の内容を分析してください。
 2. チュートリアルで説明されている機能を実装したコードを新しい GitHubリポジトリに作成してください。
 ```
