@@ -232,7 +232,7 @@ MCPサーバーを起動 (Claude Desktop の再起動でOK)
 
 ### 設定
 
-“args" にインストールしたフォルダ内にある index.js の絶対パスを設定。
+“args" にインストールしたフォルダ内にある index.js の絶対パス (※ `~` でホームディレクトリを表すとエラーになるので注意) を設定。
 “env” の uv のパスは、デフォルト設定なら不要 (必要な場合は `which uv` で場所を確認できる)。
 
 ```claude_desktop_config.json
