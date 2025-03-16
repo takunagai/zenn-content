@@ -259,7 +259,7 @@ docker build -t mcp/perplexity-ask:latest -f ~/tools/mcp-server/perplexity-ask/D
   - `model`: 使用するモデル（例：`sonar-deep-research`、`sonar-reasoning-pro`、`sonar-pro`、`sonar`、`r1-1776`）
     - `sonar-deep-research`: 最も高度な検索・分析能力（コンテキスト長: 128k）
     - `sonar-reasoning-pro`: 推論能力に優れ、Chain of Thought（CoT）対応（コンテキスト長: 128k）
-    - `sonar-pro`: 高度な検索機能と質問フォローアップ対応（コンテキスト長: 200k）
+    - `sonar-pro`(デフォルト): 高度な検索機能と質問フォローアップ対応（コンテキスト長: 200k）
     - `sonar`: 軽量で速い検索モデル（コンテキスト長: 128k）
     - `r1-1776`: 検索機能を使わないオフラインチャットモデル（コンテキスト長: 128k）
   - `messages`: 会話履歴の配列（各メッセージは`role`と`content`を含む）
