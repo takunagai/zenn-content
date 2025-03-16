@@ -24,7 +24,8 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
 10. [Raindrop.io MCP Server: 便利なブックマークサービスをAIから使う](./mcp-server-tutorial-10-raindropio)
 11. [Fetch MCP Server: ウェブコンテンツを取得・処理](./mcp-server-tutorial-11-fetch)
 12. [Blender MCP Server: 会話で Blender を操作し3Dモデルを作成](./mcp-server-tutorial-12-blender)
-13. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
+13. [Perplexity MCP Server: Perplexity ならではの検索をAIとの会話で実行](./mcp-server-tutorial-13-perplexity)
+参考: [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
 
 ---
 
@@ -46,14 +47,14 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
 
 ### 1. 基本的な URL から Markdown への変換
 
-```
+```text
 以下URLの内容をMarkdownに変換して：
 https://example.com/blog/article-123
 ```
 
 ### 2. 複数のWebページを一括変換
 
-```
+```text
 以下の複数のURLをMarkdownに変換し、それぞれのコンテンツを見出しで区切って：
 - https://site1.com/article1
 - https://site2.com/article2
@@ -62,14 +63,14 @@ https://example.com/blog/article-123
 
 ### 3. 特定の要素に焦点を当てた変換
 
-```
+```text
 次の技術ブログから、コードスニペットと主要な見出しだけを抽出し、Markdownに変換して：
 https://tech-blog-example.com/tutorial/javascript-basics
 ```
 
 ### 4. フォーマット指定付き変換
 
-```
+```text
 以下のニュースサイトの記事を以下の条件でMarkdownに変換して：
 - 見出しは ## レベルで統一
 - 引用部分は > でマーク
@@ -81,7 +82,7 @@ URL: https://news-example.com/technology/latest-trends
 
 ### 5. コンテンツフィルタリング付き変換
 
-```
+```text
 以下URLからAIに関連する内容だけを抽出してMarkdownに変換して。
 関連性の低いセクションは除外して
 https://news.ycombinator.com/best
@@ -89,14 +90,14 @@ https://news.ycombinator.com/best
 
 ### 6. PDF から Markdown への変換
 
-```
+```text
 添付のPDFをMarkdownに変換して。
 目次構造を保持し、表はMarkdown形式のテーブルとして変換して
 ```
 
 ### 7. YouTube 動画の字幕抽出
 
-```
+```text
 以下のYouTube動画の字幕をMarkdown形式で抽出して。
 タイムスタンプを含め、主要なポイントには見出しを付けて：
 https://www.youtube.com/watch?v=example12345
@@ -104,7 +105,7 @@ https://www.youtube.com/watch?v=example12345
 
 ### 8. 技術文書の整形済み変換
 
-```
+```text
 次の技術ドキュメントをMarkdownに変換し、以下の形式に整えて：
 - コードブロックは言語指定付きで
 - API エンドポイントは表形式で整理
@@ -116,21 +117,21 @@ URL: https://api-docs-example.com/reference
 
 ### 9. コンテンツ要約付き変換
 
-```
+```text
 以下の長文記事をMarkdownに変換し、各セクションの冒頭に2-3文の要約を追加して：
 https://longform-content.com/comprehensive-guide
 ```
 
 ### 10. 多言語コンテンツの処理
 
-```
+```text
 以下の英語のウェブサイトをMarkdownに変換し、日本語への翻訳も併記して：
 https://english-site.com/global-news
 ```
 
 ### 11. アカデミック論文の構造化変換
 
-```
+```text
 以下の学術論文をMarkdownに変換し、次の構造を明確にして：
 - 要旨（Abstract）を引用形式で
 - 方法論、結果、考察を別々のセクションで
@@ -142,7 +143,7 @@ URL: https://academic-journal.edu/paper/12345
 
 ### 12. SEO 分析付き変換
 
-```
+```text
 次のランディングページをMarkdownに変換し、SEO観点からの分析を追加して：
 - H1, H2 の見出し構造
 - メタタグ情報
@@ -154,7 +155,7 @@ URL: https://business-site.com/services
 
 ### 13. ニュースレター作成用フォーマット
 
-```
+```text
 以下の複数のニュース記事を取得し、週刊ニュースレター形式のMarkdownに変換して：
 - トップニュース（3件）を冒頭に要約
 - カテゴリ別に記事をグループ化
@@ -169,7 +170,7 @@ URLs:
 
 ### 14. プログラミングチュートリアルの強化
 
-```
+```text
 次のプログラミングチュートリアルをMarkdownに変換し、以下を追加して：
 - コードブロックに構文ハイライトを適用
 - 重要な概念に注釈を追加
@@ -181,7 +182,7 @@ URL: https://dev-tutorial.com/advanced-patterns
 
 ### 15. 製品比較表の作成
 
-```
+```text
 以下の複数の製品レビューページから情報を抽出し、Markdown形式の比較表を作成して：
 - 製品名、価格、主な機能、長所、短所の列を含む
 - 価格帯で製品を並べ替え
@@ -195,7 +196,7 @@ URLs:
 
 ### 16. ウェビナー内容の構造化記録
 
-```
+```text
 次のウェビナー録画の内容をMarkdown形式で文書化して：
 - 主要なポイントを見出しとして
 - Q&A セクションを別に整理

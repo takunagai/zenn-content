@@ -24,7 +24,9 @@ YouTube MCPサーバーの導入方法と活用テクニックを紹介します
 10. [Raindrop.io MCP Server: 便利なブックマークサービスをAIから使う](./mcp-server-tutorial-10-raindropio)
 11. [Fetch MCP Server: ウェブコンテンツを取得・処理](./mcp-server-tutorial-11-fetch)
 12. [Blender MCP Server: 会話で Blender を操作し3Dモデルを作成](./mcp-server-tutorial-12-blender)
-13. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
+13. [Perplexity MCP Server: Perplexity ならではの検索をAIとの会話で実行](./mcp-server-tutorial-13-perplexity)
+
+参考: [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
 
 ---
 
@@ -224,7 +226,7 @@ brew install yt-dlp
 
 **Windowsの場合：**
 
-```
+```powershell
 winget install yt-dlp
 ```
 
@@ -244,7 +246,7 @@ yt-dlp --version
 
 前回または[シリーズ記事#0](./mcp-server-tutorial-01-install.md)でmcp-installerをセットアップ済みであれば、Claude に以下のように指示するだけでインストールできます。 (※「mcp-youtube」ではなく「@anaisbetts/mcp-youtube」と指定する必要があります。)
 
-```
+```text
 MCPサーバー @anaisbetts/mcp-youtube をインストールして
 ```
 
@@ -300,3 +302,12 @@ YouTube MCPサーバーを導入することで、膨大な動画コンテンツ
 - [MCP初心者ガイド動画](https://www.youtube.com/watch?v=Y_kaQmhGmZk)
 
 次回の記事では、MarkdownやWordなど様々な形式のドキュメント形式を変換できる「[mcp-pandoc](./mcp-server-tutorial-04-pandoc)」について解説します。お楽しみに！
+
+```bash
+npx @anthropic-ai/create-mcp-server my-yt-mcp-server
+```
+
+次に、作成されたディレクトリに移動します。
+
+```bash
+cd my-yt-mcp-server

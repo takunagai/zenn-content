@@ -26,7 +26,9 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
 10. [Raindrop.io MCP Server: 便利なブックマークサービスをAIから使う](./mcp-server-tutorial-10-raindropio)
 11. [Fetch MCP Server: ウェブコンテンツを取得・処理](./mcp-server-tutorial-11-fetch)
 12. 👉 [Blender MCP Server: 会話で Blender を操作し3Dモデルを作成](./mcp-server-tutorial-12-blender)
-13. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
+13. [Perplexity MCP Server: Perplexity ならではの検索をAIとの会話で実行](./mcp-server-tutorial-13-perplexity)
+
+参考: [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
 
 ---
 
@@ -155,75 +157,75 @@ Cyclesレンダラーに切り替えて、サンプル数を128に設定して
 
 :::details 一連のプロンプト(和訳)を見る
 
-```
+```text
 Blenderで、金の壺の隣にドラゴンが立っているシーンを作ってください。アイソメトリックにして、ライティングは遊び心とポイルシェッドにしてください。適切なマテリアルを使って。Dribbbleに投稿する価値があるはずだ！
 ```
 
-```
+```text
 よくやった！今度はDribbbleからもう少し雰囲気のあるものにして、ダンジョンのような感じにして、ところどころに火を灯すなど、細部にもこだわって。
 ```
 
-```
+```text
 一度に全部やるのではなく、段階を踏んでいきましょうか？ 壁、壁のトーチ、そして追加のディテールを追加します。
 ```
 
-```
+```text
 壁の松明が壁に刺さっていると思うのですが、シーンの内側に持ってくることはできますか？そしてアンビエント照明のために火を追加してください。
 ```
 
-```
+```text
 火のように感じられるように、発光するようにしてください！
 ```
 
-```
+```text
 発光の強度をもっと上げて！そしてもっとオレンジ色にして。そして、カメラポイントをアイソメトリックにして、ドラゴンを指しているシーンを正面と右から見てください。
 ```
 
-```
+```text
 カメラはアイソメトリックではなく、シーンに近すぎる。また、ドラゴンの左を向いている。
 ```
 
-```
+```text
 最後の最終調整をする前は、実は問題なかった！
 ```
 
-```
+```text
 素晴らしい！少しぼやけた感じがあると思いますが、これは意図的なものですか？もしそうなら、それを取り除いてください。また、ファイヤーエミッションをさらに増やしてください！
 ```
 
-```
+```text
 もっと増やしてください！あまり変わってないと思います。
 ```
 
-```
+```text
 いいね！少し減らしてナイスミドルに！
 ```
 
-```
+```text
 中の金の壺が暗すぎるように見えるので、ピカピカにできるかな？
 ```
 
-```
+```text
 それはやりすぎだよ！全体じゃなくて、中だけ光らせたかったんだ！
 ```
 
-```
+```text
 すごい！ドラゴンの翼をもっとはっきりさせられないかな？今のドラゴンの翼は単純な長方形だ！
 ```
 
-```
+```text
 もっと上に動かして、違う色（とげの部分）にしよう。
 ```
 
-```
+```text
 金の壺、金貨がいっぱい入っているように見せる！
 ```
 
-```
+```text
 コインのこぼれた部分は発光しすぎて見えないから、地面の金貨のようにメタリックにすればいいんじゃない？
 ```
 
-```
+```text
 普通のコインも同じようにする
 ```
 
@@ -287,3 +289,7 @@ Blender MCPを導入することで、3Dモデリングをしたことがない�
 
 - [Blender MCP GitHub リポジトリ](https://github.com/ahujasid/blender-mcp)
 - [Blender Python API ドキュメント](https://docs.blender.org/api/current/index.html)
+
+---
+
+次回は「[Perplexity MCP Server: Perplexity ならではの検索をAIとの会話で実行](./mcp-server-tutorial-13-perplexity)」について解説します。
