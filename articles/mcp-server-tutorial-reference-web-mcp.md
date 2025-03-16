@@ -1,5 +1,5 @@
 ---
-title: "【MCPのトリセツ リファレンス】ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify、Perplexity)"
+title: "【MCPのトリセツ 資料】ウェブ情報を取得するMCPの比較 (Fetch、Firecrawl、Markdownify、Perplexity)"
 emoji: "🐸"
 type: "tech"
 topics: ["mcp", "windsurf", "ai", "生成ai", "ai駆動開発"]
