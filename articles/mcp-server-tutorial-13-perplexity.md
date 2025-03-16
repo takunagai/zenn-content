@@ -55,6 +55,8 @@ Perplexity MCPは、Perplexity 公式の MCP です。
 
 ## 👨‍💻 Perplexity MCP Server プロンプトのサンプル
 
+他の MCP が呼ばれてしまう場合があるので、`Perplexity で`と指示を付けることで適切に`perplexity-ask`MCPを呼び出すことができます。
+
 ### 基本的な検索クエリ
 
 ```text
