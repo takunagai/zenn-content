@@ -7,7 +7,8 @@ published: true
 ---
 
 Windsurf ではデフォルトで Open-VSX から拡張機能を取得します。Microsoft の制限により、公式の Microsoft VSCode Marketplace にある拡張機能が入手できない場合があり、また、入手できるものでも最新バージョンがない場合があります。
-以下の手順で公式の VSCode 拡張機能を入手できるように切り替えることができます。
+
+以下の手順、公式の VSCode Marketplace の拡張機能が利用可能になります！
 
 1. 右上のアイコンドロップメニューから Windsurf Settings を開く
 2. Marketplace Extension Gallery Service URL を変更
@@ -18,7 +19,6 @@ Windsurf ではデフォルトで Open-VSX から拡張機能を取得します�
     - 変更：`https://marketplace.visualstudio.com/items`
 4. 再起動。拡張機能パネルの検索欄下に "Using marketplace.visualstudio.com." と表示されたらOK！
 
-これで公式の VSCode Marketplace の拡張機能が利用可能になります！  
 ただし、Github Copilot など、Windsurf 側で使えなくしている機能拡張もあり、それらのインストールはできません。
 
 元情報：[Codemium/Windsurf コミュニティ- Discord](https://discord.com/channels/1027685395649015980/1351572913332949107/1351572913332949107)
