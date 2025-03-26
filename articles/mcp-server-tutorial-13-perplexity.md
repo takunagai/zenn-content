@@ -10,6 +10,8 @@ published: true
 
 Claude などの AI を強化する「MCP（Model Context Protocol）」の導入方法と活用テクニックのシリーズ。今回は、Perplexity MCPサーバーの導入方法と活用テクニックを紹介します。Perplexity MCPは、Perplexity の検索機能を活用してリアルタイムのWeb全体の調査結果から最も関連する洞察を返す Sonar API をAIとの会話から呼び出せるようにしてくれるコネクタです。
 
+**※ 2025-03-26: Docker依存しない方法に更新**
+
 ### シリーズ目次
 
 1. [MCPの概要と導入方法](./mcp-server-tutorial-01-install)
@@ -55,7 +57,7 @@ Perplexity MCPは、Perplexity 公式の MCP です。
 
 ## 👨‍💻 Perplexity MCP Server プロンプトのサンプル
 
-他の MCP が呼ばれてしまう場合があるので、`Perplexity で`と指示を付けることで適切に`perplexity-ask`MCPを呼び出すことができます。
+他の MCP が呼ばれてしまう場合があるので、`Perplexity で` と指示を付けることで適切に perplexity-ask MCPを呼び出すことができます。
 
 ### 基本的な検索クエリ
 
@@ -184,43 +186,73 @@ AIエージェントのユースケースを調査したいです。次のステ
 
 ## 🛠️ インストールと設定
 
-⚠️ Docker に依存しない方法 (npx) でインストールしたかったのですが、うまくいかなかったので、Docker版のインストール手順を参考にしました。後日、依存しない方法でインストールする手順を追加したいと思っています (問題なくできた人は教えてくだされば嬉しいです)。
-
-Perplexity MCP Serverは、JavaScript製のMCPサーバーです。インストールは非常に簡単です。
+Perplexity MCP Serverは、JavaScript製のMCPサーバーです。  
+Github の解説の通りにすると、うまくいかない箇所があるので注意してください。  
+公式の解説には、Docker に依存する方法としない方法が紹介されていますが、ここではDocker に依存しないシンプルな方法を紹介します。
 npm がインストール済みなのが前提ということで解説を進めます。
 
-### 🔑 Sonar API Keyの取得
+### 1. Sonar API Keyの取得
 
-Sonar とは、Perplexity の Sonar API です。以下の手順でAPI Keyを取得します：
+Perplexity の Sonar API の入手が必要です。
+Sonar APIの利用には課金が必要です。ただし、Perplexity Proユーザーには毎月5ドル分の無料APIクレジットが提供されています。
+以下の手順でAPI Keyを取得します。
 
-1. [Perplexity公式サイト](https://docs.perplexity.ai/guides/getting-started)にアクセスし、アカウント登録をします
-2. 開発者ダッシュボードから「APIキーの生成」を選択します
-3. APIキーが発行されたら、安全な場所に保存します
-4. このAPIキーは後ほど MCP Server の設定で使用します
+1. [Perplexity公式サイト](https://docs.perplexity.ai/guides/getting-started)でアカウント登録
+2. 開発者ダッシュボードで「APIキーの生成」を選択
+3. 発行されたAPIキーをメモしておきます(後で設定で使用します)
 
-なお、Sonar APIの利用には料金がかかります。Perplexity Proユーザーには毎月5ドル分の無料APIクレジットが提供されています。
+### 2. MCP Server のインストールと設定
 
-### MCP Server の設定
+#### インストール
 
-MCPサーバーを置く場所に移動して、クローンします。  
-(例：自分は ~/tools/mcp-server/ に各MCPサーバーを置いています)
+Github からクローンします。  
+中のファイルを移動して使うので、場所はどこでも構いません。
 
 ```
 git clone git@github.com:ppl-ai/modelcontextprotocol.git
 ```
 
-modelcontextprotocol ディレクトリの中の perplexity-ask ディレクトリを MCPサーバー置き場に移動します。
-(~/tools/mcp-server/perplexity-ask/ となるように)
+ダウンロードした modelcontextprotocol の中の perplexity-ask ディレクトリを任意の MCPサーバー置き場にインストールします。(どこでも構いませんが、自分は ~/tools/mcp-server/perplexity-ask/ としました)
 
-中に移動して npm install を実行。
+`cd ~/tools/mcp-server/perplexity-ask/ && npm install`
 
+中の dist/index.js の絶対パスをメモしておきます。  
+(インストール場所/perplexity-ask/dist/index.js)  
+※ ホームディレクトリは `~/` 表記だとうまくいきません。絶対パスで。
+
+#### 設定
+
+Claude Desktopの場合の説明をします(他でも json は同じ)。  
+設定ファイル（claude_desktop_config.json）に "perplexity-ask" の設定を追加します。  
+
+- "command" に "node" を指定
+- "args" に dist/index.js の絶対パスを指定
+- "env" の "YOUR_API_KEY_HERE" に Sonar API Key を指定
+
+```json
+{
+  "mcpServers": {
+    "perplexity-ask": {
+      "command": "node",
+      "args": [
+        "インストール場所/perplexity-ask/dist/index.js"
+      ],
+      "env": {
+        "PERPLEXITY_API_KEY": "YOUR_API_KEY_HERE"
+      }
+    }
+  }
+}
 ```
-cd ~/tools/mcp-server/perplexity-ask/ && npm install
-```
 
-### Claude デスクトップ側の設定
+:::details Docker を使う場合の説明
+【Docker イメージのビルド】  
+Github からパッケージをダウンロードして、Dockerfile でビルドします。  
+※パスは実際にインストールした場所に置き換えてください
+`docker build -t mcp/perplexity-ask:latest -f ~/tools/mcp-server/perplexity-ask/Dockerfile .`
 
-Claude Desktopの設定ファイル（claude_desktop_config.json）に以下を追加します。
+【Claude デスクトップ側の設定】  
+Claude Desktopの設定ファイル（claude_desktop_config.json）に以下を追加。  
 "YOUR_API_KEY_HERE" には、Sonar API Key を設定してください。
 
 ```json
@@ -244,13 +276,7 @@ Claude Desktopの設定ファイル（claude_desktop_config.json）に以下を�
 }
 ```
 
-### Docker イメージのビルド
-
-※パスは実際にインストールした場所に置き換えてください
-
-```
-docker build -t mcp/perplexity-ask:latest -f ~/tools/mcp-server/perplexity-ask/Dockerfile .
-```
+:::
 
 #### 検索パラメータのカスタマイズ
 
