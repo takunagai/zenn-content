@@ -6,9 +6,7 @@ topics: ["tailwindcss", "nextjs"]
 published: true
 ---
 
-Tailwind CSS v4 のネイティブダークモード機能を活用して、Next.jsアプリケーションにおけるダークモードの実装方法のベストプラクティスが変わります。
-
-この記事では、Tailwind CSS v3 の `next-themes` ライブラリでの実装から v4 のネイティブダークモード機能への移行プロセスなどを解説します。
+Tailwind CSS v4 のネイティブダークモード機能により、ダークモードの実装が大幅に簡素化されます。この記事では、Next.js で Tailwind CSS v3 の `next-themes` ライブラリでの実装から v4 のネイティブダークモード機能へ移行する手順を解説します。
 
 ## 新しい実装方法を採用するメリット
 
@@ -17,7 +15,7 @@ Tailwind CSS v4 のネイティブダークモード機能を活用して、Next
 
 ### CSSの実装がシンプルに
 
-Tailwind CSS v3 では `dark:` プレフィックスが必要でした。
+Tailwind CSS v3 では `dark:` プレフィックスが必須でした。
 
 ```tsx
 <div className="bg-white dark:bg-slate-800">
@@ -25,9 +23,7 @@ Tailwind CSS v3 では `dark:` プレフィックスが必要でした。
 </div>
 ```
 
-Tailwind CSS v4 では、CSS変数を活用することでテーマ管理が容易になります。
-カスタムプロパティの活用で、色やテーマ値をよりシステマティックに管理できるようになりました。
-ダークモードのスタイルの定義は `@custom-variant` を使用します。
+Tailwind CSS v4 では、CSS変数を活用することでテーマ管理が容易になりました。カスタムプロパティの活用で、色やテーマ値をよりシステマティックに管理できます。CSS でのダークモードのスタイルの定義は `@custom-variant` を使用します(`dark:` プレフィックスも必要であれば使えます)。
 
 ```tsx
 <div className="bg-background">
