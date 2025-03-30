@@ -3,7 +3,7 @@ title: "React プロジェクトでイチオシのアイコンフォントライ
 emoji: "🐸"
 type: "tech"
 topics: ["font", "fontawesome","react", "nextjs", "shadcnui"]
-published: false
+published: true
 ---
 
 - [React Icons](https://react-icons.github.io/react-icons/)
