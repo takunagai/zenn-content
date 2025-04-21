@@ -1,12 +1,12 @@
 ---
-title: "CSCode: PHP_CodeSniffer を使った WordPress コーディング規約の導入手順"
+title: "VSCode: PHP_CodeSniffer を使った WordPress コーディング規約の導入手順"
 emoji: "🐸"
 type: "tech"
 topics: ["php", "wordpress", "開発環境", "vscode"]
 published: true
 ---
 
-WordPress の開発において、PHPコードを一定の規約に従わせることは、コードの品質と保守性を向上させます。そのために、`PHP_CodeSniffer` を導入し、コードのチェック・整形を自動化するのがおすすめです。この記事では、その導入方法を解説します。
+WordPress の開発において、PHPコードを一定の規約に従わせることは、コードの品質と保守性を向上させます。そのために、`PHP_CodeSniffer` を導入し、コードのチェック・整形を自動化するのがおすすめです。この記事では、VSCode での導入方法を解説します。
 
 ## 1. PHP と Composer のインストール
 
