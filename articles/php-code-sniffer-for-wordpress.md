@@ -86,7 +86,10 @@ PHP CodeSniffer の設定ファイルで “WordPress” が指定されてる�
 
 ### プロジェクト独自のルール設定（カスタムルールの適用）
 
-ルールを変更する理由は、"Inline comments must end in full-stops, exclamation marks, or question marksphpcs (インラインコメントは、フルストップ、感嘆符、または疑問符で終わらなければならない。)” エラーを無視させたいから。
+ルールを変更する理由は、とりあえずは以下のエラーを無視させたいから。
+
+- "Inline comments must end in full-stops, exclamation marks, or question marksphpcs (インラインコメントは、フルストップ、感嘆符、または疑問符で終わらなければならない。)”
+- “Parameter comment must end with a full stopphpcs” (パラメーターのコメントはピリオドで終了する必要がある)
 
 まずは、カスタムルールファイル phpcs.xml (WordPress コーディング規約を参照、これを上書き) を作成し、ドキュメントルートに保存。これで特定のエラーを無視して自動整形・チェックが行える。
 
@@ -95,10 +98,16 @@ PHP CodeSniffer の設定ファイルで “WordPress” が指定されてる�
 <ruleset name="Custom WordPress">
     <description>WordPress Coding Standards をカスタマイズしたもの</description>
     <rule ref="WordPress"/>
+    <!-- インラインコメントの最後のピリオドチェックを無効化 -->
     <rule ref="Squiz.Commenting.InlineComment.InvalidEndChar">
         <severity>0</severity>
     </rule>
+    <!-- パラメータコメントの最後のピリオドチェックを無効化 -->
+    <rule ref="Squiz.Commenting.FunctionComment.ParamCommentFullStop">
+        <severity>0</severity>
+    </rule>
 </ruleset>
+
 ```
 
 ### 機能拡張のインストール
