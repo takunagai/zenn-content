@@ -296,3 +296,4 @@ MCP（Model Context Protocol）は、AIアプリケーションと外部サー�
 12. [Blender MCP Server: 会話で Blender を操作し3Dモデルを作成](./mcp-server-tutorial-12-blender)
 13. 👉 [Perplexity MCP Server: Perplexity ならではの検索をAIとの会話で実行](./mcp-server-tutorial-13-perplexity)
 14. [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
+15. [国土交通省のMCPサーバーオープンデータ活用45選](https://zenn.dev/takna/articles/mcp-server-tutorial-14-milt-data#mcp%E3%81%AE%E5%A7%8B%E3%82%81%E6%96%B9%E3%82%B7%E3%83%AA%E3%83%BC%E3%82%BA%E3%81%AE%E7%9B%AE%E6%AC%A1)
