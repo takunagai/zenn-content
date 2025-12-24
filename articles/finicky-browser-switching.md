@@ -2,7 +2,7 @@
 title: "デフォルトはArcブラウザ、ターミナルからは Chrome を実現する「Finicky」とその設定 (Mac)"
 emoji: "🐸"
 type: "tech"
-topics: ["claude-code", "ai駆動開発", "開発環境", "terminal", "vscode"]
+topics: ["claude-code", "dev-environment", "ai-agent", "terminal", "vscode"]
 published: true
 ---
 
