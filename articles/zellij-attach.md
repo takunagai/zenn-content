@@ -31,7 +31,7 @@ published: false
 
 ## 図解
 
-[Zellij セッションの仕組みと使い分け](/images/zellij-attach.png)
+![Zellij セッションの仕組みと使い分け](/images/zellij-attach.png)
 
 ## まず前提：ターミナルは「3層」で理解すると混乱しない
 
