@@ -3,7 +3,7 @@ title: "【zellij/tmux】端末を閉じても作業を止めない「セッシ�
 emoji: "🐸"
 type: "tech"
 topics: ["zellij", "tmux", "terminal", "ai駆動開発", "開発環境"]
-published: false
+published: true
 ---
 
 [zellij](https://zellij.dev/) や [tmux](https://github.com/tmux/tmux) などのターミナルマルチプレクサを使うことで、端末（ウィンドウ）を閉じても **セッション内の作業（プロセス）を止めずに維持**できます。  
