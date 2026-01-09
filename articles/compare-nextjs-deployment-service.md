@@ -22,7 +22,9 @@ Next.js をデプロイできるプラットフォームは複数あります。
 
 ## 結論：こんな人にはこれがおすすめ
 
-#### 🚀 学習や収益化なしのプロジェクト
+![](/images/compare-nextjs-deployment-service/01.png)
+
+### 🚀 学習や収益化なしのプロジェクト
 
 **→ Vercel**
 
@@ -480,6 +482,8 @@ Amplify がおすすめなケース:
 > **💡 ベストプラクティス**: プラットフォーム固有の機能（Vercel の KV、Cloudflare の D1 など）への依存を最小限にすると、移行しやすくなります。
 
 ## まとめ
+
+![](/images/compare-nextjs-deployment-service/02.png)
 
 | こんな人に | おすすめ |
 |------------|----------|
