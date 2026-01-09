@@ -74,14 +74,14 @@ Netlify CLI のインストール (プロジェクトルートで)
 `npm install netlify-cli --save-dev`
 
 バージョンやコマンドを確認
-`netlify`
+`npx netlify`
 
 トークンを取得
 `netlify login`
 → 表示されるリンクをクリックし、ブラウザで認証。認証が成功すると "You are now logged into your Netlify account!" と出ます。
 
 初期化
-`netlify init`
+`npx netlify init`
 → 以下のプロントが出るので答えていきます。
 
 プロンプト："What would you like to do?"
@@ -94,7 +94,7 @@ Netlify CLI のインストール (プロジェクトルートで)
 プロジェクトを確認すると .netlify/state.json が生成され、`siteId` が設定されているのが確認できます。
 
 ステータスの確認
-`netlify status`
+`npx netlify status`
 
 ```
 ──────────────────────┐
