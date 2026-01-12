@@ -8,26 +8,23 @@ published: true
 
 ## はじめに
 
-MacOS の iCloud Drive には、ストレージ容量が不足してきた時に自動でファイルをクラウドへ移動する「最適化されたストレージ」機能があります。通常は便利な機能ですが、以下のような場合に問題が発生することがあります。
+MacOS の iCloud Drive には、ストレージ容量が不足してきた時に自動でフォルダやファイルをクラウドへ移動する「最適化されたストレージ」機能があります。通常は便利な機能ですが、ローカルにファイルの実体がなくなるため、不便が生じることがあります。
 
-- 頻繁にアクセスする作業フォルダがクラウドに移動される
+私は iA Writer や Obsidian などの書類を管理するアプリを iCloud で同期させているのですが、以下のような不便が発生しました。
+
 - オフラインでの作業に支障が出る
-- バージョン管理システムとの連携に問題が生じる
+- アプリがそれらのファイルを参照するときにタイムラグが生じる
+- Gitバージョン管理に問題が生じる
 
-この記事では、特定のフォルダを常にローカルに保持する方法を紹介します。
+これらの問題を解決するため、特定のフォルダを**常にローカルに保持**するようにしました。この記事では、その方法を紹介します。
 
-## 解決方法の概要
+## 解決方法
 
-iCloud Drive 上の特定フォルダを常にローカルに保持するには、以下の方法が効果的です。
-
-1. `touch -a` コマンドで定期的にファイルのアクセス時間を更新
-2. `cron` でコマンドを自動実行
-
-:::message
-この方法は、iA Writer や Obsidian などのクラウド同期機能を使うアプリケーションのデータフォルダに特に有効です。
-:::
+特定のファイルを常にローカルに保持するために、**定期的に対象の全ファイルのアクセス時間(atime)を更新**します。
 
 ## 実装手順
+
+今回は、iA Writer の保存フォルダを常にローカルに保持するように設定します。他のアプリケーションの保存フォルダを保持する場合は、パスを変更してください。
 
 ### 1. atime 更新の有効性確認
 
@@ -38,57 +35,121 @@ mount | grep iCloud
 ```
 
 :::message alert
-出力に `noatime` が含まれている場合は、後述の「トラブルシューティング」セクションを参照してください。
+もし出力に `noatime` が含まれている場合は、後述の「トラブルシューティング」セクションを参照してください。
 :::
 
-### 2. cron の設定
+### 2. launchd でスケジュール設定
 
-#### cron にフルディスクアクセスを許可
+macOS では cron よりも launchd（LaunchAgents）が推奨されています。ログインユーザー環境やスリープ復帰との相性が良く、iCloud 配下の定期処理に適しています。
 
-1. Finder で iA Writer を右クリックし、オプションを押しながら「パス名」をコピー
-    - '/Users/[ユーザー名]/Library/Mobile Documents/27N4MQEA55~pro~writer/Documents'
-2. ターミナルで iA Writer フォルダにアクセスでき、中の書類が表示されるかチェック
-    - `ls -la "$HOME/Library/Mobile Documents/27N4MQEA55~pro~writer/Documents"`
-    - (メモ： ユーザーディレクトリは `$HOME` に変えると良い。`~` だとダメ。find コマンド内で使うと、文字列として扱い展開しないため)
-3. システム設定 → プライバシーとセキュリティ → フルディスクアクセス を開く
-4. ターミナル にチェックが入っていることを確認 ★★してない
-5. フルディスクアクセスに cron を追加する
-    - "+" ボタンを押し /usr/sbin/cron を追加
-6. cron を再起動し設定を反映
+#### 2-1. ユーザー名を確認
 
-    ```sh
-    sudo launchctl stop com.vix.cron
-    sudo launchctl start com.vix.cron
-    ```
+以下のコマンドで自分のユーザー名を確認します。この後の設定で使用します。
 
-#### 定期的に実行させる設定
+```sh
+whoami
+```
 
-1. ターミナルで以下のコマンドを実行し、crontab を編集します
+#### 2-2. コマンドの動作確認
 
-    ```sh
-    crontab -e
-    ```
+設定前に、ターミナルでコマンドが正常に動作するか確認します。`<USERNAME>` は先ほど確認したユーザー名に置き換えてください。
 
-2. 先ほどの iA Writer フォルダを含む以下の行を追加します(12時間おきに実行、ログを記録)。i でインサートモード、esc でインサートモード終了。
+```sh
+/usr/bin/find "/Users/<USERNAME>/Library/Mobile Documents/27N4MQEA55~pro~writer/Documents" -type f -exec /usr/bin/touch -a {} \;
+echo $?
+```
 
-    ```sh
-    0 */12 * * * find "$HOME/Library/Mobile Documents/27N4MQEA55~pro~writer/Documents" -type f -exec touch -a {} \; >> ~/cron_log.txt 2>&1
-    ```
+`0` と表示されれば成功です（ファイル数が多いと少し時間がかかります）。
 
-    ```sh
-    0 */12 * * * { echo "=== $(date "+%Y-%m-%d %H:%M:%S") touched All iA Writer files ==="; find "$HOME/Library/Mobile Documents/27N4MQEA55~pro~writer/Documents" -type f -exec touch -a {} \; -print; } >> ~/cron_log.txt 2>&1
-    ```
+#### 2-3. plist ファイルを作成
 
-    スケジュール設定の内容
+LaunchAgents 用のディレクトリを作成し、設定ファイルを作成します。
 
-    - `0` - 毎回0分に
-    - `*/12` - 12時間おきに（0時、12時）
-    - `* * *` - 毎日、毎月、すべての曜日
-    - `>> ~/cron_log.txt 2>&1` - ログを記録
+```sh
+mkdir -p ~/Library/LaunchAgents
+nano ~/Library/LaunchAgents/com.user.touch-iawriter.plist
+```
 
-3. `:wq` で保存して終了（ターミナルにフルディスクアクセスを許可していなければ Mac のセキュリティ許可が必要）
+以下の内容を貼り付けます。`<USERNAME>` は実際のユーザー名に置き換えてください。
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+ "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.user.touch-iawriter</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/find</string>
+        <string>/Users/<USERNAME>/Library/Mobile Documents/27N4MQEA55~pro~writer/Documents</string>
+        <string>-type</string>
+        <string>f</string>
+        <string>-exec</string>
+        <string>/usr/bin/touch</string>
+        <string>-a</string>
+        <string>{}</string>
+        <string>;</string>
+    </array>
+
+    <!-- 12時間 = 43200秒 -->
+    <key>StartInterval</key>
+    <integer>43200</integer>
+
+    <!-- ログ出力 -->
+    <key>StandardOutPath</key>
+    <string>/Users/<USERNAME>/cron_log.txt</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/<USERNAME>/cron_log.txt</string>
+
+    <!-- ログイン時に1回実行 -->
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>
+```
+
+nano の操作: `Ctrl+O` → Enter で保存、`Ctrl+X` で終了。
+
+:::message
+**重要**: plist 内では `~` は展開されません。必ず `/Users/<USERNAME>/...` のように絶対パスで記述してください。
+:::
+
+#### 2-4. 構文チェックとジョブの有効化
+
+```sh
+# 構文チェック（"OK" と表示されれば問題なし）
+plutil ~/Library/LaunchAgents/com.user.touch-iawriter.plist
+
+# ジョブを有効化
+launchctl load ~/Library/LaunchAgents/com.user.touch-iawriter.plist
+```
+
+#### 2-5. 動作確認
+
+```sh
+# 登録されているか確認
+launchctl list | grep touch-iawriter
+
+# ログを確認
+tail -n 20 ~/cron_log.txt
+```
+
+:::message
+**再起動後も維持されます**: plist が `~/Library/LaunchAgents/` にある限り、ログイン時に自動でロードされます。`RunAtLoad=true` により、ログイン直後に1回実行され、その後12時間ごとに実行されます。
+:::
 
 ## トラブルシューティング
+
+### launchd が動作しない場合
+
+よくある原因:
+
+- **plist 内で `~` を使っている**: plist 内では `~` は展開されません。絶対パス `/Users/<USERNAME>/...` を使用してください
+- **対象ディレクトリが存在しない**: iCloud が未同期のタイミングで実行されると失敗します
+- **構文エラー**: `plutil` コマンドで構文チェックを実行してください
 
 ### atime 更新が無効の場合の代替方法
 
@@ -98,7 +159,33 @@ mount | grep iCloud
 find $HOME/Library/Mobile\ Documents/com~apple~CloudDocs/iAWriter -type f -exec cat {} > /dev/null \;
 ```
 
-この方法でも同様に cron でスケジュール設定できます。
+### launchd ジョブの停止・削除方法
+
+設定を停止または削除したい場合:
+
+```sh
+# 停止（plist は残る）
+launchctl unload ~/Library/LaunchAgents/com.user.touch-iawriter.plist
+
+# 完全に削除
+launchctl unload ~/Library/LaunchAgents/com.user.touch-iawriter.plist
+rm ~/Library/LaunchAgents/com.user.touch-iawriter.plist
+```
+
+### cron から移行する場合
+
+以前 cron を使用していた場合は、二重実行を防ぐため cron 設定を削除してください。
+
+```sh
+# 現在の cron 設定を確認
+crontab -l
+
+# cron 設定を編集して該当行を削除
+crontab -e
+
+# または、cron をすべて削除（他で使用していない場合）
+crontab -r
+```
 
 ## よくある質問
 
