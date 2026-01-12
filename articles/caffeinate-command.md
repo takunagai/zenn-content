@@ -3,7 +3,13 @@ title: "フタを閉じても MacBook Pro をスリープさせない。`caffein
 emoji: "🐸"
 type: "tech"
 topics: [mac, terminal, shell, claudecode]
-published: true
+published: false
+---
+
+★★MacBook Proは、蓋閉じたらどうあってもスリープする仕様
+
+`sudo pmset -b sleep 0; sudo pmset -b disablesleep 1` で、蓋閉じてもスリープさせない。元の挙動に戻すには、`sudo pmset -b sleep 5; sudo pmset -b disablesleep 0` で。
+
 ---
 
 移動中に MacBook Pro を閉じたままでも、「Claude Code などの AIエージェントを止めずに走らせ続けたい。」、「ファイルのアップロードを続けさせたい」。
@@ -12,7 +18,12 @@ published: true
 
 この記事では、`caffeinate` コマンドの使い方と活用法についてまとめました。
 
-※ 面倒と思われる方は、アプリ [Amphetamine](https://apps.apple.com/us/app/amphetamine/id937984704?mt=12) で同様のことができます。
+※ アプリ [Amphetamine](https://apps.apple.com/us/app/amphetamine/id937984704?mt=12) でも同様のことができます。
+
+## TL;DR
+
+- `caffeinate -im -t 10800` で３時間(10800秒)スリープを防ぐ
+- `caffeinate -imu -t 10800` ディスプレイのスリープも防ぎたい場合
 
 ## `caffeinate` コマンドの概要
 
@@ -22,10 +33,10 @@ published: true
 
 ## `caffeinate` コマンドのオプションと使用例
 
-- `-d`: ディスプレイのスリープを防止 (`caffeinate -d`)
-- `-i`: アイドルスリープを防止 (`caffeinate -i my_app`)
+- `-i`: CPUの停止を防止 (`caffeinate -i my_app`)
+- `-s`: AC電源接続中のみCPUの停止を防止 (`caffeinate -s backup.sh`)
 - `-m`: ディスク休止を防止 (`caffeinate -m diskutil verifyVolume /`)
-- `-s`: システム全体のスリープを防止 (`caffeinate -s backup.sh`)
+- `-d`: ディスプレイのスリープを防止 (`caffeinate -d`)
 - `-u`: ユーザー操作を擬装 (`caffeinate -u -t 30`)
 - `-t N`: N 秒間だけスリープ防止 (`caffeinate -t 600`)
 - `-w PID`: 指定 PID 終了まで防止 (`caffeinate -w 1234`)
