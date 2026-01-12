@@ -45,14 +45,16 @@ mount | grep iCloud
 
 #### cron にフルディスクアクセスを許可
 
-1. ターミナルで iAWriter フォルダにアクセスできるかチェック
-    - `ls -la "$HOME/Library/Mobile Documents/com~apple~CloudDocs/"`
-    - (メモ： ユーザーディレクトリは `~` だとダメ。find コマンド内で使うと、文字列として扱い展開しないため)
-2. システム設定 → プライバシーとセキュリティ → フルディスクアクセス を開く
-3. ターミナル にチェックが入っていることを確認 ★★してない
-4. フルディスクアクセスに cron を追加する
+1. Finder で iA Writer を右クリックし、オプションを押しながら「パス名」をコピー
+    - '/Users/[ユーザー名]/Library/Mobile Documents/27N4MQEA55~pro~writer/Documents'
+2. ターミナルで iA Writer フォルダにアクセスでき、中の書類が表示されるかチェック
+    - `ls -la "$HOME/Library/Mobile Documents/27N4MQEA55~pro~writer/Documents"`
+    - (メモ： ユーザーディレクトリは `$HOME` に変えると良い。`~` だとダメ。find コマンド内で使うと、文字列として扱い展開しないため)
+3. システム設定 → プライバシーとセキュリティ → フルディスクアクセス を開く
+4. ターミナル にチェックが入っていることを確認 ★★してない
+5. フルディスクアクセスに cron を追加する
     - "+" ボタンを押し /usr/sbin/cron を追加
-5. cron を再起動し設定を反映
+6. cron を再起動し設定を反映
 
     ```sh
     sudo launchctl stop com.vix.cron
@@ -67,10 +69,14 @@ mount | grep iCloud
     crontab -e
     ```
 
-2. 以下の行を追加します（12時間おきに実行、ログを記録）
+2. 先ほどの iA Writer フォルダを含む以下の行を追加します(12時間おきに実行、ログを記録)。i でインサートモード、esc でインサートモード終了。
 
     ```sh
-    0 */12 * * * find ~/Library/Mobile\ Documents/com~apple~CloudDocs/iAWriter -type f -exec touch -a {} \; >> ~/cron_log.txt 2>&1
+    0 */12 * * * find "$HOME/Library/Mobile Documents/27N4MQEA55~pro~writer/Documents" -type f -exec touch -a {} \; >> ~/cron_log.txt 2>&1
+    ```
+
+    ```sh
+    0 */12 * * * { echo "=== $(date "+%Y-%m-%d %H:%M:%S") touched All iA Writer files ==="; find "$HOME/Library/Mobile Documents/27N4MQEA55~pro~writer/Documents" -type f -exec touch -a {} \; -print; } >> ~/cron_log.txt 2>&1
     ```
 
     スケジュール設定の内容
@@ -80,7 +86,7 @@ mount | grep iCloud
     - `* * *` - 毎日、毎月、すべての曜日
     - `>> ~/cron_log.txt 2>&1` - ログを記録
 
-3. `:wq` で保存して終了（初回は Mac のセキュリティ許可が必要）
+3. `:wq` で保存して終了（ターミナルにフルディスクアクセスを許可していなければ Mac のセキュリティ許可が必要）
 
 ## トラブルシューティング
 
@@ -89,7 +95,7 @@ mount | grep iCloud
 `atime` の更新が無効（`noatime`）の場合は、`cat` コマンドを使用する方法が有効です。
 
 ```sh
-find ~/Library/Mobile\ Documents/com~apple~CloudDocs/iAWriter -type f -exec cat {} > /dev/null \;
+find $HOME/Library/Mobile\ Documents/com~apple~CloudDocs/iAWriter -type f -exec cat {} > /dev/null \;
 ```
 
 この方法でも同様に cron でスケジュール設定できます。
@@ -105,7 +111,7 @@ A: 「ダウンロードを保持」機能は基本的に有効ですが、以�
 
 ### Q: 「最適化されたストレージ」を無効にする方法は？
 
-A: システム設定 > Apple ID > iCloud で「Macのストレージを最適化」を無効にできますが、**すべての** iCloud Drive ファイルがローカルに保存されるため、ストレージ効率が悪くなります。
+A: システム設定 > Apple ID > iCloud で「Macのストレージを最適化」を無効にできますが、すべての iCloud Drive ファイルがローカルに保存されるため、ストレージ効率が悪くなります。
 
 ## まとめ
 
