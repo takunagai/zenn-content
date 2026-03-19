@@ -1,6 +1,6 @@
 ---
 title: "複数の AIコーディングツールのスキルを symlink で一元管理する"
-emoji: "🐥"
+emoji: "🐸"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [claudecode, codex, opencode, ai, 開発環境]
 published: true
