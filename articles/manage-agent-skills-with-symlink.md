@@ -351,9 +351,14 @@ fi
 
 インストールしていないツールは自動でスキップされるので、全部入れていなくても問題ありません。
 
-### Git 管理と命名ルール
+### Git 管理
 
-`~/.agents/skills/` は Git 管理しておくと、変更履歴の追跡や `git revert` での復元、GitHub 経由でのマシン間同期が手に入ります。ディレクトリ名は kebab-case（`git-workflow`、`quality-check`）、各スキルに `SKILL.md` 必須、SSOT にはスキルディレクトリだけ置いてメタファイルは混ぜないようにしてください。
+自分は `~/.agents/` を Git 管理するようにしました。今回の設定で `.system` ディレクトリ以外のスキルは symlink での管理としたため、以下を付け足しました。
+
+```.gitignore
+/skills/*
+!/skills/.system/
+```
 
 ## プロジェクト固有スキルにも使える
 
