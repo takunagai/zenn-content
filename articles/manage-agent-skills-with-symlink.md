@@ -41,7 +41,8 @@ Claude Code、Codex、Gemini CLI、Cursor、GitHub Copilot、Windsurf … Agent 
 
 [Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills) は Anthropic が策定したオープンスタンダードで、AI コーディングエージェントに再利用可能な知識やワークフローを追加する仕組みです。スキルは `SKILL.md`（YAML フロントマッター + Markdown）で定義され、各ツールがこのフォーマットを共通で読みます。
 
-配置場所は各ツールがそれぞれ持っています。
+配置場所は各ツールがそれぞれ持っています。  
+[» 全リスト](https://github.com/vercel-labs/skills?tab=readme-ov-file#supported-agents)
 
 ```
 ~/.claude/skills/           ← Claude Code
