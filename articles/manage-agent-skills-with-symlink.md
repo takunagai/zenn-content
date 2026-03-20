@@ -27,22 +27,21 @@ Claude Code、Codex、Gemini CLI、Cursor、GitHub Copilot、Windsurf … Agent 
 ├─ ~/.gemini/skills            → ../.agents/skills
 ├─ ~/.cursor/skills            → ../.agents/skills
 ├─ ~/.copilot/skills           → ../.agents/skills
-├─ ~/.windsurf/skills          → ../.agents/skills
-└─ ~/.antigravity/skills       → ../.agents/skills
+├─ ~/.windsurf/skills              → ../.agents/skills
+└─ ~/.gemini/antigravity/skills   → ../../.agents/skills
 ```
 
 ポイントは３つです。
 
 1. **スキルの実体は `~/.agents/skills/` の１箇所だけ。** 更新も１回で全ツールに反映されます
-2. **大半のツールはディレクトリ symlink。** 自作スキルを追加しても作業ゼロ
+2. **大半のツールはディレクトリ symlink。** スキルを追加しても作業ゼロです
 3. **Claude Code だけ個別 symlink が必須。** `.system/` が同居しているため（後述）
 
 ## Agent Skills の仕組み
 
 [Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills) は Anthropic が策定したオープンスタンダードで、AI コーディングエージェントに再利用可能な知識やワークフローを追加する仕組みです。スキルは `SKILL.md`（YAML フロントマッター + Markdown）で定義され、各ツールがこのフォーマットを共通で読みます。
 
-配置場所は各ツールがそれぞれ持っています。  
-[» 全リスト](https://github.com/vercel-labs/skills?tab=readme-ov-file#supported-agents)
+配置場所は各ツールがそれぞれ持っています。
 
 ```
 ~/.claude/skills/           ← Claude Code
@@ -52,7 +51,7 @@ Claude Code、Codex、Gemini CLI、Cursor、GitHub Copilot、Windsurf … Agent 
 ~/.cursor/skills/           ← Cursor
 ~/.copilot/skills/          ← GitHub Copilot
 ~/.windsurf/skills/         ← Windsurf
-~/.antigravity/skills/      ← Antigravity
+~/.gemini/antigravity/skills/ ← Antigravity
 ... 他にも多数
 ```
 
@@ -60,12 +59,18 @@ Claude Code、Codex、Gemini CLI、Cursor、GitHub Copilot、Windsurf … Agent 
 
 このカオスを解決するために、エコシステムは **`~/.agents/skills/` を SSOT とし、各ツールからは symlink で参照する**規約に収束しました。スキルのパッケージマネージャである [`npx skills`](https://skills.sh/)（[vercel-labs/skills](https://github.com/vercel-labs/skills)）もこの規約に従っており、`npx skills add <repo> -g` を実行すると `~/.agents/skills/` に実体を配置し、対応エージェントへ symlink を自動作成します。
 
+### `npx skills add`によるスキルのインストールフロー
+
+ターミナルで `npx skills add` を実行すると、対話形式でインストールが進みます。
+途中、エージェント選択がありますが、この記事の方法ではディレクトリ symlink 経由で SSOT を直接参照しているので、**「Claude Code」だけ選びます。** インストール方式は、「Symlink (Recommended)」を選択。
+最後に Gen, Socket, Snyk によるセキュリティリスク評価も出るので確認しておきましょう。
+
 ### `npx skills` と自作スキルの共存
 
 `npx skills` は `~/.agents/.skill-lock.json` で自分がインストールしたスキルを追跡しています。自作スキルはこのロックファイルに登録されないため、`npx skills update` を実行しても**自作スキルには一切触れません**。安心して共存できます。
 
-:::message
-重要な注意事項があります。**`npx skills add` で自作スキルと同名のスキルをインストールすると、警告なしで上書きされます。** 衝突検出の仕組みはないので、自作スキルには公開スキルと被りにくい命名（例えばプレフィックスを付けたり）を心がけてください。
+:::message alert
+⚠️注意：**`npx skills add` で自作スキルと同名のスキルをインストールすると、警告なしで上書きされます。** 衝突検出の仕組みはないので、自作スキル名には接頭辞や接尾辞を付けるなど公開スキルと被りにくい命名を推奨します。
 :::
 
 ## symlink の方式: ディレクトリ symlink vs 個別 symlink
@@ -138,7 +143,7 @@ done
 [ -L ~/.cursor/skills ] || ln -s ../.agents/skills ~/.cursor/skills
 [ -L ~/.copilot/skills ] || ln -s ../.agents/skills ~/.copilot/skills
 [ -L ~/.windsurf/skills ] || ln -s ../.agents/skills ~/.windsurf/skills
-[ -L ~/.antigravity/skills ] || ln -s ../.agents/skills ~/.antigravity/skills
+[ -L ~/.gemini/antigravity/skills ] || ln -s ../../.agents/skills ~/.gemini/antigravity/skills
 ```
 
 相対パスを使っているのがポイントです。ホームディレクトリの場所に依存しません。
@@ -146,16 +151,20 @@ done
 ### Step 4: 検証
 
 ```bash
-for tool in claude codex gemini cursor copilot windsurf antigravity; do
+for tool in claude codex gemini cursor copilot windsurf; do
   ls ~/."$tool"/skills/git-workflow/SKILL.md 2>/dev/null \
     && echo "$tool: OK" \
     || echo "$tool: FAIL"
 done
 
-# OpenCode は別パス
+# 別パスのツール
 ls ~/.config/opencode/skills/git-workflow/SKILL.md 2>/dev/null \
   && echo "opencode: OK" \
   || echo "opencode: FAIL"
+
+ls ~/.gemini/antigravity/skills/git-workflow/SKILL.md 2>/dev/null \
+  && echo "antigravity: OK" \
+  || echo "antigravity: FAIL"
 ```
 
 全部 `OK` なら完了です。
@@ -261,7 +270,7 @@ setup_dir_symlink() {
   parent=$(dirname "$link")
 
   if [[ ! -d "$parent" ]]; then
-    yellow "SKIP: $tool（$parent なし）"
+    yellow "SKIP: ${tool}（${parent} なし）"
     return
   fi
 
@@ -310,7 +319,7 @@ setup_dir_symlink "gemini"      "$HOME/.gemini/skills"           "../.agents/ski
 setup_dir_symlink "cursor"      "$HOME/.cursor/skills"           "../.agents/skills"
 setup_dir_symlink "copilot"     "$HOME/.copilot/skills"          "../.agents/skills"
 setup_dir_symlink "windsurf"    "$HOME/.windsurf/skills"         "../.agents/skills"
-setup_dir_symlink "antigravity" "$HOME/.antigravity/skills"      "../.agents/skills"
+setup_dir_symlink "antigravity" "$HOME/.gemini/antigravity/skills" "../../.agents/skills"
 
 # ── サマリー ──
 echo ""
