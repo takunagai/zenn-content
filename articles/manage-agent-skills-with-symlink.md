@@ -163,6 +163,7 @@ ls ~/.gemini/antigravity/skills/git-workflow/SKILL.md 2>/dev/null \
 
 スキル追加時に Claude Code 用の個別 symlink を張り忘れる、といったズレを防ぐために `setup-skills.sh` を用意します。全ツールの symlink 状態を１コマンドで検証・修復できます（⚠️ 自己責任で）。
 
+:::details setup-skills.sh（クリックで展開）
 ```bash:~/.agents/setup-skills.sh
 #!/usr/bin/env bash
 #
@@ -319,6 +320,7 @@ else
   fi
 fi
 ```
+:::
 
 使い方はシンプルです。
 
