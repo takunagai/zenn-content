@@ -16,7 +16,7 @@ Claude Code、Codex、Gemini CLI、Cursor、GitHub Copilot、Windsurf … Agent 
 
 ## 最終構成
 
-先にゴールをお見せします。
+スキルの実体は `~/.agents/skills/` の１箇所だけで、大半のツールはディレクトリ symlink、Claude Code だけは `.system/` が同居するため個別 symlink です。
 
 ```
 ~/.agents/skills/              ← 実体: SSOT + Git 管理
@@ -24,40 +24,16 @@ Claude Code、Codex、Gemini CLI、Cursor、GitHub Copilot、Windsurf … Agent 
 ├─ ~/.claude/skills/           ← 個別 symlink + .system/
 ├─ ~/.codex/skills             → ../.agents/skills（ディレクトリ symlink）
 ├─ ~/.config/opencode/skills   → ../../.agents/skills
-├─ ~/.gemini/skills            → ../.agents/skills
+├─ ~/.windsurf/skills          → ../.agents/skills
 ├─ ~/.cursor/skills            → ../.agents/skills
 ├─ ~/.copilot/skills           → ../.agents/skills
-├─ ~/.windsurf/skills              → ../.agents/skills
+├─ ~/.gemini/skills            → ../.agents/skills
 └─ ~/.gemini/antigravity/skills   → ../../.agents/skills
 ```
 
-ポイントは３つです。
+[Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills) のファイル形式（`SKILL.md`）は共通ですが、配置場所はツールごとにバラバラです。エコシステムは `~/.agents/skills/` を SSOT とし symlink で参照する規約に収束しており、パッケージマネージャ [`npx skills`](https://skills.sh/)（[vercel-labs/skills](https://github.com/vercel-labs/skills)）もこの規約に従っています。
 
-1. **スキルの実体は `~/.agents/skills/` の１箇所だけ。** 更新も１回で全ツールに反映されます
-2. **大半のツールはディレクトリ symlink。** スキルを追加しても作業ゼロです
-3. **Claude Code だけ個別 symlink が必須。** `.system/` が同居しているため（後述）
-
-## Agent Skills の仕組み
-
-[Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills) は Anthropic が策定したオープンスタンダードで、AI コーディングエージェントに再利用可能な知識やワークフローを追加する仕組みです。スキルは `SKILL.md`（YAML フロントマッター + Markdown）で定義され、各ツールがこのフォーマットを共通で読みます。
-
-配置場所は各ツールがそれぞれ持っています。
-
-```
-~/.claude/skills/           ← Claude Code
-~/.codex/skills/            ← Codex
-~/.config/opencode/skills/  ← OpenCode
-~/.gemini/skills/           ← Gemini CLI
-~/.cursor/skills/           ← Cursor
-~/.copilot/skills/          ← GitHub Copilot
-~/.windsurf/skills/         ← Windsurf
-~/.gemini/antigravity/skills/ ← Antigravity
-... 他にも多数
-```
-
-ファイル形式は共通（YAML フロントマッター + Markdown の `SKILL.md`）なのに、場所がバラバラ。ツールが増えるほど管理が破綻します。
-
-このカオスを解決するために、エコシステムは **`~/.agents/skills/` を SSOT とし、各ツールからは symlink で参照する**規約に収束します。スキルのパッケージマネージャである [`npx skills`](https://skills.sh/)（[vercel-labs/skills](https://github.com/vercel-labs/skills)）もこの規約に従っており、`npx skills add <repo> -g` を実行すると `~/.agents/skills/` に実体を配置し、対応エージェントへ symlink を自動作成してくれる機能があります。(※ただし、今回はその機能はあえて使いません。次のセクションで解説)
+## npx skills
 
 ### `npx skills add`によるスキルのインストールフロー
 
@@ -159,11 +135,24 @@ ls ~/.gemini/antigravity/skills/git-workflow/SKILL.md 2>/dev/null \
 
 全部 `OK` なら完了です。
 
+## 運用
+
+`~/.agents/skills/` にスキルを追加・削除したとき、ディレクトリ symlink のツール（Codex、Gemini CLI、Cursor など）は何もする必要がありません。Claude Code だけは個別 symlink の操作が必要です。
+
+```bash
+# 追加
+ln -s "../../.agents/skills/my-new-skill" ~/.claude/skills/my-new-skill
+
+# 削除
+rm ~/.claude/skills/my-old-skill
+```
+
 ## 管理スクリプトで「ズレない仕組み」を作る
 
-スキル追加時に Claude Code 用の個別 symlink を張り忘れる、といったズレを防ぐために `setup-skills.sh` を用意します。全ツールの symlink 状態を１コマンドで検証・修復できます（⚠️ 自己責任で）。
+上記の手動操作を自動化するスクリプトです。全ツールの symlink 状態を１コマンドで検証・修復できます（⚠️ 自己責任で）。
 
 :::details setup-skills.sh（クリックで展開）
+
 ```bash:~/.agents/setup-skills.sh
 #!/usr/bin/env bash
 #
@@ -320,6 +309,7 @@ else
   fi
 fi
 ```
+
 :::
 
 使い方はシンプルです。
@@ -332,18 +322,9 @@ fi
 ~/.agents/setup-skills.sh
 ```
 
-自作スキルを `~/.agents/skills/` に追加した後、このスクリプトを１回実行するだけです。Claude Code 用の個別 symlink が自動生成されます。他のツールはディレクトリ symlink なので、そもそも何もしなくても反映済みです。
+スキルの追加・削除後にこのスクリプトを１回実行すれば、Claude Code 用の個別 symlink が自動で同期されます。
 
 インストールしていないツールは自動でスキップされるので、全部入れていなくても問題ありません。
-
-### Git 管理
-
-自分は `~/.agents/` を Git 管理するようにしました。今回の設定で `.system` ディレクトリ以外のスキルは symlink での管理としたため、以下を付け足しました。
-
-```.gitignore
-/skills/*
-!/skills/.system/
-```
 
 ## プロジェクト固有スキルにも使える
 
@@ -361,6 +342,15 @@ my-saas-project/
 
 `npx skills add` をプロジェクト内で実行すると、この構造が自動生成されます。リポジトリにコミットすれば、チームメンバーが clone するだけで同じスキルセットが揃います。ホームレベルが「個人の道具箱」、プロジェクトレベルが「チームの共有道具箱」。同じアーキテクチャです。
 
+## Git 管理
+
+自分は `~/.agents/` を Git 管理するようにしました。今回の設定で `.system` ディレクトリ以外のスキルは symlink での管理としたため、以下を付け足しました。
+
+```.gitignore
+/skills/*
+!/skills/.system/
+```
+
 ## まとめ
 
-Agent Skills のエコシステムは `~/.agents/skills/` を SSOT とし、各ツールへは symlink で配信する規約に収束しています。`npx skills` のようなパッケージマネージャを使えばインストールと配信は自動化されますが、自作スキルの管理や symlink のヘルスチェックには `setup-skills.sh` のような補助スクリプトがあると安心です。
+本来は各ベンダーが `~/.agents/skills/` を直接読んでくれれば済む話で、symlink で橋渡しすること自体が余計な手間です。とはいえ現状そうなっていない以上、SSOT + symlink で一元管理するのが現実的な落としどころです。
