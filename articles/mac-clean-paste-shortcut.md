@@ -40,7 +40,14 @@ published: true
 他の設定はデフォルトのままでOK。
 
 ```
-pbpaste | perl -0777 -pe 's/^[ \t]+//gm; s/(?<!\n)\n(?!\n)//g' | pbcopy
+pbpaste | perl -0777 -pe '
+s/\x{3000}/ /g;
+s/^[ \t]+|[ \t]+$//gm;
+s/(?<!\n)\n(?!\n)/ /g;
+s/[ \t]{2,}/ /g;
+s/\n{3,}/\n\n/g;
+' | pbcopy
+
 sleep 0.1
 osascript -e 'tell application "System Events" to keystroke "v" using command down'
 ```
