@@ -8,7 +8,7 @@ topics:
   - aiagent
   - llm
   - documentation
-published: false
+published: true
 ---
 
 ![ヘッドホンを着けた女性と、カドゥケウスの杖を持つヘルメス像を描いたイメージイラスト](/images/hermes-desktop-settings-guide/eyecatch-girl-and-hermes.jpg)
