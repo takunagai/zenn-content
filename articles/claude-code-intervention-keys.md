@@ -1,6 +1,6 @@
 ---
 title: 【Claude Code】作業中の AI に介入する steer・queue・中断の正確な使い分け
-emoji: 🎛️
+emoji: 🐸
 type: tech
 topics:
   - claudecode
