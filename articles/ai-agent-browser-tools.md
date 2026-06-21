@@ -1,5 +1,5 @@
 ---
-title: Claude Code でブラウザを操作する4ツールを徹底比較 ─ Claude in Chrome/chrome-devtools-mcp/agent-browser/Playwright MCP
+title: Claude Code ブラウザ操作４ツールの徹底比較 ─ Claude in Chrome/chrome-devtools-mcp 他
 emoji: 🐸
 type: tech
 topics:
