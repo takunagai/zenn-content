@@ -11,6 +11,8 @@ topics:
 published: true
 ---
 
+![](/images/ai-agent-browser-tools/eyecatch.png)
+
 AI エージェントにブラウザを触らせたい。そんな時に候補に挙がるのが、**Claude in Chrome**、**chrome-devtools-mcp**、**agent-browser**、**Playwright MCP** 。どれも「AI 向けのブラウザ操作」ができるツールですが、それぞれ特徴があります。
 
 銀の弾丸的なものは存在せず、用途によって最適解が入れ替わります。この記事ではまず用途別でおすすめのツールを挙げ、比較と解説はその後にします。どれを入れるか迷っている人にお役に立てれば幸いです。
