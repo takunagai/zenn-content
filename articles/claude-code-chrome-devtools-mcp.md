@@ -25,7 +25,7 @@ published: true
 :::message
 **Claude in Chrome（Chrome 拡張機能）との違い**
 
-Anthropic は Chrome 拡張機能 **Claude in Chrome** も提供しています（2025 年 11 月ベータ開始・有料プラン向け）。こちらはウェブページ上のクリック・入力・ナビゲーションを自動化する一般ユーザー向けの機能です。DevTools for Agents は開発者向けのデバッグ用途で、MCP サーバー経由で Lighthouse 監査やメモリ解析を行う点が異なります。「ブラウザで何かをする（do）」が前者、「ブラウザの内部を調べる（inspect）」が後者です。
+Anthropic も Chrome 拡張機能 **Claude in Chrome** を提供しています（2025 年 8 月にベータ提供開始、12 月に Pro・Max・Team・Enterprise の全有料プランへ拡大）。この拡張は `claude --chrome` または `/chrome` で **Claude Code からも駆動でき**、ブラウザのログイン状態を共有してクリック・入力・データ抽出・GIF 記録などを自動化します（コンソールや DOM のライブデバッグも可能）。一方 DevTools for Agents は CDP 経由で Lighthouse 監査やメモリ解析といった**深い診断**に強みがあります。「ブラウザを操作する（do）」が Claude in Chrome、「ブラウザの内部を深く調べる（inspect）」が DevTools for Agents、と棲み分けると分かりやすいです。
 :::
 
 ## DevTools for Agents (chrome-devtools-mcp) とは
