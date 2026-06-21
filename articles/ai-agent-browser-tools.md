@@ -1,5 +1,5 @@
 ---
-title: AI エージェントにブラウザを操作させる4ツールの選び方
+title: Claude Code でブラウザを操作する4ツールを徹底比較 ─ Claude in Chrome/chrome-devtools-mcp/agent-browser/Playwright MCP
 emoji: 🐸
 type: tech
 topics:
