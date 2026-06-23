@@ -4,7 +4,6 @@ emoji: "🐸"
 type: "tech"
 topics: ["anthropic", "claudecode", "ai", "agent", "llm"]
 published: true
-coverImage: /images/anthropic-ai-agent-design-20-principles/eyecatch.png
 ---
 
 ![](/images/anthropic-ai-agent-design-20-principles/eyecatch.png)
