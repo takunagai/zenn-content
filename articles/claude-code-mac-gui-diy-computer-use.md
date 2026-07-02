@@ -8,7 +8,7 @@ topics:
   - applescript
   - swift
   - ai
-published: false
+published: true
 ---
 
 ![Claude Code に Mac アプリを操作させる ─ Computer Use 相当の機能を自作](/images/claude-code-mac-gui-diy-computer-use/eyecatch.png)
