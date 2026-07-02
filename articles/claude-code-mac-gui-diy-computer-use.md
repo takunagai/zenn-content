@@ -297,7 +297,8 @@ swiftc -O -o click click.swift
 
 スキル本体と人間向けドキュメントは GitHub で公開しています。
 
-https://github.com/takunagai/agent-assets
+- スキル: https://github.com/takunagai/agent-assets/tree/main/skills/mac-gui-router
+- ドキュメント: https://github.com/takunagai/agent-assets/blob/main/docs/mac-gui-router.md
 
 ## まとめ
 
