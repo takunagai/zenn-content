@@ -3,7 +3,7 @@ title: "プロンプトキャッシュは通信ではなく計算を省いてい
 emoji: "🐸"
 type: "tech"
 topics: ["claudecode", "ai", "llm", "anthropic", "claude"]
-published: false
+published: true
 ---
 
 以前の私は、一つのセッションの中でモデルとエフォートをこまめに切り替えていました。調べものや決まった処理など深い思考が要らないものは Sonnet に落とし、開発での実装の難所には Opus (使えた期間は Fable) に上げ、深く考えさせたいターンにはエフォートを xhigh に。タスクごとに最適な設定を選ぶ、賢い使い方をしている気になっていました。
