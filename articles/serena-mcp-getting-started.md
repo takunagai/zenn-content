@@ -6,7 +6,7 @@ topics: ["claudecode", "mcp", "serena", "ai", "typescript"]
 published: true
 ---
 
-![Serena と Claude が対話しながらコードのシンボルを 1 枚ずつ差し替えるエディトリアル風イラスト](/images/serena-mcp-getting-started/eyecatch.png)
+![Claude が虫眼鏡で多数の似たコード片から目的のシンボルを 1 つだけ正確に照らし出すエディトリアル風イラスト](/images/serena-mcp-getting-started/eyecatch.png)
 
 いまさら感がありますが、Serena MCP について解説します。
 
