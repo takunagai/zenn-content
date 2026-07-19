@@ -53,6 +53,8 @@ PhpStorm **2025.2** で内蔵されました。それ以前は `@jetbrains/mcp-p
 
 要は「PhpStorm が普段やっていること」をそのままエージェントに委ねられる、という理解でよいです。
 
+各カテゴリの詳しいツール一覧は、JetBrains 公式ドキュメントにまとまっています ─ [MCP Server | JetBrains IDE Documentation](https://www.jetbrains.com/help/idea/mcp-server.html)。
+
 ## セットアップ ─ Claude Code から接続する
 
 ### 手順
