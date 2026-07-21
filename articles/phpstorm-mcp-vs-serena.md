@@ -1,5 +1,5 @@
 ---
-title: "PhpStorm MCP サーバーの概要と Serena との比較と使い分け"
+title: "IDE を AI の手足にする PhpStorm MCP ─ WordPress 実践と Serena との使い分け"
 emoji: "🐸"
 type: "tech"
 topics: ["phpstorm", "mcp", "claudecode", "php", "serena"]
