@@ -6,6 +6,8 @@ topics: ["個人開発", "cloudflareworkers", "react", "hono", "d1"]
 published: true
 ---
 
+![デスクで AI ツールのカードを並べてデッキを組む女性のイラスト](/images/ai-deck-introduction/eyecatch.png)
+
 ## TL;DR
 
 - 500+ の AIサービスカタログから、お気に入り・タグ・メモで自分専用の「デッキ」を組める Web アプリ [AI Deck](https://ai-deck.app) を個人開発して公開しました
