@@ -29,12 +29,7 @@ macOS の「ログイン項目と機能拡張」に見慣れない項目が出�
 sfltool dumpbtm | grep -i -A 15 -B 5 "StaffPad"
 ```
 
-実行すると管理者認証（パスワードまたは Touch ID）を求められます。これは正常な挙動です。表示するだけのコマンドで、何も削除しません。
-
-:::message
-`sfltool` には man page が用意されておらず、`sfltool` とだけ打った時の usage 出力以外に手掛かりがありません。Apple が正式にドキュメント化していないコマンドなので、将来仕様が変わる可能性があります（参考: [The Eclectic Light Company](https://eclecticlight.co/2025/12/03/manage-login-and-background-items/)）。
-:::
-
+実行すると管理者認証（パスワードまたは Touch ID）を求められます。これは正常な挙動です。表示するだけのコマンドで何も削除しません。
 出力から、該当部分だけを抜き出します。
 
 ```text
@@ -61,7 +56,7 @@ sfltool dumpbtm | grep -i -A 15 -B 5 "StaffPad"
     Parent Identifier: StaffPad Ltd
 ```
 
-`#21` が設定画面に表示されていた項目そのもの、`#22` がその中身です。`Executable Path` に実行ファイルの絶対パスが出ています。ここで「StaffPad Ltd の正体は `com.muse.authservice` である」というところまで一気に進みます。
+`#21` が設定画面に表示されていた項目そのもの、`#22` がその中身です。`Executable Path` に実行ファイルの絶対パスが出ています。ここで「StaffPad Ltd の正体は `com.muse.authservice` である」ということが判明しました。
 
 ## 出力の読み方
 
