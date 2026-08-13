@@ -144,6 +144,8 @@ sudo launchctl bootout system/com.muse.authservice
 
 ## 答え合わせ
 
-今回の正体は、Muse Hub がインストールした権限付きヘルパー `com.muse.authservice` でした。設定画面に「StaffPad Ltd」と出ていたのは、そのヘルパーの署名開発元名が StaffPad Ltd だったからでした。
+今回の正体は、`/Applications/Audacity 4.app` が同梱でインストールした Muse Hub の認証用ヘルパー `com.muse.authservice` でした。Audacity の開発元である Muse Group は MuseScore や StaffPad を傘下に持っていて、このヘルパーの署名開発元名が StaffPad Ltd になっているため、設定画面には楽譜アプリの会社名だけが見えていた、という構図です。
+
+`find` で見つかった Muse Hub は中間コンポーネントで、`/Applications` を確認するまで最終的な入口には辿り着けませんでした。`stat -f "%SB %N" /Library/LaunchDaemons/com.muse.authservice.plist` で登録日時を見ると 2 月で、直近にインストールしたツールとは無関係だという切り分けもできます。
 
 見慣れない項目に出会ったら、名前で検索する前に `sfltool dumpbtm` でパスまで辿る。それだけで、消すか残すかを自分で決められるようになります。
