@@ -98,3 +98,8 @@ Mac の設定が適切にベストプラクティスな状態になっている�
 - Python で uv を使ってる場合は本文中の条件でない限りそのまま
 
 今は AI が面倒な作業を肩代わりしてくれるので、こういった移行も楽ですね。
+
+移行後に日常で使う mise のコマンドは、こちらにまとめました。
+
+https://zenn.dev/takna/articles/mise-command-cheatsheet
+
