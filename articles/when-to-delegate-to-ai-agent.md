@@ -3,7 +3,7 @@ title: "AI エージェント組織に投げて得なのは 3 条件だけ ─ �
 emoji: "🐸"
 type: "tech"
 topics: ["ai", "claudecode", "agent", "個人開発"]
-published: true
+published: false
 ---
 
 ![一人の EA が三人の同僚へ別々の依頼を配り、それぞれが独立した作業に入っているオフィスのイラスト](/images/when-to-delegate-to-ai-agent/eyecatch.jpg)
