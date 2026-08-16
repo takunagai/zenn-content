@@ -1,7 +1,7 @@
 ---
 title: "AI エージェント組織に投げて得なのは 3 条件だけ ─ 委譲するか自分でやるかの判断基準"
-emoji: "🧭"
-type: "idea"
+emoji: "🐸"
+type: "tech"
 topics: ["ai", "claudecode", "agent", "個人開発"]
 published: true
 ---
