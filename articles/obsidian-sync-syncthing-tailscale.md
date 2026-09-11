@@ -1,5 +1,5 @@
 ---
-title: "Obsidian Vault を iCloud なしで iPhone と同期する ─ Syncthing + SyncTrain + Tailscale"
+title: "iCloud なしで Obsidian Vault を iPhone と同期する ─ Syncthing + Tailscale"
 emoji: "🐸"
 type: "tech"
 topics: ["obsidian", "syncthing", "tailscale", "ios", "mac"]
