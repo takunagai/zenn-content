@@ -2,13 +2,17 @@
 title: "【MCPのトリセツ #7】Slack MCPサーバー：チームコミュニケーションを強化"
 emoji: "🐸"
 type: "tech"
-topics: ["mcp", "slack", "claude", "windsurf", "ai", "生成ai", "ai駆動開発"]
+topics: ["mcp", "slack", "claude", "claudecode", "ai"]
 published: true
 ---
 
-## 💡 MCPの始め方シリーズについて
+Claude や Codex などの AI に外部ツールをつなぐ「MCP（Model Context Protocol）」の導入方法と使い方を解説するシリーズです。今回は Slack 公式の MCP サーバーを取り上げます。過去のやり取りの検索と要約、メッセージの下書きと投稿を、AI との会話から行えるようになります。
 
-Claude などの AI を強化する「MCP（Model Context Protocol）」の導入方法と活用テクニックのシリーズ。今回は、Slack MCPサーバーの導入方法と活用法を解説します。
+:::message
+**更新日: 2026-09-22**（初版: 2025-03-08）
+
+旧版で紹介していた `@modelcontextprotocol/server-slack` は公式リポジトリからアーカイブされたため、Slack 公式のリモート MCP サーバーの手順に差し替えています。Bot アプリの作成やチーム ID の取得は不要になりました。
+:::
 
 ### シリーズ目次
 
@@ -18,215 +22,147 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
 4. [mcp-pandoc： AIでドキュメント形式を変換](./mcp-server-tutorial-04-pandoc)
 5. [GitHub MCPサーバー： AIでリポジトリを管理](./mcp-server-tutorial-05-github)
 6. [Figma MCP：デザインとコードを効率的に連携](./mcp-server-tutorial-06-figma)
-7. 👉 [Slack MCPサーバー：チームコミュニケーションを強化](./mcp-server-tutorial-07-slack)
+7. **Slack MCPサーバー：チームコミュニケーションを強化（この記事）**
 8. [Firecrawl MCP：スクレイピングでウェブ情報を取得・分析](./mcp-server-tutorial-08-firecrawl)
 9. [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
 10. [Raindrop.io MCP Server: 便利なブックマークサービスをAIから使う](./mcp-server-tutorial-10-raindropio)
 11. [Fetch MCP Server: ウェブコンテンツを取得・処理](./mcp-server-tutorial-11-fetch)
 12. [Blender MCP Server: 会話で Blender を操作し3Dモデルを作成](./mcp-server-tutorial-12-blender)
 13. [Perplexity MCP Server: Perplexity ならではの検索をAIとの会話で実行](./mcp-server-tutorial-13-perplexity)
+14. [国土交通省がMCPサーバーを公開：AI時代のオープンデータ活用45選](./mcp-server-tutorial-14-milt-data)
 
-参考: [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
-
----
-
-## 🚀 Slack MCPでできること
-
-「チームの Slack で過去のやり取りを分析して課題を見つけたい...」
-「Slack のメッセージやスレッドをAIに参照してもらい、的確な返答を得たい...」
-「AI がチームの会話コンテキストを理解した上でアドバイスしてくれたら...」
-
-Slack MCPサーバーを使えば、これらを実現できます。AI と Slack を連携させ、チームコミュニケーションの分析や効率化を目指しましょう。
-
-- チャンネル内の会話履歴を参照
-- 特定のトピックに関する過去の議論を要約
-- メッセージの送信や返信
-- チャンネルの作成や管理
-- メンバーへのメンション
-- チーム内の知識やノウハウの抽出
-- コミュニケーションの傾向分析
-- 効果的な会議要約の作成と共有
+資料: [ウェブ情報を取得するMCPの比較 (Fetch、Firecrawl、Markdownify、Perplexity)](./mcp-server-tutorial-reference-web-mcp)
 
 ---
 
-## 🛠️ セットアップ手順
+## Slack MCP でできること
 
-Slack MCPサーバーをセットアップするには、以下の手順に従います。
+Slack の情報は流れていくので、「あの件、どこで決まったんだっけ」を探す時間がかかります。Slack MCP サーバーをつなぐと、AI が自分の権限の範囲で Slack を検索し、文脈を踏まえて答えてくれます。
 
-### 1. Slack Bot アプリの作成とトークンの取得
+| 分類 | できること |
+|---|---|
+| 検索 | メッセージとファイルを日付・ユーザー・種類で絞り込む。ユーザー、チャンネル、カスタム絵文字の検索 |
+| メッセージ | チャンネル履歴とスレッドの読み取り、送信、下書き、リアクション |
+| canvas | 整形されたドキュメントの作成と共有、Markdown での書き出し |
+| ユーザー | プロフィールの取得、チャンネルメンバーの一覧 |
+| ファイル・リスト | ファイルのアップロード、リストの作成と読み取り |
 
-まず、Slackワークスペースで使用するBotを作成し、必要なトークンを取得します：
+## 公式リモートサーバーの仕組み
 
-1. [Slack API](https://api.slack.com/apps)のページにアクセスしてログイン
-2. 「Create an App」をクリック
-3. 「From scratch」を選択し、以下を入力：
-   - **アプリ名**: 任意の名前（例：「Claude MCP Bot」）
-   - **ワークスペース**: 対象のSlackワークスペース
-4. 「Create App」をクリック
-5. 左サイドバーから「OAuth & Permissions」を選択
-6. 「Scopes」セクションで「Bot Token Scopes」に以下の権限を追加：
-   - `chat:write` (メッセージ送信)
-   - `channels:read` (チャンネル情報読み取り)
-   - `channels:history` (チャンネル履歴閲覧)
-   - `users:read` (ユーザー情報読み取り)
-   - `team:read` (チーム情報読み取り)
-   - 必要に応じて他の権限も追加
-7. 画面上部の「Install to Workspace」ボタンをクリック
-8. 認証画面で「許可する」をクリック
-9. 「Bot User OAuth Token」（`xoxb-`で始まるトークン）をコピー
+Slack 公式の MCP サーバーは `https://mcp.slack.com/mcp` で提供されるリモートサーバーです。旧来の Bot Token 方式と違い、OAuth で自分の Slack アカウントとしてログインします。AI が読めるのは、自分が Slack 上で見られる範囲だけです。
 
-### 2. チームIDの取得
+導入前に押さえておく点が 2 つあります。
 
-SlackチームのチームID（Team ID）も必要です：
+- **ワークスペース管理者の承認が要る**: MCP クライアント（Claude など）は Slack アプリとして扱われ、通常のアプリ承認の手続きに乗ります。個人の判断だけでは接続できないワークスペースもあります
+- **接続できるクライアントが決まっている**: Slack のドキュメントに載っている対応クライアントは、Claude.ai、Claude Code、Perplexity、Cursor です（2026 年 9 月時点）
 
-1. ブラウザでSlackにログイン
-2. URLを確認：`https://app.slack.com/client/T0XXXXXXX/...`
-3. URLの「T0XXXXXXX」部分がチームIDです
+## セットアップ手順
 
-### 3. MCPサーバーの設定
+### Claude Desktop
 
-取得したトークンとチームIDを使って、Slack MCPサーバーを設定します。
+1. サイドバーの「Customize」を開く
+2. 「Connectors」を開き、「+」を押す
+3. Slack を選び、OAuth 認証を済ませる
 
-#### Slack MCPサーバーの設定
+認証画面で接続先のワークスペースを選びます。管理者の承認が済んでいない場合は、ここで承認リクエストを送ることになります。
 
-##### 方法1： mcp-installerを使う場合
+### Claude Code
 
-[シリーズ記事#0](./MCPサーバー%2000%20簡単に導入する手順%20\(mcp-installer\).md)でmcp-installerをセットアップ済みであれば、Claude に以下のように指示できます。※セキュリティ的に、チャットでのAPIキーなどの直接入力は絶対に避けてください。
+公式プラグインを入れます。リモート MCP サーバーの URL や OAuth の設定が自動で入ります。
 
 ```bash
-MCPサーバー @modelcontextprotocol/server-slack をインストールして。環境変数 SLACK_BOT_TOKEN は 'your-bot-token-here' で、SLACK_TEAM_ID は 'T0XXXXXXX' で設定します
+claude plugin install slack
 ```
 
-その後、Claude Desktopの設定ファイル（`~/Library/Application Support/Claude/claude_desktop_config.json`）を開き、`your-bot-token-here` と `T0XXXXXXX` の部分を、実際に取得したトークンとチームIDに置き換えてください。
+Claude Code の中から入れる場合は `/plugin install slack` です。初回にツールを使うとき、ブラウザで Slack の認証画面が開きます。
 
-##### 方法2：設定ファイルを直接編集する場合
+### Codex
 
-Claude Desktopの設定ファイル（`~/Library/Application Support/Claude/claude_desktop_config.json`）を開き、以下のように設定を追加します。`your-bot-token-here` と `T0XXXXXXX` の部分は、実際に取得したトークンとチームIDに置き換えてください。
+Codex は Slack 公式の対応クライアントに含まれていません。Codex から Slack を扱いたい場合は、コミュニティ製のローカルサーバーを使うことになります。旧リファレンス実装を引き継いだ [zencoderai/slack-mcp-server](https://github.com/zencoderai/slack-mcp-server) や、[korotovsky/slack-mcp-server](https://github.com/korotovsky/slack-mcp-server) があります。
 
-```json
-{
-  "mcpServers": {
-    "slack": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-slack"
-      ],
-      "env": {
-        "SLACK_BOT_TOKEN": "your-bot-token-here",
-        "SLACK_TEAM_ID": "T0XXXXXXX"
-      }
-    }
-  }
-}
+これらは Bot Token やユーザートークンを自分で発行して設定する方式です。トークンの管理と、ワークスペースの規約に沿っているかの確認は利用者の責任になります。業務のワークスペースで使うなら、先に管理者へ相談するのが無難です。
+
+## 基本的な使い方（プロンプト）
+
+```text
+#general チャンネルの直近 1 週間の会話を要約して
 ```
 
-#### Windsurf の場合
-
-`~/.codeium/windsurf/mcp_config.json` を開き、上と同様の設定を追加します。
-
----
-
-## 👨‍💻 基本的な使い方 (プロンプト)
-
-### 指定したチャンネルの最新メッセージを読み取り、要約
-
-```bash
-#general チャンネルの最近の会話を要約して
+```text
+#project-alpha で「リリース計画」について議論しているスレッドを探して、決定事項をまとめて
 ```
 
-### 該当するキーワードを含むメッセージスレッドを見つけ、内容を要約
-
-```bash
-#project-alpha チャンネルで「リリース計画」に関する議論を見つけて要約して
+```text
+先月、田中さんが共有してくれた見積もりのファイルを探して
 ```
 
-### メッセージを作成して、指定したチャンネルに投稿
-
-```bash
-#announcements チャンネルに、明日の全体ミーティングの案内を丁寧な口調で投稿して
+```text
+#announcements に投稿する、明日の全体ミーティングの案内文を下書きして。送信はせず、下書きとして保存して
 ```
 
-### 新しいチャンネルを作成し、初期メッセージを投稿
+投稿までさせる場合も、まず下書きで止めて、文面を確認してから送るのが安全です。AI の文章がそのままチームに流れるのを防げます。
 
-```bash
-新しいプロジェクト「Beta」用のチャンネル #project-beta を作成し、初回メッセージとしてプロジェクト概要を投稿してください
+## 実践的な活用例
+
+### 会議の決定事項を別チャンネルへ共有する
+
+```text
+昨日の #team-meetings での製品企画会議の内容を要約し、決定事項と次のアクションをリストにして、#product-dev に共有する文面を下書きして
 ```
 
-## 💡 実践的な活用例 (プロンプト)
+### 過去の議論から判断の経緯を掘り起こす
 
-### 1. 会議の内容を要約して、重要ポイントをまとめて別チャンネルに共有
-
-```bash
-昨日の #team-meetings チャンネルでの製品企画会議の内容を要約し、決定事項と次のアクションアイテムをリスト化して #product-dev チャンネルに共有して
+```text
+過去 6 か月の #engineering から、システムアーキテクチャに関する重要な議論と決定事項を時系列で抽出して
 ```
 
-### 2. チャンネル履歴から特定トピックに関する重要情報を抽出
+### 新メンバー向けの資料を canvas にまとめる
 
-```bash
-過去6ヶ月間の #engineering チャンネルから、システムアーキテクチャに関する重要な議論と決定事項を抽出して
+```text
+#general と #help でよく出る質問と回答を整理して、新メンバー向けの FAQ を canvas で作成して
 ```
 
-### 3. 新入社員のオンボーディング支援
+### チーム間の情報共有を助ける
 
-```bash
-新入社員向けに、#general チャンネルと #random チャンネルの雰囲気やよく話題になるトピック、チームカルチャーについて分析して
+```text
+#marketing で議論されている新機能のプロモーション計画を要約して。開発チーム向けに、対応が必要な点を先頭に書いて
 ```
 
-### 4. コミュニケーションパターンを分析し、改善点を提案
+## 他の MCP サーバーとの組み合わせ
 
-```bash
-#project-gamma チャンネルでの議論の傾向を分析し、意思決定プロセスを効率化するための提案をして
+[Filesystem MCP](./mcp-server-tutorial-02-filesystem) と組み合わせると、Slack の議論を手元の文書に残せます。
+
+```text
+#project-docs で共有された最新の仕様の議論を整理し、要点を ~/Documents/Projects/summary.md に保存して
 ```
 
-### 5. 異なるチーム間での情報共有の補助
+[GitHub MCP](./mcp-server-tutorial-05-github) と組み合わせると、Slack で報告されたバグを Issue にできます。
 
-```bash
-#marketing チャンネルで議論されている新機能のプロモーション計画を要約し、#development チャンネルにわかりやすく共有して
+```text
+#dev-team で今週報告されたバグを一覧にして、まだ Issue になっていないものを myusername/our-app の Issue の下書きにして
 ```
 
-## 🔄 他のMCPサーバーとの組み合わせ
+## 安全に使うための注意点
 
-Slack MCPサーバーは他のMCPサーバーと組み合わせることでさらに便利になります：
+- **読める範囲を意識する**: AI は自分のアカウントで見える DM やプライベートチャンネルも検索できます。機密度の高い会話を AI に渡してよいか、社内のルールを先に確認してください
+- **チームに周知する**: AI が過去の会話を読んで要約する使い方をしていることを、メンバーと共有しておくと行き違いが起きません
+- **送信は確認してから**: 送信・リアクションなどの書き込み系ツールは自動承認にせず、内容を見てから許可します
+- **外部から来た文章に注意する**: 共有チャンネルや外部連携で流れてくるメッセージには、AI への指示を装った文章が紛れる可能性があります。検索結果をもとに AI が想定外の操作をしようとしたら、承認せずに止めます
 
-### チャンネルの内容を分析してファイルに保存 (Slack MCP + Filesystem MCP)
+## まとめ
 
-```bash
-#project-docs チャンネルで共有された最新の仕様書の内容を分析し、その要点を ~/Documents/Projects/summary.md ファイルに保存してください
-```
+- 旧 `@modelcontextprotocol/server-slack` はアーカイブされました。現在は Slack 公式のリモート MCP サーバー（`https://mcp.slack.com/mcp`）を使います
+- Bot アプリの作成は不要で、OAuth で自分のアカウントとして接続します。ワークスペース管理者の承認が前提です
+- Claude Desktop はコネクタ、Claude Code は公式プラグインで導入します。Codex は公式の対応クライアントに含まれません
 
-### チャンネルの議論内容を元に GitHubイシューを立てる (Slack MCP + GitHub MCP)
+新しい MCP 記事の更新は X [@nagataku_ai](https://x.com/nagataku_ai) でお知らせします。
 
-```bash
-#dev-team チャンネルで議論されたバグ修正の内容をもとに、GitHubリポジトリ「our-app」にIssueを作成してください
-```
+## 参考リンク
 
-### チャンネルで共有されたYouTube動画の要約 (Slack MCP + YouTube MCP)
+- [Slack MCP server - Slack Developer Docs](https://docs.slack.dev/ai/slack-mcp-server/)
+- [Connect to Claude - Slack Developer Docs](https://docs.slack.dev/ai/slack-mcp-server/connect-to-claude/)
+- [modelcontextprotocol/servers-archived - GitHub](https://github.com/modelcontextprotocol/servers-archived)
+- [zencoderai/slack-mcp-server - GitHub](https://github.com/zencoderai/slack-mcp-server)
+- [korotovsky/slack-mcp-server - GitHub](https://github.com/korotovsky/slack-mcp-server)
 
-```bash
-#learning-resources チャンネルで共有されたYouTubeチュートリアルのリンクを見つけて、その内容を要約してください
-```
-
-## ⚠️ Slack MCPサーバーを安全に使用するための注意点
-
-1. **最小権限の原則**: BotアプリにはChatの読み書きなど必要最小限の権限だけを与えましょう
-2. **トークンの管理**: Slack Bot Token は機密情報として適切に管理し、公開リポジトリに入れないようにしましょう
-3. **利用目的の明確化**: チームメンバーには AI が過去の会話を読めることを透明化し、利用目的や範囲を明確に共有しましょう
-4. **プライバシー配慮**: DMやプライベートチャンネルへのアクセスは特に慎重に検討しましょう
-
-## 📝 まとめ
-
-Slack MCPサーバーを導入することで、AIはチームのコミュニケーションコンテキストを理解し、より的確なサポートが可能になります。会議の要約、知識の抽出、情報共有の効率化など、ビジネスコミュニケーションの多くの側面を改善できるでしょう。
-
-特にリモートワークやグローバルチームが増える中で、Slack MCPサーバーはコミュニケーションギャップを埋め、チームの結束力を高める強力なツールとなります。プライバシーやセキュリティに配慮しながら、ぜひ Slack MCP を活用してみてください！
-
-新しいMCP記事の更新は X [@nagataku_ai](https://x.com/nagataku_ai) でお知らせします。フォローとツッコミ、お待ちしています！
-
-## 📚 参考リンク
-
-- [Slack API公式ドキュメント](https://api.slack.com/docs)
-- [Slack App開発ガイド](https://api.slack.com/start/overview)
-- [@modelcontextprotocol/server-slack](https://github.com/modelcontextprotocol/servers/tree/main/src/slack)
-- [Windsurf MCP入門ガイド動画](https://www.youtube.com/watch?v=Y_kaQmhGmZk)
-
-次回の記事では、ウェブ情報をスクレイピングして分析できる「[Firecrawl MCP](./mcp-server-tutorial-08-firecrawl)」について解説します。お楽しみに！
+次回は、ウェブ情報をスクレイピングして分析できる「[Firecrawl MCP](./mcp-server-tutorial-08-firecrawl)」を解説します。
