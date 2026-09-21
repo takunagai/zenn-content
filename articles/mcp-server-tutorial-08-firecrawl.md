@@ -2,13 +2,17 @@
 title: "【MCPのトリセツ #8】Firecrawl MCP：スクレイピングでウェブ情報を取得・分析"
 emoji: "🐸"
 type: "tech"
-topics: ["mcp", "firecrawl", "claude", "windsurf", "ai", "生成ai", "ai駆動開発"]
+topics: ["mcp", "firecrawl", "claude", "claudecode", "codex"]
 published: true
 ---
 
-## 💡 MCPの始め方シリーズについて
+Claude や Codex などの AI に外部ツールをつなぐ「MCP（Model Context Protocol）」の導入方法と使い方を解説するシリーズです。今回は Firecrawl MCP を取り上げます。JavaScript で描画されるページの取得、サイト全体のクロール、検索、構造化データの抽出を AI から実行できます。
 
-Claude などの AI を強化する「MCP（Model Context Protocol）」の導入方法と活用テクニックのシリーズ。今回は、Firecrawl MCPの導入方法と活用テクニックを紹介します。リサーチや情報収集の効率化を可能にします！
+:::message
+**更新日: 2026-09-22**（初版: 2025-03-08）
+
+料金プラン、ツール構成、導入方法を現行の内容に更新しています。旧版で触れていた Deep Research 機能は廃止され、検索と Agent 機能に置き換わりました。
+:::
 
 ### シリーズ目次
 
@@ -19,269 +23,192 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
 5. [GitHub MCPサーバー： AIでリポジトリを管理](./mcp-server-tutorial-05-github)
 6. [Figma MCP：デザインとコードを効率的に連携](./mcp-server-tutorial-06-figma)
 7. [Slack MCPサーバー：チームコミュニケーションを強化](./mcp-server-tutorial-07-slack)
-8. 👉 [Firecrawl MCP：スクレイピングでウェブ情報を取得・分析](./mcp-server-tutorial-08-firecrawl)
+8. **Firecrawl MCP：スクレイピングでウェブ情報を取得・分析（この記事）**
 9. [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
 10. [Raindrop.io MCP Server: 便利なブックマークサービスをAIから使う](./mcp-server-tutorial-10-raindropio)
 11. [Fetch MCP Server: ウェブコンテンツを取得・処理](./mcp-server-tutorial-11-fetch)
 12. [Blender MCP Server: 会話で Blender を操作し3Dモデルを作成](./mcp-server-tutorial-12-blender)
 13. [Perplexity MCP Server: Perplexity ならではの検索をAIとの会話で実行](./mcp-server-tutorial-13-perplexity)
-参考: [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
+14. [国土交通省がMCPサーバーを公開：AI時代のオープンデータ活用45選](./mcp-server-tutorial-14-milt-data)
+
+資料: [ウェブ情報を取得するMCPの比較 (Fetch、Firecrawl、Markdownify、Perplexity)](./mcp-server-tutorial-reference-web-mcp)
 
 ---
 
-## 🚀 Firecrawl MCPでできること
+## Firecrawl MCP でできること
 
-「AI にウェブサイトの内容を分析してもらいたい...」
-「複数のページをクロールして情報を集めてきてほしい...」
-「競合サイトのデザインや機能を調査したい...」
+Claude や Codex には標準の Web 検索・Web 取得機能があります。それでも Firecrawl を足す理由は、標準機能では届かない取得ができるからです。
 
-Firecrawl MCPサーバーを使えば、AIがウェブサイトの内容を詳細に理解し、複数ページのクロール、情報の抽出、検索、分析などを行えるようになります。
+| 機能 | ツール名 | 内容 |
+|---|---|---|
+| スクレイピング | `firecrawl_scrape` | 1 ページを Markdown や JSON で取得。JavaScript で描画されるページにも対応 |
+| サイトマップ取得 | `firecrawl_map` | サイト内の URL を一覧にする |
+| クロール | `firecrawl_crawl` | 起点の URL から複数ページをたどって取得する |
+| 検索 | `firecrawl_search` | Web 検索し、結果のページ本文まで取得する |
+| ブラウザ操作 | `firecrawl_interact` | クリックや入力をしてから内容を取得する |
+| Agent | `firecrawl_agent` | 目的を伝えると、検索と取得を自律的に繰り返して調べる |
+| ファイル解析 | `firecrawl_parse` | PDF などのファイルを解析する |
 
-- **スクレイピング**: JavaScriptレンダリングによる高度なウェブスクレイピング
-- **クロール**: 特定のサイトを起点に複数ページを自動探索
-- **検索**: ウェブ上の情報をキーワードで検索
-- **情報抽出**: 特定の要素やパターンに基づく構造化データの抽出
-- **バッチ処理**: 複数URLの同時処理
-- **ディープリサーチ**: 複数の情報源からトピックに関する詳細な調査を実行
-  ※ 真の Deep Research はまだ正式リリースはされていない (2025-03-11 現在)  
-  [Deep Research - Firecrawl](https://www.firecrawl.dev/deep-research)
+このほかに、論文検索（`firecrawl_research_*`）、ページの変更監視（`firecrawl_monitor_*`）、クレジット残量の確認（`firecrawl_credit_usage`）があります。
 
-> 📝 **ノート**: Fetch MCP、Firecrawl MCP、Markdownify MCPの比較と使い分けについては、[ウェブの情報を取得するMCPの使い分け](./mcp-server-tutorial-reference-web-mcp)を参照してください。
+> Fetch、Firecrawl、Markdownify、Perplexity の使い分けは、[ウェブ情報を取得するMCPの比較](./mcp-server-tutorial-reference-web-mcp)にまとめています。
 
-さらに、以下のような高度な機能も備えています：
+## 料金プラン
 
-- モバイル/デスクトップのビューポート切り替え
-- タグインクルード/エクスクルードによるコンテンツフィルタリング
-- カスタムアクション（クリック、スクロールなど）の実行
-- 指数バックオフによる自動再試行
-- クレジット使用量の監視
+Firecrawl は無料枠のある有料サービスです。2026 年 9 月 22 日時点の[公式料金ページ](https://www.firecrawl.dev/pricing)の内容は次のとおりです。
 
-## 🏷️ 料金プラン
+| プラン | 月額（月払い / 年払い） | クレジット / 月 | 同時リクエスト数 |
+|---|---|---|---|
+| Free | $0 | 1,000 | 2 |
+| Hobby | $19 / $16 | 5,000 | 5 |
+| Standard | $99 / $83 | 100,000 | 25 |
+| Growth | $399 / $333 | 500,000 | 50 |
 
-Firecrawl は無料枠もありますが、有料のツールです。
-クレジットが不足した場合は、$9/月で1,000クレジットを追加購入できます。
-詳細は[公式サイト](https://www.firecrawl.dev/pricing)を参照してください。
+クレジットの消費は、スクレイピング・クロール・マップが 1 ページあたり 1、検索が 10 件あたり 2、ブラウザ操作が 1 分あたり 2 です。Agent は 1 日 5 回まで無料で、それ以降は内容に応じた変動課金になります。Free プランのクレジットは毎月補充されるので、個人の調べ物なら無料枠で足りる場面が多いはずです。
 
-- **Free Plan**
-  - 無料（一回限り）、500クレジット
-  - 500ページのスクレイピング相当
-  - 毎分10スクレイプ、1クロール
+## セットアップ手順
 
-- **Hobby Plan**
-  - $16/月、3,000クレジット/月
-  - 3,000ページのスクレイピング相当
-  - 毎分20スクレイプ、3クロール
-  - 1シート
+### API キーの取得
 
-- **Standard Plan**
-  - $83/月、100,000クレジット/月
-  - 100,000ページのスクレイピング相当
-  - 毎分100スクレイプ、10クロール
-  - 3シート、標準サポート
+[Firecrawl 公式サイト](https://www.firecrawl.dev/)でアカウントを作成し、ダッシュボードで API キー（`fc-` で始まる文字列）を発行します。
 
----
+### Claude Code
 
-## 🛠️ セットアップ手順
+```bash
+claude mcp add firecrawl -e FIRECRAWL_API_KEY=fc-YOUR_API_KEY -- npx -y firecrawl-mcp
+```
 
-Firecrawl MCPサーバーの導入は以下のステップで行います。
+全プロジェクトで使う場合は `-s user` を付けます。
 
-### 1. Firecrawl APIキーの取得
+### Codex
 
-[Firecrawl公式サイト](https://www.firecrawl.dev/)でアカウントを作成し、APIキーを取得します。
-> 🔥 [このリンク](https://www.firecrawl.dev/referral?rid=W385F95R)から登録すると、10万トークン + 1,000クレジットが無料で付与されます。
+```bash
+codex mcp add firecrawl --env FIRECRAWL_API_KEY=fc-YOUR_API_KEY -- npx -y firecrawl-mcp
+```
 
-### 2. MCPサーバーの設定
+### Claude Desktop
 
-取得したAPIキーを使って、Firecrawl MCPサーバーを設定します。  
-(※ mcp-installer でのインストールは、私は失敗しました。)
+Firecrawl はリモート MCP サーバーも提供しています。「Customize > Connectors」で「+」を押し、「Add custom connector」に次の URL を登録すると、OAuth で Firecrawl アカウントに接続できます。API キーを設定ファイルに書かずに済む方法です。
 
-#### Claude Desktop の場合
+```text
+https://mcp.firecrawl.dev/v2/mcp-oauth
+```
 
-`~/Library/Application Support/Claude/claude_desktop_config.json` を開き、以下の設定を追加します。
+ローカルで動かす場合は、設定ファイル（開き方は[シリーズ #1](./mcp-server-tutorial-01-install) を参照）に次を追加します。
 
 ```json
 {
   "mcpServers": {
-    "firecrawl-mcp": {
+    "mcp-server-firecrawl": {
       "command": "npx",
       "args": ["-y", "firecrawl-mcp"],
       "env": {
-        "FIRECRAWL_API_KEY": "YOUR_API_KEY_HERE",
-        "FIRECRAWL_RETRY_MAX_ATTEMPTS": "5",
-        "FIRECRAWL_RETRY_INITIAL_DELAY": "2000",
-        "FIRECRAWL_RETRY_MAX_DELAY": "30000",
-        "FIRECRAWL_RETRY_BACKOFF_FACTOR": "3",
-        "FIRECRAWL_CREDIT_WARNING_THRESHOLD": "2000",
-        "FIRECRAWL_CREDIT_CRITICAL_THRESHOLD": "500"
+        "FIRECRAWL_API_KEY": "YOUR_API_KEY_HERE"
       }
     }
   }
 }
 ```
 
-- `YOUR_API_KEY_HERE` に取得したAPIキーをセット
-- 環境設定オプション
-  - 再試行構成
-    - `FIRECRAWL_RETRY_MAX_ATTEMPTS = 5`: 最大再試行回数
-    - `FIRECRAWL_RETRY_INITIAL_DELAY = 2000`: 初回遅延（ミリ秒）
-    - `FIRECRAWL_RETRY_MAX_DELAY = 30000`: 最大遅延（ミリ秒）
-    - `FIRECRAWL_RETRY_BACKOFF_FACTOR = 3`: バックオフ係数
-  - クレジット監視
-    - `FIRECRAWL_CREDIT_WARNING_THRESHOLD = 2000`: 警告しきい値
-    - `FIRECRAWL_CREDIT_CRITICAL_THRESHOLD = 500`: 危険しきい値
+旧版の記事では再試行回数やクレジット警告しきい値の環境変数を設定していましたが、現行の README には記載がなくなっているため外しました。
 
-#### Windsurf の場合
+### CLI とスキルという選択肢
 
-`~/.codeium/windsurf/mcp_config.json` を開き、同様の設定を追加します。
+Firecrawl は 2026 年 1 月に、公式 CLI とエージェント向けスキルを公開しました。
 
----
+```bash
+npx -y firecrawl-cli@latest init --all --browser
+```
 
-## 👨‍💻 基本的な使い方 (プロンプト)
+Firecrawl MCP はツールが 26 個あり、接続するとその定義がコンテキストに載ります。CLI + スキルの方式は、常時読まれるのがスキルの名前と説明だけで、実際の取得はコマンドとして実行されます。取得結果がファイルに保存されるので、大きなページを読んでも会話のコンテキストを圧迫しにくい利点もあります。
 
-### 指定したURLのウェブサイトをスクレイピングし内容を分析
+私は Claude Code ではこの CLI + スキルを使っています。コマンドを実行できないチャット中心の Claude Desktop では、MCP の方が向きます。MCP とスキルの選び方は[シリーズ #1](./mcp-server-tutorial-01-install) にまとめました。
+
+## 基本的な使い方（プロンプト）
 
 ```text
-このウェブサイトの情報を取得して分析して
+このページの内容を取得して要点をまとめて
 https://example.com
 ```
 
-### 複数ページのクロール
-
 ```text
-https://example.com
-このウェブサイトを深さ2レベルまでクロールして、主要なコンテンツと構造を分析して
+https://example.com のサイト構造を調べて、ドキュメントに当たるページの URL を一覧にして
 ```
 
-### キーワード検索 (関連情報を収集して要約)
-
 ```text
-「クラウドネイティブアプリケーション開発」について最新の情報を検索して、主要なトレンドと技術をまとめて
+「クラウドネイティブアプリケーション開発」の最新情報を検索して、主要なトレンドと技術をまとめて
 ```
 
-### 構造化データの抽出し表形式でまとめる
-
 ```text
-このECサイトから、製品名、価格、説明を抽出して表形式でまとめて
+この EC サイトから、製品名、価格、説明を抽出して表にまとめて
 https://example-shop.com/products
 ```
 
-## 💡 活用テクニック
+他の Web 取得ツールが先に呼ばれてしまうときは、「Firecrawl で」と添えると確実です。
 
-### 1. 競合サイトを分析し、比較レポートを作成
+## 活用テクニック
+
+### 競合サイトの比較レポート
 
 ```text
 https://competitor1.com
 https://competitor2.com
 https://competitor3.com
-これらのウェブサイトを分析して、以下を比較してください
-
-- UI/UXデザインの特徴
-- 主要な機能と特長
-- コンテンツ戦略
-- ターゲットユーザー層
+これらのサイトを取得して、主要な機能、料金体系、コンテンツの構成、想定しているユーザー層を比較表にして
 ```
 
-### 2. クロールし、指定した要素を抽出 (スクレイピング)
+### ドキュメントサイトをまとめて取得する
 
 ```text
-ウェブサイト https://example.com をクロールして、以下の情報を収集して：
-- クロール深度: 2レベル
-- サブドメインは含めない
-- 出力形式: JSON
-- 抽出する要素:
-  - タイトル: head > title セレクタから
-  - コンテンツ: .article-body セレクタから
-  - 著者: .author-name セレクタから
-  - 公開日: .publish-date セレクタから
-この情報を使って、ウェブサイトの構造とコンテンツを分析し、主要な記事や情報を抽出して。
+https://docs.example.com/guide/ 以下をクロールして。上限は 30 ページ、サブドメインは含めない。各ページのタイトルと要約を一覧にして
 ```
 
-### 3. ディープリサーチ (複数の情報源を組み合わせての詳細な調査)
+クロールはページ数の分だけクレジットを消費します。上限ページ数を必ず指定し、先に `firecrawl_map` で URL の数を確認してから実行するのが安全です。
+
+### 操作が必要なページを取得する
 
 ```text
-「量子コンピューティングの最新応用例」についてディープリサーチを実行してください。
-科学論文のプレプリントサーバー、研究機関のウェブサイト、技術ブログなど幅広い情報源から情報を集めてください。
+https://example.com/pricing を開いて、「年払い」のタブに切り替えてから料金表を取得して
 ```
 
-### 4. 特定のタグやセクションを抽出し整理
+### Agent に調査を任せる
 
 ```text
-https://example.com/blog のすべての記事から、<code>タグで囲まれたコード例だけを抽出し、言語別に分類してください
+Firecrawl の Agent で、国内の主要な会計 SaaS 5 社の料金プランを調べて、プラン名・月額・主な機能を表にまとめて。出典の URL も付けて
 ```
 
-## 🧩 他のMCPサーバーとの組み合わせ
+旧版の記事にあった「ディープリサーチ」のプロンプトは、この Agent 機能が後継にあたります。
 
-### コンテンツを取得し、ローカルファイルとして保存 (Firecrawl MCP + Filesystem MCP)
+## 他の MCP サーバーとの組み合わせ
+
+[Filesystem MCP](./mcp-server-tutorial-02-filesystem) と組み合わせると、取得した内容をそのまま手元に保存できます。
 
 ```text
-1. https://documentation.example.com サイトから全てのチュートリアルページを取得して
-2. 各チュートリアルの内容をMarkdown形式に変換して
-3. /Users/username/Documents/tutorials/ フォルダに保存して
+https://documentation.example.com のチュートリアルのページを取得して、Markdown に変換し、~/Documents/tutorials/ に 1 ページ 1 ファイルで保存して
 ```
 
-### ウェブ上の情報を分析し、結果をGitHubリポジトリに保存 (Firecrawl MCP + GitHub MCP)
+## 使用上の注意点
 
-```text
-1. 「Rust WebAssembly チュートリアル」をテーマにウェブ検索を実行し、最も良質な情報を集めて
-2. 集めた情報を元に、初心者向けのチュートリアルMarkdownファイルを作成して
-3. GitHub上の「my-tutorials」リポジトリに「rust-wasm-guide.md」として保存して
-```
+- **クレジット消費**: クロールと Agent は消費が読みにくい機能です。上限を指定し、`firecrawl_credit_usage` で残量を確認しながら使います
+- **利用規約と robots.txt**: 取得先サイトの利用規約に従います。短時間に大量のリクエストを送ると、サイト側に負荷をかけたりブロックされたりします
+- **取得した文章は外部の入力**: Web ページには AI への指示を装った文章が紛れていることがあります。取得結果をもとに AI がファイル操作や送信をしようとしたら、内容を確認してから許可します
+- **抽出データの検証**: 構造化抽出の結果は、元のページと突き合わせて確認します
 
-### 検索した YouTube動画の内容を分析し加工 (Firecrawl MCP + YouTube MCP)
+## まとめ
 
-```text
-1. 「機械学習 初心者」をテーマにした最新のYouTubeチュートリアルを探して
-2. 各動画の内容を要約して
-3. 最も分かりやすいチュートリアルランキングを作成して
-```
+- Firecrawl MCP は、標準の Web 取得では届かない JavaScript 描画ページ、サイト全体のクロール、操作を伴う取得を担います
+- 導入は `npx -y firecrawl-mcp` か、OAuth で接続するリモート版です。Claude Code や Codex では CLI + スキルも選択肢になります
+- Free プランは月 1,000 クレジットです。クロールと Agent は上限を決めて使います
 
-## ⚠️ Firecrawl MCPを使用する際の注意点
+新しい MCP 記事の更新は X [@nagataku_ai](https://x.com/nagataku_ai) でお知らせします。
 
-1. **クレジット消費**: 大量のページをスクレイピングやクロールするとクレジットを消費します。設定したクレジット警告しきい値を活用しましょう。
+## 参考リンク
 
-2. **使用ポリシー**: ウェブサイトの利用規約に従いましょう。過度なスクレイピングは規約違反になる場合があります。
+- [Firecrawl 公式サイト](https://www.firecrawl.dev/)
+- [firecrawl/firecrawl-mcp-server - GitHub](https://github.com/firecrawl/firecrawl-mcp-server)
+- [Firecrawl ドキュメント](https://docs.firecrawl.dev/)
+- [Introducing Firecrawl Skill and CLI - Firecrawl Blog](https://www.firecrawl.dev/blog/introducing-firecrawl-skill-and-cli)
 
-3. **レート制限**: 短時間に多数のリクエストを送ると、サイト側でブロックされる可能性があります。
+この記事が役に立ったら、[こちらの紹介リンク](https://www.firecrawl.dev/referral?rid=W385F95R)から Firecrawl に登録してもらえると励みになります。
 
-4. **JavaScript依存**: 一部のサイトはJavaScriptに依存したコンテンツを持ちます。正確に取得するにはレンダリングオプションを使用しましょう。
-
-5. **データ品質**: 自動抽出したデータは常に検証が必要です。特にフォーマットが複雑なサイトでは注意が必要です。
-
-## 📝 まとめ
-
-Firecrawl MCPサーバーは、AIによるウェブ情報の取得・分析を強力に支援するツールです。スクレイピング、クロール、検索、情報抽出など多彩な機能により、リサーチや情報収集が大幅に効率化されます。
-
-市場調査、競合分析、トレンド把握、データ収集など、さまざまな用途に活用できるでしょう。他のMCPサーバーと組み合わせることで、情報収集から加工、保存までの一連のワークフローを自動化することも可能です。
-
-ぜひFirecrawl MCPを導入して、AIのウェブ情報活用能力を拡張してみてください！
-
-## 📚 参考リンク
-
-- [Firecrawl公式サイト](https://www.firecrawl.dev/)
-- [firecrawl-mcp GitHub リポジトリ](https://github.com/mendableai/firecrawl-mcp-server)
-- [Firecrawl API ドキュメント](https://docs.firecrawl.dev/)
-
-次回の記事では、様々なファイルをMarkdown化できる「[Markdownify MCP Server](./mcp-server-tutorial-09-markdownfy)」について解説します。お楽しみに！
-
-## 🙏 さいごにおねだり
-
-この記事が役に立ったと思ったら、🔥 [このリンク](https://www.firecrawl.dev/referral?rid=W385F95R)から Firecrawl に登録してください。登録する方にも10万トークン + 1,000クレジットが無料で付与されます。
-
-```json
-{
-  "mcpServers": {
-    "firecrawl-mcp": {
-      "command": "npx",
-      "args": ["-y", "firecrawl-mcp"],
-      "env": {
-        "FIRECRAWL_API_KEY": "YOUR_API_KEY_HERE",
-        "FIRECRAWL_RETRY_MAX_ATTEMPTS": "5",
-        "FIRECRAWL_RETRY_INITIAL_DELAY": "2000",
-        "FIRECRAWL_RETRY_MAX_DELAY": "30000",
-        "FIRECRAWL_RETRY_BACKOFF_FACTOR": "3",
-        "FIRECRAWL_CREDIT_WARNING_THRESHOLD": "2000",
-        "FIRECRAWL_CREDIT_CRITICAL_THRESHOLD": "500"
-      }
-    }
-  }
-}
+次回は、さまざまなファイルを Markdown 化できる「[Markdownify MCP Server](./mcp-server-tutorial-09-markdownfy)」を解説します。
