@@ -2,15 +2,17 @@
 title: "【MCPのトリセツ #12】Blender MCP Server: 会話で Blender を操作し3Dモデルを作成"
 emoji: "🐸"
 type: "tech"
-topics: ["mcp", "windsurf", "ai", "生成ai", "blender"]
+topics: ["mcp", "blender", "claude", "claudecode", "codex"]
 published: true
 ---
 
-## 💡 MCPの始め方シリーズについて
+Claude や Codex などの AI に外部ツールをつなぐ「MCP（Model Context Protocol）」の導入方法と使い方を解説するシリーズです。今回は、3D 制作ソフト [Blender](https://www.blender.org/) を AI との会話で操作できるようにする MCP サーバーを取り上げます。
 
-Claude などの AI を強化する「MCP（Model Context Protocol）」の導入方法と活用テクニックのシリーズ。今回は、Blender MCPサーバーの導入方法と活用テクニックを紹介します。AIとの会話で3Dモデリングソフトウェア [Blender](https://www.blender.org/) を操作できるようになります！
+:::message
+**更新日: 2026-09-22**（初版: 2025-03-12）
 
-![画像](/images/mcp-server-tutorial-12-blender/01.jpg)
+紹介していた `blender-mcp` は「MCP for Blender」（パッケージ名 `mcp-for-blender`）に改名されました。アドオンの導入がコマンド 1 つになり、素材サイトや 3D 生成 AI との連携、安全モードが加わっています。Blender の開発元による公式の MCP サーバーも登場したので、あわせて紹介します。
+:::
 
 ### シリーズ目次
 
@@ -25,271 +27,192 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
 9. [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
 10. [Raindrop.io MCP Server: 便利なブックマークサービスをAIから使う](./mcp-server-tutorial-10-raindropio)
 11. [Fetch MCP Server: ウェブコンテンツを取得・処理](./mcp-server-tutorial-11-fetch)
-12. 👉 [Blender MCP Server: 会話で Blender を操作し3Dモデルを作成](./mcp-server-tutorial-12-blender)
+12. **Blender MCP Server: 会話で Blender を操作し3Dモデルを作成（この記事）**
 13. [Perplexity MCP Server: Perplexity ならではの検索をAIとの会話で実行](./mcp-server-tutorial-13-perplexity)
+14. [国土交通省がMCPサーバーを公開：AI時代のオープンデータ活用45選](./mcp-server-tutorial-14-milt-data)
 
-参考: [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
-
----
-
-[blender-mcp - GitHub](https://github.com/ahujasid/blender-mcp)
-
-## 🚀 Blender MCP Server でできること
-
-Blender MCP Serverは、Blenderの操作を AI から行えるようにする MCPサーバーです。
-
-- 双方向通信：Claude と Blender をソケットベースのサーバーで接続
-- オブジェクト操作：3Dオブジェクトの作成、修正、削除
-- マテリアル制御：マテリアルや色の適用と変更
-- シーン検査：現在の Blender シーンの詳細情報取得
-- コード実行：Blender で Pythonコードを実行
-
-## 👨‍💻 Blender MCP Server プロンプトのサンプル
-
-レンダリング前にカメラ位置調整のプロンプトを実行すると良いです。  
-**※未検証のものも含まれています。うまくいかなかったらすみません💦**
-
-### 基本的なオブジェクト操作
-
-```text
-Blender で立方体を作成して。位置を(1, 1, 1)に移動して
-```
-
-```text
-選択中のオブジェクトを2倍に拡大して
-```
-
-### マテリアル操作
-
-```text
-新しいマテリアルを作成して、赤色を適用して
-```
-
-```text
-選択中のオブジェクトのマテリアルを半透明にして
-```
-
-### シーン管理
-
-```text
-現在のシーンにあるオブジェクトの一覧を表示して
-```
-
-```text
-カメラの位置を調整して、すべてのオブジェクトが見えるようにして
-```
-
-### 高度なモデリング
-
-```text
-球体を作成して、ボーンアニメーション用のリグを設定して
-```
-
-```text
-選択中のメッシュにサブディビジョンサーフェスモディファイアを追加して
-```
-
-### レンダリング設定
-
-```text
-Cyclesレンダラーに切り替えて、サンプル数を128に設定して
-```
-
-```text
-現在のビューをレンダリングして、PNG形式で保存して
-```
-
-### アニメーション
-
-```text
-キューブを作成して、1秒間で360度回転するアニメーションを設定して
-```
-
-```text
-選択中のオブジェクトに、バウンドするアニメーションを追加して
-```
-
-### スクリプト実行
-
-```text
-選択中のオブジェクトの頂点数を数えるスクリプトを実行して
-```
-
-```text
-すべてのオブジェクトの原点を中心に移動するスクリプトを実行して
-```
-
-### 高度なプロンプト例
-
-#### 複雑なモデリング
-
-```text
-低ポリゴンの木のモデルを作成して、葉のパーティクルシステムを設定して
-```
-
-#### マテリアルノードの設定
-
-```text
-ノードベースのマテリアルを作成して、金属的な質感を表現して
-```
-
-#### アニメーションの組み合わせ
-
-```text
-キャラクターモデルを読み込んで、歩行サイクルアニメーションを設定して
-```
-
-#### シーン最適化
-
-```text
-シーン内のポリゴン数を最適化して、パフォーマンスを改善して
-```
-
-#### プロシージャルモデリング
-
-```text
-プロシージャルな地形を生成して、テクスチャを自動的にマッピングして
-```
-
-### デモ動画のプロンプト
-
-[orange.aiさん - X](https://x.com/oran_ge/status/1899599891564999051)
-
-:::details 一連のプロンプト(和訳)を見る
-
-```text
-Blenderで、金の壺の隣にドラゴンが立っているシーンを作ってください。アイソメトリックにして、ライティングは遊び心とポイルシェッドにしてください。適切なマテリアルを使って。Dribbbleに投稿する価値があるはずだ！
-```
-
-```text
-よくやった！今度はDribbbleからもう少し雰囲気のあるものにして、ダンジョンのような感じにして、ところどころに火を灯すなど、細部にもこだわって。
-```
-
-```text
-一度に全部やるのではなく、段階を踏んでいきましょうか？ 壁、壁のトーチ、そして追加のディテールを追加します。
-```
-
-```text
-壁の松明が壁に刺さっていると思うのですが、シーンの内側に持ってくることはできますか？そしてアンビエント照明のために火を追加してください。
-```
-
-```text
-火のように感じられるように、発光するようにしてください！
-```
-
-```text
-発光の強度をもっと上げて！そしてもっとオレンジ色にして。そして、カメラポイントをアイソメトリックにして、ドラゴンを指しているシーンを正面と右から見てください。
-```
-
-```text
-カメラはアイソメトリックではなく、シーンに近すぎる。また、ドラゴンの左を向いている。
-```
-
-```text
-最後の最終調整をする前は、実は問題なかった！
-```
-
-```text
-素晴らしい！少しぼやけた感じがあると思いますが、これは意図的なものですか？もしそうなら、それを取り除いてください。また、ファイヤーエミッションをさらに増やしてください！
-```
-
-```text
-もっと増やしてください！あまり変わってないと思います。
-```
-
-```text
-いいね！少し減らしてナイスミドルに！
-```
-
-```text
-中の金の壺が暗すぎるように見えるので、ピカピカにできるかな？
-```
-
-```text
-それはやりすぎだよ！全体じゃなくて、中だけ光らせたかったんだ！
-```
-
-```text
-すごい！ドラゴンの翼をもっとはっきりさせられないかな？今のドラゴンの翼は単純な長方形だ！
-```
-
-```text
-もっと上に動かして、違う色（とげの部分）にしよう。
-```
-
-```text
-金の壺、金貨がいっぱい入っているように見せる！
-```
-
-```text
-コインのこぼれた部分は発光しすぎて見えないから、地面の金貨のようにメタリックにすればいいんじゃない？
-```
-
-```text
-普通のコインも同じようにする
-```
-
-:::
+資料: [ウェブ情報を取得するMCPの比較 (Fetch、Firecrawl、Markdownify、Perplexity)](./mcp-server-tutorial-reference-web-mcp)
 
 ---
 
-## 🛠️ インストールと設定
+## MCP for Blender でできること
 
-Blender MCP Serverは、Python製のMCPサーバーです。インストールは非常に簡単です。
-uv がインストール済みなのが前提です (インストール方法はシリーズ初回を参照)。
+[MCP for Blender](https://github.com/ahujasid/blender-mcp)（旧 blender-mcp）は、Blender 内で動くアドオンと MCP サーバーの 2 つで構成されています。アドオンが Blender の中に待ち受け口を作り、MCP サーバーが AI からの指示をそこへ中継します。Blender の開発元とは無関係の、コミュニティ製のツールです。
 
-### Claude Desktop の設定
+| 機能 | 内容 |
+|---|---|
+| オブジェクト操作 | 3D オブジェクトの作成、変更、削除 |
+| マテリアル制御 | マテリアルと色の適用、変更 |
+| シーンの確認 | 現在のシーンの詳細情報を取得 |
+| コード実行 | Blender 内で Python コードを実行 |
+| 素材とモデルの取得 | Poly Haven、Sketchfab、Poly Pizza の素材の検索とダウンロード |
+| 3D モデルの生成 | Hyper3D Rodin、Hunyuan3D による AI 生成 |
 
-Claude Desktopの設定ファイル（claude_desktop_config.json）に以下を追加します：
+Blender のような「起動中のアプリとつながり続ける」用途は、スキルや CLI では置き換えにくく、MCP サーバーが向いている典型例です。
+
+## セットアップ手順
+
+必要なものは、Blender 3.0 以降と uv です。uv は `pip install uv` ではなく、公式のインストーラーか Homebrew で入れます（[シリーズ #1](./mcp-server-tutorial-01-install) を参照）。
+
+### MCP サーバーを登録する
+
+Claude Desktop は、設定ファイルに次を追加して再起動します。
 
 ```json
-"mcpServers": {
-  "blender": {
-    "command": "uvx",
-    "args": ["blender-mcp"]
+{
+  "mcpServers": {
+    "blender": {
+      "command": "uvx",
+      "args": ["mcp-for-blender"]
+    }
   }
 }
 ```
 
-### Blender の設定
+Claude Code と Codex は 1 行で登録できます。
 
-### Blender アドオンのインストール
+```bash
+claude mcp add blender uvx mcp-for-blender
+```
 
-1. [リポジトリ](https://github.com/ahujasid/blender-mcp?tab=readme-ov-file) から addon.py ファイルをダウンロード
-2. Blender を起動
-3. 編集 > プリファレンス > アドオン に移動
-4. 右上のドロップダウンメニューから、"ディスクからインストール…" をクリックし、Addon.py ファイルを選択  
-   → ~/Library/Application Support/Blender/X.X/scripts/addons/addon.py にインストールされる
-5. 「Blender MCP」にチェックが付いていることを確認 (もし付いていないならアドオンを有効に)
-6. 再起動
+```bash
+codex mcp add blender -- uvx mcp-for-blender
+```
 
-### Blender アドオンの起動
+旧版の記事のとおり `uvx blender-mcp` で設定済みの場合も、そのまま動き続けます。設定を書き換える必要はありません。
 
-1. Blender を起動し、サイドバーを表示（メインビュー右上端にある `<` ボタン ※）
-   ※ わからないくらいちっちゃいので注意
-2. 「BlenderMCP」タブをクリックしパネルを開く
-3. "Start MCP Server" ボタンをクリックし起動 (ポート番号を 9876 以外に変えたいなら変更)
-4. この状態で Claude から会話で操作できるようになった！
+MCP サーバーは同時に 1 つだけ動かします。Claude Desktop と Claude Code の両方から同時に接続すると、うまく動きません。
 
----
+### Blender のアドオンを入れる
 
-## 📝 まとめ
+旧版では `addon.py` を手動でダウンロードしていましたが、現在はコマンドで Blender のアドオンフォルダにコピーされます。
 
-Blender MCP Serverは、AIとBlenderを連携させる強力なツールです。以下のようなメリットが得られます：
+```bash
+uvx mcp-for-blender install-addon
+```
 
-- AIとの会話だけでBlenderを操作可能
-- 複雑な3Dモデリング作業を自然言語で指示
-- Pythonスクリプトの実行も可能
-- 既存のBlenderワークフローに統合可能
-- 他のMCPサーバーと組み合わせて使用可能
+そのあと Blender を開き、「編集 > プリファレンス > アドオン」で「Interface: MCP for Blender」を有効にします。
 
-Blender MCPを導入することで、3Dモデリングをしたことがない人でも簡単な3Dモデルを手軽に作成できます。ぜひ導入して、AIとの新しい3Dモデリングワークフローを体験してみてください！
+### 接続する
 
-## 📚 参考リンク
+1. Blender の 3D ビューポートで `N` キーを押し、サイドバーを表示する
+2. 「MCP for Blender」タブを開く
+3. 使いたい連携（Poly Haven など）のチェックボックスを入れる
+4. 「Start MCP Server」を押す
 
-- [Blender MCP GitHub リポジトリ](https://github.com/ahujasid/blender-mcp)
+この状態で、AI から Blender を操作できます。
+
+### uvx が見つからないとき
+
+Claude Desktop のように GUI から起動するアプリは、ターミナルの PATH を引き継ぎません。`spawn uvx ENOENT` というエラーが出たら、ターミナルで `which uvx` を実行し、表示されたフルパス（`/opt/homebrew/bin/uvx` など）を `command` に書きます。
+
+## 安全モード
+
+既定では、AI は Blender の中で任意の Python コードを実行できます。ファイルの読み書きや外部プログラムの実行もできてしまうので、環境変数 `BLENDER_MCP_SAFE_MODE=1` を設定して、実行前にスクリプトを検査する安全モードを有効にしておくのが無難です。
+
+```json
+{
+  "mcpServers": {
+    "blender": {
+      "command": "uvx",
+      "args": ["mcp-for-blender"],
+      "env": {
+        "BLENDER_MCP_SAFE_MODE": "1"
+      }
+    }
+  }
+}
+```
+
+README も「使う前に必ず作業を保存すること」と警告しています。AI の操作でシーンが壊れることはあるので、試す前に `.blend` ファイルを保存しておきます。
+
+## プロンプトのサンプル
+
+### 基本の操作
+
+```text
+Blender で立方体を作成して、位置を (1, 1, 1) に移動して
+```
+
+```text
+現在のシーンにあるオブジェクトの一覧を見せて
+```
+
+```text
+新しいマテリアルを作成して赤色にし、選択中のオブジェクトに適用して
+```
+
+```text
+カメラの位置を調整して、すべてのオブジェクトが画面に収まるようにして
+```
+
+### モデリングとレンダリング
+
+```text
+選択中のメッシュにサブディビジョンサーフェスのモディファイアを追加して
+```
+
+```text
+ローポリの木のモデルを作って。幹は茶色、葉は緑のマテリアルにして
+```
+
+```text
+キューブを作成して、1 秒間で 360 度回転するアニメーションを設定して
+```
+
+```text
+レンダラーを Cycles に切り替えてサンプル数を 128 にし、現在のカメラからレンダリングして PNG で保存して
+```
+
+### 素材サイトと生成 AI を使う
+
+```text
+Poly Haven の HDRI、テクスチャ、岩や植物のモデルを使って、ビーチの雰囲気のシーンを作って
+```
+
+```text
+Hyper3D で庭に置くノームの置物の 3D モデルを生成して、シーンの中央に配置して
+```
+
+Poly Haven の素材はすべて CC0 で、API キーも要りません。Sketchfab、Poly Pizza、Hyper3D、Hunyuan3D は、それぞれの API キーを Blender のサイドバーで設定します。Poly Haven の素材は解像度が 1 段階上がるごとにファイルサイズが約 4 倍になり、ダウンロード中は Blender の操作が止まります。カメラの近くに置くものでなければ、1k か 2k を指定するのが現実的です。
+
+### 対話を重ねて仕上げる
+
+一度の指示で完成させようとせず、結果を見ながら修正を重ねるのがコツです。公開直後に話題になった [orange.ai さんのデモ](https://x.com/oran_ge/status/1899599891564999051)も、次のような指示から始めて、20 回近いやり取りで仕上げています。
+
+```text
+Blender で、金の壺の隣にドラゴンが立っているシーンを作って。アイソメトリックの構図で、遊び心のあるライティングにして
+```
+
+```text
+一度に全部やるのではなく、段階を踏もう。まず壁、次に壁の松明、最後に細部の順で追加して
+```
+
+```text
+松明が壁にめり込んでいるので、シーンの内側に出して。炎は発光するマテリアルにして
+```
+
+「めり込んでいる」「近すぎる」のように、見えている問題をそのまま伝えると修正が通りやすくなります。
+
+## Blender 公式の MCP サーバー
+
+Blender の開発元も、実験的な取り組みの場である Blender Lab で [MCP Server](https://www.blender.org/lab/mcp-server/) を公開しています。Blender の Python API を自然言語で扱うこと、ドキュメントを引きやすくすること、複雑なシーンの構成を調べて理解することを目的にした軽量なサーバーで、こちらも専用のアドオンを Blender に入れて使います。
+
+素材サイトや生成 AI との連携まで含めて手早く試すなら MCP for Blender、開発元のツールで Python API を中心に使いたいなら公式版、という分け方になります。どちらも AI が生成したコードを Blender 内で実行する仕組みなので、作業の保存と、信頼できない指示を読み込ませない注意は共通です。
+
+## まとめ
+
+- `blender-mcp` は MCP for Blender（`mcp-for-blender`）に改名されました。旧設定はそのまま動きます
+- アドオンは `uvx mcp-for-blender install-addon` で入ります。Poly Haven などの素材や 3D 生成 AI とも連携できます
+- 任意の Python コードを実行できるので、安全モードを有効にし、作業を保存してから使います
+
+新しい MCP 記事の更新は X [@nagataku_ai](https://x.com/nagataku_ai) でお知らせします。
+
+## 参考リンク
+
+- [MCP for Blender（ahujasid/blender-mcp）- GitHub](https://github.com/ahujasid/blender-mcp)
+- [MCP Server - Blender Lab](https://www.blender.org/lab/mcp-server/)
 - [Blender Python API ドキュメント](https://docs.blender.org/api/current/index.html)
+- [Poly Haven](https://polyhaven.com/)
 
----
-
-次回は「[Perplexity MCP Server: Perplexity ならではの検索をAIとの会話で実行](./mcp-server-tutorial-13-perplexity)」について解説します。
+次回は「[Perplexity MCP Server](./mcp-server-tutorial-13-perplexity)」を解説します。
