@@ -2,13 +2,17 @@
 title: "【MCPのトリセツ #9】Markdownify MCP Server: WebページやPDFをMarkdown文書化"
 emoji: "🐸"
 type: "tech"
-topics: ["mcp", "markdownify", "markdown", "claude", "windsurf", "ai", "生成ai", "ai駆動開発"]
+topics: ["mcp", "markdown", "claude", "claudecode", "codex"]
 published: true
 ---
 
-## 💡 MCPの始め方シリーズについて
+Claude や Codex などの AI に外部ツールをつなぐ「MCP（Model Context Protocol）」の導入方法と使い方を解説するシリーズです。今回は、Web ページ、PDF、Office 文書、音声などを Markdown に変換する Markdownify MCP Server を取り上げます。
 
-Claude などの AI を強化する「MCP（Model Context Protocol）」の導入方法と活用テクニックのシリーズ。今回は、Markdownify MCPサーバーの導入方法と活用テクニックを紹介します。ウェブページやPDFをAIとの会話でMarkdown文書化することで、リサーチや情報収集を効率化できます！
+:::message
+**更新日: 2026-09-22**（初版: 2025-03-08）
+
+インストール手順を現行の README（bun を使う方式）に合わせ、読み取り範囲を制限する設定を追記しました。旧版の「npm でもいけるはず」は誤りで、npm では配布されていません。あわせて、1 行で導入できる Microsoft 公式の markitdown-mcp と、CLI・スキルで代替する方法を紹介します。
+:::
 
 ### シリーズ目次
 
@@ -20,256 +24,201 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
 6. [Figma MCP：デザインとコードを効率的に連携](./mcp-server-tutorial-06-figma)
 7. [Slack MCPサーバー：チームコミュニケーションを強化](./mcp-server-tutorial-07-slack)
 8. [Firecrawl MCP：スクレイピングでウェブ情報を取得・分析](./mcp-server-tutorial-08-firecrawl)
-9. 👉 [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
+9. **Markdownify MCP Server: WebページやPDFをMarkdown文書化（この記事）**
 10. [Raindrop.io MCP Server: 便利なブックマークサービスをAIから使う](./mcp-server-tutorial-10-raindropio)
 11. [Fetch MCP Server: ウェブコンテンツを取得・処理](./mcp-server-tutorial-11-fetch)
 12. [Blender MCP Server: 会話で Blender を操作し3Dモデルを作成](./mcp-server-tutorial-12-blender)
 13. [Perplexity MCP Server: Perplexity ならではの検索をAIとの会話で実行](./mcp-server-tutorial-13-perplexity)
-参考: [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
+14. [国土交通省がMCPサーバーを公開：AI時代のオープンデータ活用45選](./mcp-server-tutorial-14-milt-data)
+
+資料: [ウェブ情報を取得するMCPの比較 (Fetch、Firecrawl、Markdownify、Perplexity)](./mcp-server-tutorial-reference-web-mcp)
 
 ---
 
-[zcaceres/markdownify-mcp - Github](https://github.com/zcaceres/markdownify-mcp)
+## Markdownify MCP Server でできること
 
-## 🚀 Markdownify MCP Server でできること
+[zcaceres/markdownify-mcp](https://github.com/zcaceres/markdownify-mcp) は、さまざまな形式のコンテンツを Markdown に変換する MCP サーバーです。内部では Microsoft のオープンソースツール [MarkItDown](https://github.com/microsoft/markitdown) を使っています。
 
-- 複数のファイルタイプを Markdown に変換
-  - PDF、画像、オーディオ（転写付き）、docx、XLSX、PPTX
-- WebコンテンツをMarkdownに変換
-  - YouTube 字幕
-  - Bing 検索結果
-  - 一般的な Webページ
-- 既存の Markdownファイルを取得
+| ツール | 変換の対象 |
+|---|---|
+| `webpage-to-markdown` | 一般的な Web ページ |
+| `pdf-to-markdown` | PDF ファイル |
+| `docx-to-markdown`、`xlsx-to-markdown`、`pptx-to-markdown` | Office 文書 |
+| `image-to-markdown` | 画像（メタデータ付き） |
+| `audio-to-markdown` | 音声（文字起こし付き） |
+| `youtube-to-markdown` | YouTube 動画の字幕 |
+| `bing-search-to-markdown` | Bing の検索結果 |
+| `get-markdown-file` | 既存の Markdown ファイルの取得 |
 
-> 📝 **ノート**: Fetch MCP、Firecrawl MCP、Markdownify MCPの比較と使い分けについては、[ウェブの情報を取得するMCPの使い分け](./mcp-server-tutorial-reference-web-mcp)を参照してください。
+AI に渡す前に Markdown にしておくと、元のレイアウト情報が落ちて本文だけが残るので、長い資料でもコンテキストを節約できます。
 
-## 👨‍💻 Markdownify MCP Server プロンプトのサンプル
+> Fetch、Firecrawl、Markdownify、Perplexity の使い分けは、[ウェブ情報を取得するMCPの比較](./mcp-server-tutorial-reference-web-mcp)にまとめています。
 
-### 1. 基本的な URL から Markdown への変換
+## インストールと設定
 
-```text
-以下URLの内容をMarkdownに変換して：
-https://example.com/blog/article-123
+### インストール
+
+npm では配布されていないので、リポジトリをクローンしてビルドします。現行版はパッケージ管理に [bun](https://bun.sh/) を使います。Python 環境の用意に uv も必要です。
+
+```bash
+# 置き場所は任意。私は ~/tools/mcp-server にまとめている
+cd ~/tools/mcp-server
+git clone https://github.com/zcaceres/markdownify-mcp.git
+cd markdownify-mcp
+
+bun install
+bun run build
 ```
 
-### 2. 複数のWebページを一括変換
+`bun install` の途中で、プロジェクト内に Python の仮想環境（`.venv`）が作られ、`markitdown[all]` がインストールされます。
 
-```text
-以下の複数のURLをMarkdownに変換し、それぞれのコンテンツを見出しで区切って：
-- https://site1.com/article1
-- https://site2.com/article2
-- https://site3.com/article3
-```
+### Claude Desktop
 
-### 3. 特定の要素に焦点を当てた変換
+設定ファイル（開き方は[シリーズ #1](./mcp-server-tutorial-01-install) を参照）に次を追加します。`args` にはビルドでできた `dist/index.js` の絶対パスを書きます。`~` でホームフォルダを表すとエラーになるので、`/Users/yourname/...` の形で書いてください。
 
-```text
-次の技術ブログから、コードスニペットと主要な見出しだけを抽出し、Markdownに変換して：
-https://tech-blog-example.com/tutorial/javascript-basics
-```
-
-### 4. フォーマット指定付き変換
-
-```text
-以下のニュースサイトの記事を以下の条件でMarkdownに変換して：
-- 見出しは ## レベルで統一
-- 引用部分は > でマーク
-- リンクはそのまま保持
-- 画像は ![キャプション](URL) 形式に統一
-
-URL: https://news-example.com/technology/latest-trends
-```
-
-### 5. コンテンツフィルタリング付き変換
-
-```text
-以下URLからAIに関連する内容だけを抽出してMarkdownに変換して。
-関連性の低いセクションは除外して
-https://news.ycombinator.com/best
-```
-
-### 6. PDF から Markdown への変換
-
-```text
-添付のPDFをMarkdownに変換して。
-目次構造を保持し、表はMarkdown形式のテーブルとして変換して
-```
-
-### 7. YouTube 動画の字幕抽出
-
-```text
-以下のYouTube動画の字幕をMarkdown形式で抽出して。
-タイムスタンプを含め、主要なポイントには見出しを付けて：
-https://www.youtube.com/watch?v=example12345
-```
-
-### 8. 技術文書の整形済み変換
-
-```text
-次の技術ドキュメントをMarkdownに変換し、以下の形式に整えて：
-- コードブロックは言語指定付きで
-- API エンドポイントは表形式で整理
-- パラメータ説明はリスト形式で
-- 重要な警告は強調表示
-
-URL: https://api-docs-example.com/reference
-```
-
-### 9. コンテンツ要約付き変換
-
-```text
-以下の長文記事をMarkdownに変換し、各セクションの冒頭に2-3文の要約を追加して：
-https://longform-content.com/comprehensive-guide
-```
-
-### 10. 多言語コンテンツの処理
-
-```text
-以下の英語のウェブサイトをMarkdownに変換し、日本語への翻訳も併記して：
-https://english-site.com/global-news
-```
-
-### 11. アカデミック論文の構造化変換
-
-```text
-以下の学術論文をMarkdownに変換し、次の構造を明確にして：
-- 要旨（Abstract）を引用形式で
-- 方法論、結果、考察を別々のセクションで
-- 参考文献を番号付きリストで
-- 図表に連番を振って参照しやすく
-
-URL: https://academic-journal.edu/paper/12345
-```
-
-### 12. SEO 分析付き変換
-
-```text
-次のランディングページをMarkdownに変換し、SEO観点からの分析を追加して：
-- H1, H2 の見出し構造
-- メタタグ情報
-- キーワード密度
-- 内部リンク・外部リンクの数と質
-
-URL: https://business-site.com/services
-```
-
-### 13. ニュースレター作成用フォーマット
-
-```text
-以下の複数のニュース記事を取得し、週刊ニュースレター形式のMarkdownに変換して：
-- トップニュース（3件）を冒頭に要約
-- カテゴリ別に記事をグループ化
-- 各記事に 「続きを読む」 リンクを追加
-- 最後に今週の重要なイベントカレンダーを表形式で
-
-URLs:
-- https://news1.com/article1
-- https://news2.com/article2
-- https://news3.com/article5
-```
-
-### 14. プログラミングチュートリアルの強化
-
-```text
-次のプログラミングチュートリアルをMarkdownに変換し、以下を追加して：
-- コードブロックに構文ハイライトを適用
-- 重要な概念に注釈を追加
-- 前提知識と「次に学ぶべきこと」のセクションを追加
-- コードの各部分の説明を追加
-
-URL: https://dev-tutorial.com/advanced-patterns
-```
-
-### 15. 製品比較表の作成
-
-```text
-以下の複数の製品レビューページから情報を抽出し、Markdown形式の比較表を作成して：
-- 製品名、価格、主な機能、長所、短所の列を含む
-- 価格帯で製品を並べ替え
-- 各製品の総合評価（5段階）を追加
-
-URLs:
-- https://review-site.com/product1
-- https://review-site.com/product2
-- https://review-site.com/product3
-```
-
-### 16. ウェビナー内容の構造化記録
-
-```text
-次のウェビナー録画の内容をMarkdown形式で文書化して：
-- 主要なポイントを見出しとして
-- Q&A セクションを別に整理
-- デモンストレーションの手順をステップバイステップのリストとして
-- 参照されたリソースのリンク集を最後に追加
-
-URL: https://webinar-platform.com/recording/12345
-```
-
----
-
-## 🛠️ インストールと設定
-
-※ 試していませんが、npm でもいけるはず。
-
-インストールするディレクトリに移動
-`cd ~/tools/mcp-server`
-(場所はお好みで。自分は上記のパスを MCPサーバー置き場としている)
-
-AI作業用フォルダにクローン
-`git clone git@github.com:zcaceres/markdownify-mcp.git`
-
-中に移動
-`cd markdownify-mcp`
-
-インストール
-`pnpm install`
-
-ビルド
-`pnpm run build`
-
-MCPサーバーを起動 (Claude Desktop の再起動でOK)
-`pnpm start`
-
-### 設定
-
-“args" にインストールしたフォルダ内にある index.js の絶対パス (※ `~` でホームディレクトリを表すとエラーになるので注意) を設定。
-“env” の uv のパスは、デフォルト設定なら不要 (必要な場合は `which uv` で場所を確認できる)。
-
-```claude_desktop_config.json
+```json
 {
   "mcpServers": {
     "markdownify": {
       "command": "node",
-      "args": [
-        "{ABSOLUTE PATH TO FILE HERE}/dist/index.js"
-      ],
+      "args": ["/Users/yourname/tools/mcp-server/markdownify-mcp/dist/index.js"],
       "env": {
-        // By default, the server will use the default install location of `uv`
-        "UV_PATH": "/path/to/uv"
+        "MD_ALLOWED_PATHS": "/Users/yourname/Documents:/Users/yourname/Downloads"
       }
     }
   }
 }
 ```
 
----
+`MD_ALLOWED_PATHS` は、ファイルを読み取れるフォルダを制限する設定です（macOS と Linux は `:`、Windows は `;` で区切ります）。未設定だと PC 内のどのファイルも読めてしまうので、指定しておくことをおすすめします。
 
-## 📝 まとめ
+### Claude Code・Codex
 
-Markdownify MCPサーバーは、ウェブページやPDFなど様々な形式のコンテンツをMarkdown形式に変換できる強力なツールです。この機能により、以下のようなメリットが得られます：
+```bash
+claude mcp add markdownify -- node /Users/yourname/tools/mcp-server/markdownify-mcp/dist/index.js
+```
 
-- 複数の情報源（ウェブページ、PDF、動画字幕など）を統一されたMarkdown形式で管理
-- 情報の整理・構造化が容易になり、後からの参照や編集が効率化
-- AIとの対話を通じて、コンテンツの変換だけでなく要約や分析も同時に実行可能
-- 様々なフォーマット指定やフィルタリングオプションで、必要な情報だけを抽出可能
+```bash
+codex mcp add markdownify -- node /Users/yourname/tools/mcp-server/markdownify-mcp/dist/index.js
+```
 
-特に研究、コンテンツ制作、技術文書作成、情報整理などの作業において、Markdownify MCPは大きな時間節約と効率化をもたらします。他のMCPサーバーと組み合わせることで、情報収集から整理、分析、保存までの一連のワークフローを自動化することも可能です。
+## 手早く入れるなら Microsoft 公式の markitdown-mcp
 
-ぜひMarkdownify MCPを導入して、情報処理ワークフローを効率化してみてください！
+ビルドの手間を避けたい場合は、MarkItDown の開発元である Microsoft が公開している [markitdown-mcp](https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp) が使えます。PyPI で配布されているので、uv が入っていれば 1 行です。
 
-## 📚 参考リンク
+```bash
+claude mcp add markitdown -- uvx markitdown-mcp
+```
 
-- [markdownify-mcp GitHub リポジトリ](https://github.com/zcaceres/markdownify-mcp)
+```json
+{
+  "mcpServers": {
+    "markitdown": {
+      "command": "uvx",
+      "args": ["markitdown-mcp"]
+    }
+  }
+}
+```
 
-次回の記事では、[Raindrop.io MCPサーバー](./mcp-server-tutorial-10-raindropio)を紹介します。お楽しみに！
+| 観点 | Markdownify MCP | markitdown-mcp |
+|---|---|---|
+| 提供元 | コミュニティ（zcaceres） | Microsoft |
+| 導入 | クローンしてビルド | `uvx markitdown-mcp` |
+| ツール | 形式ごとに 10 個 | `convert_to_markdown(uri)` の 1 個 |
+| 入力の指定 | ファイルパスや URL | `http:`・`https:`・`file:`・`data:` の URI |
+| 読み取り範囲の制限 | `MD_ALLOWED_PATHS` | なし（README は Docker でのフォルダのマウントを推奨） |
+
+変換エンジンは同じ MarkItDown なので、変換結果の質に大きな差は出ません。YouTube の字幕や Bing 検索を個別のツールとして使いたい、読み取り範囲をサーバー側で絞りたい、という場合は Markdownify が向きます。markitdown-mcp の README は、信頼できるローカルのエージェントと組み合わせて使うことを前提にしている点に注意してください。
+
+## CLI やスキルで代替する方法
+
+Claude Code や Codex なら、MarkItDown の CLI を直接呼べば MCP サーバーは要りません。
+
+```bash
+uvx --from 'markitdown[all]' markitdown report.pdf -o report.md
+```
+
+「資料を Markdown にして所定のフォルダに保存する」という決まった流れがあるなら、このコマンドと保存先のルールをスキルに書いておくと、常駐するサーバーなしで同じことができます。MCP サーバー版が向くのは、コマンドを実行できないチャット型アプリから使う場合です。選び方の全体像は[シリーズ #1](./mcp-server-tutorial-01-install) にまとめました。
+
+## プロンプトのサンプル
+
+### Web ページを変換する
+
+```text
+このページの内容を Markdown に変換して
+https://example.com/blog/article-123
+```
+
+```text
+次の複数の URL を Markdown に変換し、ページごとに見出しで区切って
+- https://site1.com/article1
+- https://site2.com/article2
+- https://site3.com/article3
+```
+
+```text
+この技術ブログから、コードスニペットと主要な見出しだけを抜き出して Markdown にして
+https://tech-blog-example.com/tutorial/javascript-basics
+```
+
+### ファイルを変換する
+
+```text
+/Users/yourname/Documents/whitepaper.pdf を Markdown に変換して。目次の構造を保ち、表は Markdown のテーブルにして
+```
+
+```text
+/Users/yourname/Documents/sales-2026Q2.xlsx を Markdown に変換して、シートごとに表として出力して
+```
+
+```text
+/Users/yourname/Downloads/interview.m4a を文字起こしして Markdown にまとめて。話題が変わるところに見出しを付けて
+```
+
+### 変換と同時に整える
+
+```text
+この API ドキュメントを Markdown に変換して、次の形に整えて
+- コードブロックは言語指定付きにする
+- API エンドポイントは表にまとめる
+- 重要な警告は太字にする
+URL: https://api-docs-example.com/reference
+```
+
+```text
+この英語の記事を Markdown に変換して、各セクションの冒頭に日本語で 2〜3 文の要約を付けて
+https://longform-content.com/comprehensive-guide
+```
+
+```text
+次の製品レビューのページから情報を取り出して、製品名、価格、主な機能、長所、短所を列にした比較表を Markdown で作って
+- https://review-site.com/product1
+- https://review-site.com/product2
+- https://review-site.com/product3
+```
+
+変換そのものはサーバーが行い、絞り込みや整形は AI が変換結果に対して行います。長いページを丸ごと変換するとコンテキストを大きく消費するので、必要な部分が分かっているときは先に伝えておくと無駄がありません。
+
+## 使用上の注意点
+
+- **読み取り範囲を絞る**: `MD_ALLOWED_PATHS` を設定して、変換対象のフォルダだけを許可します
+- **変換の精度**: 段組みの PDF、スキャン画像の PDF、複雑な表は崩れやすい形式です。重要な数値は元のファイルと突き合わせます
+- **音声と画像**: 文字起こしと画像の解析には `markitdown[all]` の追加機能が必要です。公開されている Docker イメージには含まれていないので、この 2 つを使うならローカルにインストールします
+- **取得した文章は外部の入力**: Web ページやファイルには AI への指示を装った文章が含まれている可能性があります。変換の直後に AI が想定外の操作をしようとしたら、承認せずに止めます
+
+## まとめ
+
+- Markdownify MCP は、Web ページ・PDF・Office 文書・音声などを Markdown にします。導入はクローンして `bun install`、`bun run build` です
+- 手早く入れるなら Microsoft 公式の `uvx markitdown-mcp` が使えます。変換エンジンは同じ MarkItDown です
+- Claude Code や Codex では `markitdown` コマンドの直接実行やスキルで代替できます
+
+新しい MCP 記事の更新は X [@nagataku_ai](https://x.com/nagataku_ai) でお知らせします。
+
+## 参考リンク
+
+- [zcaceres/markdownify-mcp - GitHub](https://github.com/zcaceres/markdownify-mcp)
+- [microsoft/markitdown - GitHub](https://github.com/microsoft/markitdown)
+- [markitdown-mcp - GitHub](https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp)
+
+次回は、ブックマークサービスを AI から使う「[Raindrop.io MCP Server](./mcp-server-tutorial-10-raindropio)」を解説します。
