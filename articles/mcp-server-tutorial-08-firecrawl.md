@@ -72,7 +72,7 @@ Firecrawl は無料枠のある有料サービスです。2026 年 9 月 22 日�
 
 [Firecrawl 公式サイト](https://www.firecrawl.dev/)でアカウントを作成し、ダッシュボードで API キー（`fc-` で始まる文字列）を発行します。
 
-> これから登録する方は、[こちらの紹介リンク](https://www.firecrawl.dev/referral?rid=W385F95R)から登録してもらえると、この連載を続ける励みになります。
+> Free プランでも毎月 1,000 クレジットを使えます（クレジットカードの登録は不要）。これから登録する方は、[こちらの紹介リンク](https://www.firecrawl.dev/referral?rid=W385F95R)から登録してもらえると、この連載を続ける励みになります。
 
 ### Claude Code
 
@@ -215,4 +215,4 @@ https://documentation.example.com のチュートリアルのページを取得�
 
 ## さいごにおねだり
 
-この記事が役に立ったら、[こちらの紹介リンク](https://www.firecrawl.dev/referral?rid=W385F95R)から Firecrawl に登録してもらえるとうれしいです。
+この記事が役に立ったら、[こちらの紹介リンク](https://www.firecrawl.dev/referral?rid=W385F95R)から Firecrawl に登録してもらえるとうれしいです。Free プランでも毎月 1,000 クレジットを使えるので、まずは無料の範囲で試せます（[料金ページ](https://www.firecrawl.dev/pricing)、2026 年 9 月 22 日時点）。
