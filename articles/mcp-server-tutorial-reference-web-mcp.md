@@ -2,13 +2,17 @@
 title: "【MCPのトリセツ 資料】ウェブ情報を取得するMCPの比較 (Fetch、Firecrawl、Markdownify、Perplexity)"
 emoji: "🐸"
 type: "tech"
-topics: ["mcp", "windsurf", "ai", "生成ai", "ai駆動開発"]
+topics: ["mcp", "claude", "claudecode", "codex", "ai"]
 published: true
 ---
 
-## 💡 MCPの始め方シリーズについて
+Claude や Codex などの AI に外部ツールをつなぐ「MCP（Model Context Protocol）」の導入方法と使い方を解説するシリーズの資料編です。Web の情報を取得する 4 つの MCP サーバー（Fetch、Firecrawl、Markdownify、Perplexity）の違いと使い分けをまとめます。
 
-Claude などの AI を強化する「MCP（Model Context Protocol）」の導入方法と活用テクニックのシリーズ。本記事では、ウェブコンテンツの取得や処理に関連する4つのMCPサーバー（Fetch、Firecrawl、Markdownify、Perplexity）の特徴と使い分けについて詳しく解説します。
+:::message
+**更新日: 2026-09-22**（初版: 2025-03-11）
+
+4 つのサーバーの現行の仕様に合わせて比較表を作り直しました。あわせて、AI 本体が Web 検索と Web 取得を標準で備えた現在の前提と、CLI・スキルで代替する選択肢を加えています。Firecrawl の Deep Research は廃止され、Perplexity は Sonar から Agent API へ移行しています。
+:::
 
 ### シリーズ目次
 
@@ -25,190 +29,125 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
 11. [Fetch MCP Server: ウェブコンテンツを取得・処理](./mcp-server-tutorial-11-fetch)
 12. [Blender MCP Server: 会話で Blender を操作し3Dモデルを作成](./mcp-server-tutorial-12-blender)
 13. [Perplexity MCP Server: Perplexity ならではの検索をAIとの会話で実行](./mcp-server-tutorial-13-perplexity)
+14. [国土交通省がMCPサーバーを公開：AI時代のオープンデータ活用45選](./mcp-server-tutorial-14-milt-data)
 
-👉 このリファレンス: [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify、Perplexity)](./mcp-server-tutorial-reference-web-mcp)
+資料: **ウェブ情報を取得するMCPの比較 (Fetch、Firecrawl、Markdownify、Perplexity)（この記事）**
 
 ---
 
-## 📊 機能比較表
+## まず標準機能で足りるかを確かめる
 
-| 機能 | Fetch MCP | Firecrawl MCP | Markdownify MCP | Perplexity MCP |
-|------|-----------|---------------|-----------------|----------------|
-| 基本的なウェブページ取得 | ✅ シンプル | ✅ 高機能 | ✅ Markdown変換 | ✅ 検索ベース |
-| インストールの手軽さ | ✅ 非常に簡単 | ⚠️ やや複雑 | ⚠️ 依存関係あり | ✅ 簡単 |
-| メモリ使用量 | ✅ 軽量 | ⚠️ やや重い | ⚠️ 中程度 | ✅ 軽量 |
-| 複数ページのクロール | ❌ 非対応 | ✅ 対応 | ❌ 非対応 | ❌ 直接的非対応 |
-| 検索機能 | ❌ 非対応 | ✅ 対応 | ❌ 非対応 | ✅ 専門 |
-| ウェブページの分析 | ❌ 基本的な取得のみ | ✅ AI分析機能あり | ❌ 基本的な変換のみ | ✅ 高度な検索分析 |
-| スクリーンショット | ❌ 非対応 | ✅ 対応 | ❌ 非対応 | ❌ 非対応 |
-| Markdownに変換 | ✅ 基本的 | ✅ 高機能 | ✅ 専門 | ❌ 直接変換なし |
-| PDFから変換 | ❌ 非対応 | ❌ 非対応 | ✅ 対応 | ❌ 非対応 |
-| 画像/オーディオから変換 | ❌ 非対応 | ❌ 非対応 | ✅ 対応 | ❌ 非対応 |
-| Officeファイルから変換 | ❌ 非対応 | ❌ 非対応 | ✅ 対応 | ❌ 非対応 |
-| YouTube字幕取得 | ❌ 非対応 | ✅ 対応 | ✅ 対応 | ❌ 非対応 |
-| ディープリサーチ | ❌ 非対応 | ▲ 浅く対応 | ❌ 非対応 | ✅ 専門 |
-| 最新情報へのアクセス | ❌ 限定的 | ▲ 限定的 | ❌ 限定的 | ✅ 対応 |
+旧版を書いた 2025 年 3 月には、Claude Desktop に Web ページを読ませるだけでも MCP サーバーが必要でした。現在は Claude も Codex も Web 検索と Web 取得を標準で備えています。公開されている普通のページを読む、最近のニュースを調べる、といった用途は標準機能で足ります。
 
-## 🔍 ウェブコンテンツ関連の4つのMCPサーバー
+MCP サーバーを足す価値があるのは、標準機能では届かない次のような場面です。
+
+| 場面 | 向いているサーバー |
+|---|---|
+| JavaScript で描画されるページ、クリックやログイン後の表示を取得したい | Firecrawl |
+| サイト全体をクロールして、まとめて取り込みたい | Firecrawl |
+| `localhost` や社内ネットワークのページを読ませたい | Fetch |
+| PDF、Office 文書、音声を Markdown にしたい | Markdownify |
+| 出典付きの調査レポートをまとめて取りたい | Perplexity |
+
+## 機能比較表
+
+| 観点 | Fetch | Firecrawl | Markdownify | Perplexity |
+|---|---|---|---|---|
+| 提供元 | MCP 公式リファレンス実装 | Firecrawl 社 | コミュニティ | Perplexity 社 |
+| 導入 | `uvx mcp-server-fetch` | `npx -y firecrawl-mcp`、またはリモート版 | クローンしてビルド | `npx -y @perplexity-ai/mcp-server` |
+| 費用 | 無料 | 月 1,000 クレジットまで無料、以降は有料 | 無料 | 従量課金 |
+| API キー | 不要 | 必要（リモート版は OAuth） | 不要 | 必要 |
+| 単一ページの取得 | ○ | ○ | ○ | ×（検索が入口） |
+| JavaScript で描画されるページ | × | ○ | × | ─ |
+| 複数ページのクロール | × | ○ | × | × |
+| クリックや入力を伴う取得 | × | ○ | × | × |
+| Web 検索 | × | ○ | Bing の検索結果を取得 | ○ |
+| 出典付きの調査 | × | Agent 機能 | × | ○（research） |
+| PDF・Office 文書の変換 | × | PDF などの解析 | ○ | × |
+| 音声の文字起こし | × | × | ○ | × |
+| `localhost`・社内ページ | ○ | × | ○ | × |
+
+## 4 つのサーバーの特徴
 
 ### Fetch MCP
 
-[Fetch MCP Server](./mcp-server-tutorial-11-fetch)は、Model Context Protocolの公式リファレンス実装の一つで、シンプルで軽量な設計が特徴です。単一ページの情報取得に特化しており、基本的なウェブコンテンツの取得と処理を効率的に行えます。
-
-主な機能：
-
-- ウェブページの内容をMarkdown形式で取得
-- 長いウェブページを分割して読み込み（チャンク読み込み）
-- 生のHTMLコンテンツの取得（オプション）
-- 取得するコンテンツの長さ制限
+[Fetch MCP Server](./mcp-server-tutorial-11-fetch) は、URL を 1 つ受け取り、ページを Markdown にして返すだけの小さなサーバーです。手元の PC からアクセスするので、開発中のサイトや社内のページを AI に読ませる用途に向きます。JavaScript は実行しません。
 
 ### Firecrawl MCP
 
-[Firecrawl MCP Server](./mcp-server-tutorial-08-firecrawl)は、複数ページのクロールや検索機能、高度な分析機能を備えた強力なMCPサーバーです。ウェブサイト全体をLLM用に変換するのに適しています。
-
-主な機能：
-
-- 複数ページのクロールと分析
-- ウェブ検索と結果の分析
-- スクリーンショットの取得
-- ディープリサーチの実行
-- YouTube字幕の取得
-- AI分析機能
-
-※ 真の Deep Research はまだ正式リリースはされていない (2025-03-11 現在)
-[Deep Research - Firecrawl](https://www.firecrawl.dev/deep-research)
+[Firecrawl MCP](./mcp-server-tutorial-08-firecrawl) は、スクレイピング、サイトマップ取得、クロール、検索、ブラウザ操作、自律的に調べる Agent 機能までを備えたサーバーです。標準の Web 取得で中身が空になるページや、サイトを丸ごと取り込みたいときの選択肢です。旧版で触れていた Deep Research は廃止され、検索と Agent 機能に置き換わりました。
 
 ### Markdownify MCP
 
-[Markdownify MCP Server](./mcp-server-tutorial-09-markdownfy)は、ウェブコンテンツだけでなく、様々なファイル形式をMarkdownに変換することに特化したMCPサーバーです。
-
-主な機能：
-
-- ウェブページをMarkdownに変換
-- PDFをMarkdownに変換
-- Office文書（DOCX、XLSX、PPTX）をMarkdownに変換
-- 画像をMarkdownに変換（メタデータ付き）
-- オーディオをMarkdownに変換（文字起こし付き）
-- YouTube動画の字幕をMarkdownに変換
+[Markdownify MCP Server](./mcp-server-tutorial-09-markdownfy) は、Web ページに加えて、PDF、Office 文書、画像、音声、YouTube の字幕を Markdown に変換します。変換エンジンは Microsoft の MarkItDown で、同じエンジンを使う Microsoft 公式の `markitdown-mcp` も 1 行で導入できます。
 
 ### Perplexity MCP
 
-[Perplexity MCP Server](./mcp-server-tutorial-13-perplexity)は、Perplexity AIのサーチエンジンを直接活用してウェブ情報を検索・取得するためのMCPサーバーです。最新情報へのアクセスと高度な検索機能が特徴です。
+[Perplexity MCP Server](./mcp-server-tutorial-13-perplexity) は、Perplexity の検索と、検索を踏まえた回答・推論・調査を呼び出します。ツールは `perplexity_search`・`perplexity_ask`・`perplexity_reason`・`perplexity_research` の 4 つです。Sonar のモデルを直接指定する旧方式は終了し、Agent API のプリセットに移行しました。
 
-主な機能：
+## シナリオ別の使い分け
 
-- Perplexity AIの検索エンジンを直接利用
-- 最新のウェブ情報へのアクセス
-- AIによる検索結果の要約と分析
-- 会話形式での情報探索
-- 複雑なリサーチクエリへの対応
-- 多言語対応
+| やりたいこと | 選ぶもの |
+|---|---|
+| 公開ページを 1 つ読んで要約する | 標準の Web 取得 |
+| 最新のニュースや動向を調べる | 標準の Web 検索。出典付きでまとめたいなら Perplexity |
+| 開発中のサイト（`localhost`）の表示内容を確認する | Fetch |
+| 標準の取得では本文が空になるページを読む | Firecrawl |
+| ドキュメントサイトをまとめて取り込む | Firecrawl（map で URL を確認してから crawl） |
+| 料金表のタブを切り替えてから取得する | Firecrawl（interact） |
+| PDF や Word、PowerPoint を AI に読ませる | Markdownify |
+| 会議の録音を文字起こしして要約する | Markdownify |
+| 複数の情報源を突き合わせた調査レポートを作る | Perplexity（research）、または Firecrawl の Agent |
+| 論文を探して読む | Firecrawl（research 系ツール）、または Perplexity |
 
-## 🔄 おすすめの使い分け
+組み合わせて使う場面もあります。Perplexity で情報源を見つけ、その中の重要なページを Firecrawl で全文取得し、[Filesystem MCP](./mcp-server-tutorial-02-filesystem) で手元に保存する、という流れです。
 
-- **Fetch MCP**: 単一ページの情報取得、軽量な環境での使用、シンプルな使い方を好む場合。公式リファレンス実装なので安定性が高い。
-- **Firecrawl MCP**: 複数ページのクロール、検索機能、高度な分析、ディープリサーチが必要な場合。ウェブサイト全体をLLM用に変換するのに適している。
-- **Markdownify MCP**: ウェブページやPDF、Officeファイル、画像、オーディオを構造化されたMarkdownに変換して保存したい場合。多様なファイル形式の変換に特化している。
-- **Perplexity MCP**: 最新のウェブ情報への素早いアクセス、高度な検索機能、複雑なリサーチクエリが必要な場合。特に最新情報や時事問題の調査に適している。
+## CLI やスキルで代替する選択肢
 
-## 📋 具体的なシナリオ別の使い分け
+Claude Code や Codex のようにコマンドを実行できる環境では、MCP サーバーを常駐させずに同じことができる場合があります。
 
-- **単純な情報参照**: Fetch MCP
-  → 特定のウェブページを素早く参照したい場合
+| サーバー | CLI・スキルでの代替 |
+|---|---|
+| Fetch | `curl` で取得して読む |
+| Firecrawl | 公式の CLI とスキル（`npx -y firecrawl-cli@latest init --all --browser`） |
+| Markdownify | MarkItDown の CLI（`uvx --from 'markitdown[all]' markitdown file.pdf -o file.md`） |
+| Perplexity | MCP サーバーを使う（API を直接呼ぶスクリプトを書くより手間が少ない） |
 
-- **複数ページの調査研究**: Firecrawl MCP
-  → トピックに関する広範な情報収集や分析が必要な場合
+MCP サーバーは、接続するとツールの定義がコンテキストに載ります。Web 取得系を 4 つとも入れると、ツールの数は 40 個を超えます。スキルは名前と説明だけが常時読み込まれ、本文は使うときに読まれるので、使う頻度の低いものほどスキルや CLI に寄せる方が軽くなります。チャット中心の Claude Desktop ではコマンドを実行できないので、MCP サーバーの方を使います。選び方の全体像は[シリーズ #1](./mcp-server-tutorial-01-install) にまとめました。
 
-- **コンテンツの整理と保存**: Markdownify MCP
-  → ウェブページやドキュメントを構造化して保存したい場合
+## AI に使い分けを伝える指示の例
 
-- **APIドキュメントの参照**: Fetch MCP
-  → 特定のAPIドキュメントを参照したい場合
-
-- **ニュース記事の要約作成**: Fetch MCP + Markdownify MCP
-  → ニュース記事を取得して構造化した要約を作成したい場合
-
-- **複数ソースの比較分析**: Firecrawl MCP
-  → 複数の情報ソースを比較して分析したい場合
-
-- **PDFやOfficeファイルの変換**: Markdownify MCP
-  → 様々なファイル形式をMarkdownに変換したい場合
-
-- **最新動向の調査**: Perplexity MCP
-  → 最新のニュースや時事問題について調査したい場合
-
-- **トピックの深掘り**: Perplexity MCP
-  → 特定のトピックについて詳細に調査し、深く理解したい場合
-
-- **複雑な質問への回答**: Perplexity MCP
-  → 複数の情報源からの情報を統合して回答が必要な複雑な質問に答える場合
-
-これらのサーバーは相互に補完し合う関係にあり、状況に応じて適切なサーバーを選択することで、より効率的な情報収集と整理が可能になります。
-
-## 🔄 組み合わせ活用例
-
-### Fetch MCP + Markdownify MCP
-
-単一ページの情報取得と、その情報の構造化・保存を組み合わせることで、重要な情報を効率的に整理できます。
-
-### Firecrawl MCP + Markdownify MCP
-
-複数ページから収集した情報を、Markdownifyを使って様々な形式で保存・整理することができます。
-
-### Perplexity MCP + Fetch MCP
-
-Perplexity MCPで最適な情報源を見つけ、その特定のページをFetch MCPで詳細に取得することができます。
-
-### 全てのMCPを状況に応じて使い分け
-
-プロジェクトの性質や情報収集の目的に応じて、最適なMCPサーバーを選択することで、AIとの情報収集作業を最大限に効率化できます。
-
-## 💬 Claude Desktopのカスタムインストラクション例
-
-**※現在試行錯誤中、アップデートする可能性が高いです。**
-
-Claude Desktopでウェブコンテンツ取得のMCPを使い分けるためのカスタムインストラクション（システムプロンプト）の例です。これをカスタムインストラクションに追加することで、Claudeはあなたの優先順位に従ってMCPサーバーを選択するようになります。
+複数の取得手段を入れると、AI がどれを使うか迷ったり、有料のツールを不用意に呼んだりします。優先順位を書いておくと動きが安定します。Claude Desktop は個人設定（カスタム指示）、Claude Code は `CLAUDE.md`、Codex は `AGENTS.md` に書きます。
 
 ```markdown
-## ウェブコンテンツ取得のMCP使い分け
+## Web の情報を取得するときの優先順位
 
-ウェブからの情報取得が必要な場合は、以下の優先順位で対応してください：
+1. まず標準の Web 検索・Web 取得を使う
+2. 次の場合だけ「fetch」を使う
+   - localhost や社内のページを読むとき
+   - HTML をそのまま確認したいとき
+3. 次の場合だけ「markdownify」を使う
+   - PDF、Office 文書、画像、音声を Markdown にするとき
+4. 次の場合だけ、実行前に確認を取ってから「firecrawl」を使う
+   - 標準の取得で本文が取れないページ
+   - 複数ページのクロール、操作を伴う取得
+   - 「Firecrawl で」と指示があるときは確認不要
+5. 次の場合だけ、実行前に確認を取ってから「perplexity」を使う
+   - 出典付きの調査レポートが必要なとき
+   - 「Perplexity で」と指示があるときは確認不要
 
-1. 基本的には「fetch」MCPを優先して使用してください。
-   - 単一ページの情報取得
-   - 軽量で高速な動作が必要な場合
-   - APIドキュメントの参照
-
-2. 以下の場合のみ「perplexity-ask」MCPを確認の上使用してください：
-   - 最新の情報やニュースが必要な場合
-   - 特に時事問題や最新トレンドに関する調査
-   - 複雑なリサーチクエリがある場合
-   - 複数の情報源からの統合された情報が必要な場合
-   - ※ `Perplexityで` や `パープレで` と指示がある場合は確認不要
-
-3. 以下の場合のみ「markdownify」MCPを使用してください：
-   - PDF、Office文書、画像、オーディオなどの変換が必要な場合
-   - コンテンツの高度な構造化と再構成が必要な場合
-   - YouTube字幕の取得が必要な場合
-
-4. 以下の場合のみ「firecrawl-mcp」MCPを確認の上使用してください：
-   - 複数ページにまたがる情報収集が必要な場合
-   - ウェブサイト全体のクローリングが必要な場合
-   - 検索機能を使った情報の絞り込みが必要な場合
-   - ディープリサーチが必要な場合
-   - YouTube字幕の取得が必要な場合
-   - ※ `Firecrawlで` と指示がある場合は確認不要
-
-特に指示がない限り、常に「fetch」MCP を最初に試してください。他のMCPは、fetch MCPで対応できない特殊なケースでのみ使用してください。特に「firecrawl-mcp」と「perplexity-ask」は実行前に使用するかユーザーに確認してください。
+firecrawl のクロールと Agent、perplexity の research は費用がかかる。対象と上限を先に示すこと。
 ```
 
-このカスタムインストラクションを追加することで、Claudeはウェブコンテンツの取得時に基本的にはFetch MCPを優先して使うようになります。そして、特定の機能が必要な場合にのみ、他の3つのMCPサーバーを使い分けるようになります。
+## まとめ
 
----
+- 公開ページの閲覧と一般的な検索は、AI 本体の標準機能で足りるようになりました
+- Fetch は `localhost` と社内ページ、Firecrawl は JavaScript 描画・クロール・操作、Markdownify はファイルの変換、Perplexity は出典付きの調査が持ち場です
+- Claude Code や Codex では、CLI やスキルで代替できるものが多くあります。有料のツールは、使う条件を指示に書いておきます
 
-## 📚 関連記事
+## 関連記事
 
 - [Fetch MCP Server: ウェブコンテンツを取得・処理](./mcp-server-tutorial-11-fetch)
 - [Firecrawl MCP：スクレイピングでウェブ情報を取得・分析](./mcp-server-tutorial-08-firecrawl)
-- [Markdownify MCP Server: Webページやファイルを Markdown 化](./mcp-server-tutorial-09-markdownfy)
-- [Perplexity MCP Server: Perplexity ならではの検索機能](./mcp-server-tutorial-13-perplexity)
+- [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
+- [Perplexity MCP Server: Perplexity ならではの検索をAIとの会話で実行](./mcp-server-tutorial-13-perplexity)
