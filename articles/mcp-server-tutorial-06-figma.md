@@ -2,13 +2,17 @@
 title: "【MCPのトリセツ #6】Figma MCP：デザインとコードを効率的に連携"
 emoji: "🐸"
 type: "tech"
-topics: ["mcp", "figma", "claude", "windsurf", "ai", "生成ai", "ai駆動開発"]
+topics: ["mcp", "figma", "claude", "claudecode", "codex"]
 published: true
 ---
 
-## 💡 MCPの始め方シリーズについて
+Claude や Codex などの AI に外部ツールをつなぐ「MCP（Model Context Protocol）」の導入方法と使い方を解説するシリーズです。今回は Figma 公式の MCP サーバーを取り上げます。AI が Figma のデザインデータを直接読み取り、正確な数値に基づいてコードを書けるようになります。
 
-Claude などの AI を強化する「MCP（Model Context Protocol）」の導入方法と活用テクニックのシリーズ。今回は、Figma MCP の導入方法と活用例を解説します。デザイナーとエンジニアの連携が格段にスムーズになり、開発効率が向上するはずです。
+:::message
+**更新日: 2026-09-22**（初版: 2025-03-08）
+
+旧版はコミュニティ製の `figma-developer-mcp` だけを紹介していましたが、その後 Figma 公式の MCP サーバーが登場したため、公式版を中心に書き直しています。
+:::
 
 ### シリーズ目次
 
@@ -17,7 +21,7 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
 3. [YouTube MCPサーバー：動画の内容を取得](./mcp-server-tutorial-03-youtube)
 4. [mcp-pandoc： AIでドキュメント形式を変換](./mcp-server-tutorial-04-pandoc)
 5. [GitHub MCPサーバー： AIでリポジトリを管理](./mcp-server-tutorial-05-github)
-6. 👉 [Figma MCP：デザインとコードを効率的に連携](./mcp-server-tutorial-06-figma)
+6. **Figma MCP：デザインとコードを効率的に連携（この記事）**
 7. [Slack MCPサーバー：チームコミュニケーションを強化](./mcp-server-tutorial-07-slack)
 8. [Firecrawl MCP：スクレイピングでウェブ情報を取得・分析](./mcp-server-tutorial-08-firecrawl)
 9. [Markdownify MCP Server: WebページやPDFをMarkdown文書化](./mcp-server-tutorial-09-markdownfy)
@@ -25,200 +29,166 @@ Claude などの AI を強化する「MCP（Model Context Protocol）」の導�
 11. [Fetch MCP Server: ウェブコンテンツを取得・処理](./mcp-server-tutorial-11-fetch)
 12. [Blender MCP Server: 会話で Blender を操作し3Dモデルを作成](./mcp-server-tutorial-12-blender)
 13. [Perplexity MCP Server: Perplexity ならではの検索をAIとの会話で実行](./mcp-server-tutorial-13-perplexity)
+14. [国土交通省がMCPサーバーを公開：AI時代のオープンデータ活用45選](./mcp-server-tutorial-14-milt-data)
 
-参考: [ウェブの情報を取得するMCPの使い分け (Fetch、Firecrawl、Markdownify)](./mcp-server-tutorial-reference-web-mcp)
+資料: [ウェブ情報を取得するMCPの比較 (Fetch、Firecrawl、Markdownify、Perplexity)](./mcp-server-tutorial-reference-web-mcp)
 
 ---
 
-## 🧩 Figma MCPとは？何ができるの？
+## Figma MCP で解決できること
 
-「Figma で作られた UI要素をコード化するのに時間がかかる...」
-「Figma のデザイン仕様を正確に反映したコードを書きたい...」
-「カラーコードやサイズを毎回スクリーンショットから確認するのが面倒...」
+Figma のデザインをコードに起こすとき、色やサイズをスクリーンショットから目で拾うと、どうしてもずれが出ます。Figma MCP サーバーを使うと、AI がレイヤー構造・変数・コンポーネントの情報を直接取得するので、推測ではなく実データからコードを生成できます。
 
-Figma MCPサーバーを使えば、こんな悩みを減らせます。AI が Figma のデザインデータに直接アクセスし、そのデータを理解・操作するための橋渡しをします。結果、正確な情報を元にコード変換や実装アドバイスを行えるようになります。
+- フレームやコンポーネントを指定して、実装コードを生成する
+- カラー・タイポグラフィ・スペーシングなどの変数（デザイントークン）を取り出す
+- Code Connect で、Figma のコンポーネントと既存のコードコンポーネントを対応付ける
+- AI から Figma のキャンバスへ、フレームやコンポーネントを書き戻す
 
-1. **正確なデザイン情報の取得**：色、サイズ、フォント、間隔などの正確な数値を取得
-2. **コンポーネントデータの抽出**：ボタン、カード、ナビゲーションなどのコンポーネント情報を分析
-3. **デザインからコードに変換**：Figmaデザインを対応するHTML/CSS/JavaScriptやReactコンポーネントに変換
-4. **デザイントークンの抽出**：カラーパレット、タイポグラフィ、スペーシングなどのデザイントークンを一括取得
-5. **レスポンシブデザインの分析**：異なるブレークポイントでのレイアウト変化を理解
-6. **デザインコメントの参照**：Figma ファイル内のコメントやフィードバックを参照しながら実装
+最後の書き込み機能は公式版で追加されたもので、旧版の記事にはなかった使い方です。
 
-## 🛠️ セットアップ手順
+## 公式版は 2 種類ある
 
-Figma MCPサーバーのセットアップは3つのステップで完了します。
+| 種類 | 接続先 | 特徴 |
+|---|---|---|
+| リモートサーバー | `https://mcp.figma.com/mcp` | Figma デスクトップアプリが不要。機能が最も多い。Figma の推奨 |
+| デスクトップサーバー | `http://127.0.0.1:3845/mcp` | Figma デスクトップアプリ内で起動する。選択中のレイヤーを対象にできる |
 
-### 1. Figma APIキーの取得
+Figma は公式ドキュメントでリモートサーバーを強く推奨しているので、この記事でもリモート版で進めます。デスクトップ版は、組織の方針でローカル接続が求められる場合の選択肢です。
 
-まず、Figma の API にアクセスするためのパーソナルアクセストークンを取得します。
+リモート版はすべてのプラン・シートで接続できますが、ツールの呼び出し回数にシートごとの上限があります。View・Collab シートは月に数回から 20 回までと少なく、日常的に使うには Dev または Full シートが要ります。上限の数値はプランによって異なるので、[公式の Rate limits & access](https://developers.figma.com/docs/figma-mcp-server/rate-limits-access/) で確認してください。
 
-1. [Figma](https://www.figma.com)にログイン
-2. 右上のアイコンから「Settings」を選択
-3. 左側メニューから「Account」タブを選択
-4. 下部の「Personal access tokens」セクションで「Create a new personal access token」をクリック
-5. 適当なトークンの名前（例：`figma-mcp-2025-03-01`）を入力し、「Create token」をクリック
-6. 表示されたAPIキーをコピー（**注意**: このキーは一度しか表示されないので安全な場所に保存）
+## セットアップ手順
 
-### 2. エディタの設定
+API キーの発行は不要です。どのクライアントも、Figma アカウントでの OAuth 認証で接続します。
 
-Claude Desktop や AIエディタ (Windsurf や Cursor) が「Figma MCP」を利用できるように設定ファイルを編集します。
+### Claude Code
 
-#### Claude Desktopの場合
+公式プラグインを入れる方法が推奨されています。MCP サーバーの設定に加えて、Figma 向けのスキルも一緒に入ります。
 
-Claude Desktopの設定ファイル（`~/Library/Application Support/Claude/claude_desktop_config.json`）を開く（なければ作成）
-2. 以下の内容を追加（既存の設定がある場合は `mcpServers` オブジェクト内に追記）
+```bash
+claude plugin install figma@claude-plugins-official
+```
+
+MCP サーバーだけを手動で登録する場合は次のとおりです。全プロジェクトで使うなら `--scope user` を付けます。
+
+```bash
+claude mcp add --transport http figma https://mcp.figma.com/mcp
+```
+
+登録後、Claude Code 内で `/mcp` を実行し、`figma` を選んで「Authenticate」に進みます。ブラウザで「Allow Access」を押すと接続されます。
+
+### Codex
+
+Codex アプリの「Plugins」メニューから Figma プラグインを入れる方法と、CLI で登録する方法があります。
+
+```bash
+codex mcp add figma --url https://mcp.figma.com/mcp
+```
+
+実行後に表示される案内に従って、ブラウザで認証します。
+
+### Claude Desktop
+
+Figma が提供する公式コネクタがあります。サイドバーの「Customize」から「Connectors」を開き、「+」を押して Figma を選び、OAuth 認証を済ませます。[コネクタのページ](https://claude.com/connectors/figma)から追加することもできます。
+
+## 基本的な使い方（プロンプト）
+
+リモート版は、Figma のフレームやレイヤーへのリンクを渡して使います。Figma 上で対象を右クリックし、「Copy/Paste as」から「Copy link to selection」でリンクを取得します。リンクには `node-id=123-456` の形で対象のノード ID が含まれています。
+
+```text
+この Figma フレームを React + Tailwind CSS で実装して
+https://www.figma.com/design/xxxxXXXX/ProjectName?node-id=123-456
+```
+
+```text
+このボタンコンポーネントの色、サイズ、フォント、角丸の値を教えて
+https://www.figma.com/design/xxxxXXXX/ProjectName?node-id=789-012
+```
+
+ファイル全体ではなく、フレームやセクション単位でリンクを渡すのがコツです。対象が大きいと取得するデータ量が増え、AI のコンテキストを圧迫します。
+
+## 実践的な活用例
+
+### デザイントークンを CSS 変数にする
+
+```text
+このフレームで使われている変数（カラー、タイポグラフィ、スペーシング）を取得して、CSS カスタムプロパティとして出力して
+```
+
+[Filesystem MCP](./mcp-server-tutorial-02-filesystem) と組み合わせるか、Claude Code・Codex から実行すれば、そのままファイルに保存できます。
+
+```text
+取得した変数を src/styles/tokens.css に保存して
+```
+
+### バリアントを持つコンポーネントを実装する
+
+```text
+このボタンコンポーネントを分析して、class-variance-authority（CVA）でバリアント（サイズ: sm, md, lg、種類: primary, secondary, outline, ghost）を持つ Tailwind CSS のボタンを実装して
+```
+
+### 既存のコンポーネントを使って実装する
+
+```text
+このフレームを実装して。src/components/ui にある既存のコンポーネントを優先して使い、足りないものだけ新規に作って
+```
+
+Code Connect でコンポーネントの対応付けを済ませておくと、AI は Figma のコンポーネントに対応するコード側のコンポーネントを把握した状態で実装します。デザインシステムを運用しているチームでは、ここが品質の分かれ目になります。
+
+### 仕様書と一貫性チェック
+
+```text
+このヘッダーコンポーネントの仕様（サイズ、色、間隔、フォント）を Markdown の表にまとめて
+```
+
+```text
+このフレームで、デザインシステムの変数を使わず直接指定されている色やフォントサイズを洗い出して
+```
+
+### コードから Figma へ書き戻す
+
+```text
+この画面の実装（http://localhost:3000/settings）をもとに、Figma に新しいデザインファイルを作ってレイヤーとして再現して
+```
+
+```text
+このユーザー登録フローを FigJam のフローチャートにして
+```
+
+書き込み系のツールは実際に Figma のファイルを変更します。チームの共有ファイルに対して使う前に、下書き用のファイルで挙動を確かめておくのが安全です。
+
+## コミュニティ版 Framelink について
+
+旧版で紹介していた `figma-developer-mcp` は、[Framelink](https://github.com/GLips/Figma-Context-MCP) というコミュニティ製のサーバーで、現在も開発が続いています。Figma の個人アクセストークンで動き、レイアウトとスタイルの情報を絞り込んで AI に渡す設計です。
 
 ```json
 {
   "mcpServers": {
-    "figma-developer-mcp": {
+    "framelink-figma": {
       "command": "npx",
-      "args": ["-y", "figma-developer-mcp", "--stdio"],
-      "env": {
-        "FIGMA_API_KEY": "your_figma_api_key_here"
-      }
+      "args": ["-y", "figma-developer-mcp", "--figma-api-key=YOUR_FIGMA_API_KEY", "--stdio"]
     }
   }
 }
 ```
 
-`your_figma_api_key_here` の部分を、先ほど取得したFigma APIキーに置き換えてください。
+公式版の呼び出し回数の上限が合わない場合や、読み取りだけで足りる場合の代替になります。書き込みや Code Connect が必要なら公式版を選びます。
 
-#### Windsurf の場合
+## まとめ
 
-1. `~/.codeium/windsurf/mcp_config.json` ファイルを開き、同様の設定を追加します。
+- Figma 公式の MCP サーバーが登場し、リモート版（`https://mcp.figma.com/mcp`）が推奨になりました
+- API キーは不要で、OAuth 認証で接続します。呼び出し回数の上限はシートによって異なります
+- フレーム単位のリンクを渡すのが基本です。Code Connect と組み合わせると、既存コンポーネントを活かした実装になります
 
-### 3. Figma MCPサーバーの起動
+新しい MCP 記事の更新は X [@nagataku_ai](https://x.com/nagataku_ai) でお知らせします。
 
-アプリケーションを再起動すると自動的にMCPサーバーが起動します。  
-ターミナルで手動で起動する場合は、以下のコマンドで MCPサーバーを起動します：
+## 参考リンク
 
-```bash
-npx figma-developer-mcp --figma-api-key=your_figma_api_key_here
-```
+- [Figma MCP server - Figma Developer Docs](https://developers.figma.com/docs/figma-mcp-server/)
+- [リモートサーバーのインストール - Figma Developer Docs](https://developers.figma.com/docs/figma-mcp-server/remote-server-installation/)
+- [Tools and prompts - Figma Developer Docs](https://developers.figma.com/docs/figma-mcp-server/tools-and-prompts/)
+- [Guide to the Figma MCP server - Figma Help Center](https://help.figma.com/hc/en-us/articles/32132100833559-Guide-to-the-Figma-MCP-server)
+- [Figma コネクタ - Claude](https://claude.com/connectors/figma)
+- [Framelink Figma MCP - GitHub](https://github.com/GLips/Figma-Context-MCP)
 
-## 👨‍💻 基本的な使い方 (プロンプト)
-
-Figma MCPサーバーの基本的な使い方を紹介します。
-
-### Figma ファイルの接続
-
-```text
-Figma MCPサーバーに繋いで https://www.figma.com/file/xxxxXXXXxxxxXXXX/ProjectName
-```
-
-AIがFigmaファイルに接続し、デザインデータにアクセスできるようになります。
-
-### デザイン要素の取得
-
-```text
-このFigmaファイルのメインボタンのスタイル情報を教えて
-```
-
-AIはボタンの色、サイズ、フォント、角丸などの正確な情報を取得して表示します。
-
-### コード生成
-
-```text
-このボタンをReactコンポーネントとして実装して
-```
-
-AIは取得したデザイン情報を元に、対応するReactコンポーネントのコードを生成します。
-
-### レスポンシブ対応
-
-```text
-このコンポーネントをモバイル対応にするには？
-```
-
-AIはデザインのブレークポイントを分析し、レスポンシブ対応のコードを提案します。
-
-## 🔍 特定のエリアやコンポーネントの取得方法
-
-大規模なFigmaファイルから特定の要素だけを取得するには、ノードID（node-id）を使用すると効率的です：
-
-### ノードIDの取得方法
-
-1. **Figmaデザインファイルを開く**
-2. **対象の要素を選択する**（例：「ホーム」フレーム内の「Hero」セクション）
-3. **ノードIDの確認方法**：
-   - 要素を選択した状態でブラウザのアドレスバーを確認。URLに `node-id=X-Y` という形式で表示される
-   - または、要素を右クリックして「Copy/Paste as」→「Copy link」を選択
-
-### AIエディタでの活用例
-
-```text
-Figma MCPでファイルの node-id=123-456 のコンポーネント情報を取得して
-```
-
-または
-
-```text
-Figma MCPでこのURL（https://www.figma.com/file/...?node-id=789-012）の「Hero」セクションの実装コードを生成して
-```
-
-## 💡 実践的な活用例
-
-Figma MCPをより実践的に活用する方法をいくつか紹介します。
-
-### 1. デザインシステムを分析し、変数として整理
-
-```text
-Figmaコンポーネントライブラリからカラー、タイポグラフィ、スペーシングなどのデザイントークンを抽出し、CSS変数として出力して
-```
-
-### 2. デザイン仕様をローカルファイルとして保存 (Figma MCP + Filesystem MCP)
-
-```text
-1. Figmaファイル（https://www.figma.com/file/xxxxx）のデザイントークンを分析して
-2. カラー、タイポグラフィ、スペーシングの情報をCSS変数として /Users/yourname/Projects/design-system/tokens.css ファイルに保存して
-```
-
-### 3. バリエーションやバリアントを含むコンポーネントを生成
-
-```text
-このボタンの4つの状態（通常、ホバー、アクティブ、無効）を含む Reactコンポーネントセットを生成して
-```
-
-```text
-このボタンコンポーネントを分析して、class-variance-authority（CVA）を使用したバリアント（サイズ: sm, md, lg、バリエーション: primary, secondary, outline, ghost）を持つ Tailwind CSS のボタンコンポーネントを実装して
-```
-
-### 4. Figmaのプロトタイプ情報を元に、アニメーションの実装コードを提案
-
-```text
-このモーダルのトランジションアニメーションを Framer Motion で実装するには？
-```
-
-### 5. デザイン仕様書の自動生成
-
-```text
-このヘッダーコンポーネントの詳細な仕様書（サイズ、色、間隔、フォントなど）をMarkdownで作成して
-```
-
-### 6. デザインの一貫性チェック
-
-```text
-このデザインのカラーパレットとタイポグラフィの使用を分析し、デザインシステムから外れている部分があれば指摘して
-```
-
-## 📝 まとめ
-
-Figma MCPを導入することで、デザインとコーディングの橋渡しがスムーズになり、開発効率が向上します。デザイナーの意図を正確に反映したコード実装が容易になり、デザインの一貫性も保ちやすくなります。
-
-特にフロントエンド開発者や UI/UXデザイナーにとって、Figma MCPは強力なアシスタントとなるでしょう。デザインデータを直接取得できることで、情報の見落としや解釈の誤りを減らし、より質の高い実装が可能になります。
-
-ぜひFigma MCPを活用して、デザインとコードの連携を効率化してみてください！
-
-新しいMCP記事の更新は X [@nagataku_ai](https://x.com/nagataku_ai) でお知らせします。フォローとツッコミ、お待ちしています！
-
-## 📚 参考リンク
-
-- [Figma API公式ドキュメント](https://www.figma.com/developers/api)
-- [figma-developer-mcp GitHub リポジトリ](https://github.com/figma/figma-developer-mcp)
-- [Figma開発者コミュニティ](https://www.figma.com/community)
-- [AIエディタ：Windsurf公式ドキュメント](https://codeium.com/windsurf)
-- [AIエディタ：Cursor公式サイト](https://cursor.sh/)
-
-次回の記事では、Slackでの投稿や情報の取得ができる「[Slack MCPサーバー](./mcp-server-tutorial-07-slack)」について解説します。お楽しみに！
+次回は、Slack のメッセージ検索や投稿ができる「[Slack MCPサーバー](./mcp-server-tutorial-07-slack)」を解説します。
