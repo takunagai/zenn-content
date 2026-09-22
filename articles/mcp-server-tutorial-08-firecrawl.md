@@ -9,9 +9,11 @@ published: true
 Claude や Codex などの AI に外部ツールをつなぐ「MCP（Model Context Protocol）」の導入方法と使い方を解説するシリーズです。今回は Firecrawl MCP を取り上げます。JavaScript で描画されるページの取得、サイト全体のクロール、検索、構造化データの抽出を AI から実行できます。
 
 :::message
-**更新日: 2026-09-22**（初版: 2025-03-08）
+**更新日: 2026-09-23**（初版: 2025-03-08）
 
 料金プラン、ツール構成、導入方法を現行の内容に更新しています。旧版で触れていた Deep Research 機能は廃止され、検索と Agent 機能に置き換わりました。
+
+2026-09-23: 新機能「Alexandria」（データ API のカタログ）への対応と、それに伴う検索の既定の変更を追記しました。
 :::
 
 ### シリーズ目次
@@ -41,10 +43,11 @@ Claude や Codex には標準の Web 検索・Web 取得機能があります。
 
 | 機能 | ツール名 | 内容 |
 |---|---|---|
-| スクレイピング | `firecrawl_scrape` | 1 ページを Markdown や JSON で取得。JavaScript で描画されるページにも対応 |
+| スクレイピング | `firecrawl_scrape` | 1 ページを Markdown や JSON で取得。JavaScript で描画されるページにも対応。Alexandria のツールの実行もこれで行う |
 | サイトマップ取得 | `firecrawl_map` | サイト内の URL を一覧にする |
 | クロール | `firecrawl_crawl` | 起点の URL から複数ページをたどって取得する |
-| 検索 | `firecrawl_search` | Web 検索し、結果のページ本文まで取得する |
+| 検索 | `firecrawl_search` | Web 検索し、結果のページ本文まで取得する。Alexandria のツールも一緒に探す |
+| データ API の検索 | `firecrawl_find_tools` | Alexandria のカタログから、ツールの入力と価格を確かめる |
 | ブラウザ操作 | `firecrawl_interact` | クリックや入力をしてから内容を取得する |
 | Agent | `firecrawl_agent` | 目的を伝えると、検索と取得を自律的に繰り返して調べる |
 | ファイル解析 | `firecrawl_parse` | PDF などのファイルを解析する |
@@ -122,7 +125,7 @@ Firecrawl は 2026 年 1 月に、公式 CLI とエージェント向けスキ�
 npx -y firecrawl-cli@latest init --all --browser
 ```
 
-Firecrawl MCP はツールが 26 個あり、接続するとその定義がコンテキストに載ります。CLI + スキルの方式は、常時読まれるのがスキルの名前と説明だけで、実際の取得はコマンドとして実行されます。取得結果がファイルに保存されるので、大きなページを読んでも会話のコンテキストを圧迫しにくい利点もあります。
+Firecrawl MCP は 20 個を超えるツールがあり、接続するとその定義がコンテキストに載ります。CLI + スキルの方式は、常時読まれるのがスキルの名前と説明だけで、実際の取得はコマンドとして実行されます。取得結果がファイルに保存されるので、大きなページを読んでも会話のコンテキストを圧迫しにくい利点もあります。
 
 私は Claude Code ではこの CLI + スキルを使っています。コマンドを実行できないチャット中心の Claude Desktop では、MCP の方が向きます。MCP とスキルの選び方は[シリーズ #1](./mcp-server-tutorial-01-install) にまとめました。
 
@@ -147,6 +150,34 @@ https://example-shop.com/products
 ```
 
 他の Web 取得ツールが先に呼ばれてしまうときは、「Firecrawl で」と添えると確実です。
+
+## Alexandria（データ API のカタログ）を使う
+
+Firecrawl は 2026 年 9 月 22 日（米国時間）に「Alexandria」を公開しました。公式データプロバイダーの API や Firecrawl 独自のインデックス（論文・開発者向けドキュメントなど）を、Firecrawl から探して実行できるカタログです。npm のダウンロード数、GitHub の issue、米国株の株価、SEC の開示書類など、Web ページを読むより API から取った方が正確なデータを、エージェントが自分で見つけて取りに行けます。
+
+MCP では、`firecrawl_search` でツールを探し、`firecrawl_find_tools` で入力と価格を確かめ、`firecrawl_scrape` で実行します。**ツールを探すのは無料で、実行したときだけ、ツールごとに決まったクレジットを消費します。**
+
+:::message alert
+**`firecrawl_search` の既定が変わっています**
+
+API キーまたは OAuth（上のリモート版）で認証している場合、`firecrawl_search` の既定の検索先は **Web と Alexandria の両方**になりました（`firecrawl-mcp` 3.25.2 で確認）。両方の検索は同時に走るので、ツールが見つかっても Web 検索の分は従来どおり課金されます。ツールの検索自体は無料なので、料金が増えるわけではありません。
+
+Web の検索結果だけが欲しいときは、「sources は web だけで検索して」と指示してください。
+:::
+
+頼むときは、実行する前に価格を確認させるのが安全です。
+
+```text
+Firecrawl の Alexandria で、npm の hono と express の過去 1 か月のダウンロード数を調べて。
+実行する前に、使うツールと 1 回あたりのクレジットを見せて、私の了承を取ってから実行して。
+```
+
+```text
+Alexandria で、SEC に提出された Apple の最新の 10-K から「Risk Factors」の節を取り出して、主なリスクを 5 つに要約して。
+合計 10 クレジットを超えそうなら、その時点で止めて相談して。
+```
+
+実際に検索してみた範囲では、米国のサービスのツールが多く出てきました（2026-09-23 時点）。日本の情報は見つからないことが多いので、まずは無料の探索の段階で対象地域を確かめさせてください。
 
 ## 活用テクニック
 
@@ -195,12 +226,14 @@ https://documentation.example.com のチュートリアルのページを取得�
 - **利用規約と robots.txt**: 取得先サイトの利用規約に従います。短時間に大量のリクエストを送ると、サイト側に負荷をかけたりブロックされたりします
 - **取得した文章は外部の入力**: Web ページには AI への指示を装った文章が紛れていることがあります。取得結果をもとに AI がファイル操作や送信をしようとしたら、内容を確認してから許可します
 - **抽出データの検証**: 構造化抽出の結果は、元のページと突き合わせて確認します
+- **Alexandria の実行料金**: ツールごとに消費クレジットが違います。実行前に価格を確認させます。また、一部のプロバイダーはデータ利用規約への同意を求めます。同意はエージェントに任せず、人が内容を確認してから行います
 
 ## まとめ
 
 - Firecrawl MCP は、標準の Web 取得では届かない JavaScript 描画ページ、サイト全体のクロール、操作を伴う取得を担います
 - 導入は `npx -y firecrawl-mcp` か、OAuth で接続するリモート版です。Claude Code や Codex では CLI + スキルも選択肢になります
 - Free プランは月 1,000 クレジットです。クロールと Agent は上限を決めて使います
+- Alexandria で、Web ページではなくデータ API から正確な値を取れるようになりました。探すのは無料、実行はツールごとの料金です
 
 新しい MCP 記事の更新は X [@nagataku_ai](https://x.com/nagataku_ai) でお知らせします。
 
@@ -210,6 +243,8 @@ https://documentation.example.com のチュートリアルのページを取得�
 - [firecrawl/firecrawl-mcp-server - GitHub](https://github.com/firecrawl/firecrawl-mcp-server)
 - [Firecrawl ドキュメント](https://docs.firecrawl.dev/)
 - [Introducing Firecrawl Skill and CLI - Firecrawl Blog](https://www.firecrawl.dev/blog/introducing-firecrawl-skill-and-cli)
+- [Introducing Alexandria and our $75M Series B - Firecrawl Blog](https://www.firecrawl.dev/blog/introducing-alexandria-series-b)
+- [Alexandria - Firecrawl ドキュメント](https://docs.firecrawl.dev/features/alexandria)
 
 次回は、さまざまなファイルを Markdown 化できる「[Markdownify MCP Server](./mcp-server-tutorial-09-markdownfy)」を解説します。
 
