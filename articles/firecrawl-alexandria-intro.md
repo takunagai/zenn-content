@@ -1,12 +1,12 @@
 ---
-title: "Firecrawl の新機能 Alexandria 入門 ─ AI エージェントに 500 超のデータ API を「探して・読んで・叩かせる」"
+title: "Firecrawl の新機能 Alexandria 入門 ─ AIエージェントにデータAPI を「探して・読んで・叩かせる」"
 emoji: "🐸"
 type: "tech"
 topics: ["firecrawl", "ai", "ai駆動開発", "スクレイピング", "mcp"]
 published: true
 ---
 
-![古代図書館を思わせる柱廊を背に、木製のカード目録から 1 枚のカードを抜き出して眺める眼鏡の女性のイラスト](/images/firecrawl-alexandria-intro/eyecatch.webp)
+![古代図書館を思わせる柱廊を背に、木製のカード目録から 1 枚のカードを抜き出して眺める眼鏡の女性のイラスト](/images/firecrawl-alexandria-intro/eyecatch.jpg)
 
 Web スクレイピング API の [Firecrawl](https://www.firecrawl.dev/referral?rid=W385F95R) が、2026 年9月22日（米国時間）に新機能「Alexandria」を公開しました。AI エージェントが、公式データプロバイダーの API・Firecrawl 独自のインデックス・ライブの Web を、同じ Firecrawl API から使えるようにする仕組みです。
 
