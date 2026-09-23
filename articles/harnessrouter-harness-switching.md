@@ -240,4 +240,3 @@ OSS 版においてサポートされているハーネスは、2026-09-23 時�
 - [HarnessRouter Docs](https://harnessrouter.ai/docs)
 - [GitHub: HarnessRouter/harnessrouter](https://github.com/HarnessRouter/harnessrouter)
 - [Unified Harness Protocol](https://unifiedharnessprotocol.org/)
-
