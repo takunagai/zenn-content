@@ -82,6 +82,10 @@ credentials*.md
 
 あなたが何度気をつけても、人間の注意力は枯渇します。だから設計で先に潰す。これが第一層。
 
+なお、`.env` のような git 管理外のファイルに値を書き込むとき、シェル履歴や AI エージェントの会話ログに残さない手順は次の記事にまとめました。
+
+https://zenn.dev/takna/articles/pass-secrets-via-stdin
+
 ## 2. git pre-commit 層 ─ gitleaks を入れる
 
 ここが本命の自動化です。使うツールは 2 つ。
